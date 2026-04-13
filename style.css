@@ -1,15 +1,19 @@
 :root {
-    --bg: #070d1c;
-    --ink: #f2e6cc;
+    --bg: #0a0f1e;
+    --ink: #f5efe0;
     --ink-weak: #c8b49a;
-    --line: rgba(150,120,55,.32);
-    --line-strong: rgba(180,145,65,.60);
+    --line: rgba(212,175,55,.20);
+    --line-strong: rgba(212,175,55,.50);
     --muted: rgba(160,135,90,.45);
     --accent: #8fb8ff;
-    --gold: #c9a84c;
+    --gold: #d4af37;
+    --gold-bright: #f9e7b1;
     --gold-soft: #d4b96a;
-    --gold-deep: #9b7b2e;
-    --cream: #f2e6cc;
+    --gold-deep: #8e6d1a;
+    --gold-main: #d4af37;
+    --cream: #f5efe0;
+    --glass: rgba(255,255,255,.03);
+    --glass-border: rgba(255,255,255,.10);
     --serif: 'Noto Serif TC',serif;
     --display: 'Noto Serif TC',serif;
     --content-pad: 48px;
@@ -46,11 +50,13 @@ body::before {
     z-index: 0;
     pointer-events: none;
     /* 實心雙色菱格：深海藍底(#070d1c) × 稍亮深藍填充(#102545) × 金色交叉線與頂點光點 */
-    background-image: url("data:image/svg+xml,%3Csvg width='120' height='180' viewBox='0 0 120 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0 L120 90 L60 180 L0 90 Z' fill='%23102545'/%3E%3Cline x1='0' y1='0' x2='60' y2='90' stroke='rgba(180,140,50,0.40)' stroke-width='1.5'/%3E%3Cline x1='120' y1='0' x2='60' y2='90' stroke='rgba(180,140,50,0.40)' stroke-width='1.5'/%3E%3Cline x1='0' y1='180' x2='60' y2='90' stroke='rgba(180,140,50,0.40)' stroke-width='1.5'/%3E%3Cline x1='120' y1='180' x2='60' y2='90' stroke='rgba(180,140,50,0.40)' stroke-width='1.5'/%3E%3Ccircle cx='60' cy='90' r='2.5' fill='rgba(200,160,55,0.85)'/%3E%3Ccircle cx='0' cy='0' r='2.5' fill='rgba(200,160,55,0.85)'/%3E%3Ccircle cx='120' cy='0' r='2.5' fill='rgba(200,160,55,0.85)'/%3E%3Ccircle cx='60' cy='180' r='2.5' fill='rgba(200,160,55,0.85)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 120px 180px;
-    background-position: center top;
-    opacity: 0.88;
+    background-image:
+        radial-gradient(circle at 50% 50%, rgba(20,30,60,0.5), transparent),
+        url("data:image/svg+xml,%3Csvg width='60' height='100' viewBox='0 0 60 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L60 50 L30 100 L0 50 Z' fill='%23102545' opacity='0.9'/%3E%3Cpath d='M30 0 L60 50 L30 100 L0 50 Z' fill='none' stroke='rgba(212,175,55,0.18)' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='50' r='1' fill='rgba(212,175,55,0.45)'/%3E%3Ccircle cx='0' cy='0' r='1' fill='rgba(212,175,55,0.35)'/%3E%3Ccircle cx='60' cy='0' r='1' fill='rgba(212,175,55,0.35)'/%3E%3Ccircle cx='30' cy='100' r='1' fill='rgba(212,175,55,0.35)'/%3E%3C/svg%3E");
+    background-repeat: repeat, repeat;
+    background-size: 100% 100%, 60px 100px;
+    background-position: center, center top;
+    opacity: 1;
 }
 
 /* ══ FIXED ART DECO OVERLAYS ══ */
@@ -120,10 +126,14 @@ body::before {
     position: relative;
     z-index: 10;
 
-    /* 書封底色：有底色但輕透，靠框線與留白撐結構 */
-    background: rgba(8, 16, 34, 0.45);
-    border: 1px solid rgba(150, 120, 55, 0.38);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+    background: linear-gradient(135deg, rgba(15,20,35,0.82), rgba(10,15,30,0.92));
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line-strong);
+    outline: 4px double var(--line);
+    outline-offset: -12px;
+    box-shadow:
+        0 30px 60px rgba(0,0,0,0.80),
+        inset 0 0 100px rgba(212,175,55,0.05);
 
     min-height: calc(100vh - 96px);
 }
@@ -182,15 +192,19 @@ body::before {
 .h1 {
     font-family: var(--display);
     font-style: normal;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 1px;
     font-size: 56px;
     line-height: 1.1;
-    color: transparent;
-    -webkit-text-stroke: 1px var(--ink);
+    color: var(--gold-bright);
+    -webkit-text-stroke: 0.5px var(--gold-bright);
     text-align: left;
     position: relative;
     z-index: 2;
+    text-shadow:
+        0 0 10px rgba(212,175,55,0.40),
+        2px 2px 4px rgba(0,0,0,0.5);
+    text-transform: uppercase;
 }
 
 .subtitle {
@@ -284,9 +298,13 @@ body::before {
     position: relative;
     margin: 20px 0 28px;
     padding: 10px 28px;
-    background: linear-gradient(90deg, transparent 0%, rgba(140,105,30,.18) 20%, rgba(160,120,35,.26) 50%, rgba(140,105,30,.18) 80%, transparent 100%);
-    border-top: 1px solid rgba(180,145,55,.55);
-    border-bottom: 1px solid rgba(180,145,55,.55);
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(212,175,55,0.15) 20%,
+        rgba(212,175,55,0.15) 80%,
+        transparent);
+    border-top: 1px solid var(--gold-main);
+    border-bottom: 1px solid var(--gold-main);
     text-align: center;
     display: flex;
     align-items: center;
@@ -615,15 +633,18 @@ body::before {
     width: 100%;
     background: transparent;
     border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     color: var(--ink-weak);
     text-align: left;
     padding: 16px 0;
     cursor: pointer;
-    transition: color .2s ease, padding-left .2s ease;
+    transition: color .2s cubic-bezier(0.4,0,0.2,1), padding-left .2s cubic-bezier(0.4,0,0.2,1), background .2s cubic-bezier(0.4,0,0.2,1);
     display: flex;
     gap: 20px;
     align-items: flex-start;
     opacity: 0;
+    position: relative;
+    overflow: hidden;
 }
 
     .opt.visible {
@@ -631,7 +652,8 @@ body::before {
     }
 
     .opt:hover {
-        color: var(--ink);
+        background: linear-gradient(90deg, rgba(212,175,55,0.05), transparent);
+        color: var(--gold-bright);
         padding-left: 10px;
     }
 
@@ -656,8 +678,9 @@ body::before {
 }
 
 .opt:hover .bullet, .opt.selected .bullet {
-    background: var(--gold);
-    border-color: var(--gold);
+    background: var(--gold-bright);
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 12px var(--gold-main);
     transform: rotate(45deg) scale(1.25);
 }
 
@@ -723,13 +746,13 @@ body::before {
 
 .result-img-wrap {
     border-radius: 0;
-    padding: 14px;
-    background: #ffffff; 
+    padding: 10px;
+    background: #000;
     flex-shrink: 0;
     aspect-ratio: 1000 / 1343; /* 修改圖片比例完全展現 */
     position: relative;
-    box-shadow: none;
-    border: 1px solid var(--line-strong);
+    border: 2px solid var(--gold-main);
+    box-shadow: 0 0 30px rgba(212,175,55,0.20);
 }
 
     .result-img-wrap::before {
@@ -1037,8 +1060,8 @@ body::before {
     position: absolute;
     left: 0;
     height: 2px;
-    background: var(--gold);
-    box-shadow: 0 0 8px rgba(180,140,50,.95);
+    background: linear-gradient(90deg, var(--gold-deep), var(--gold-bright));
+    box-shadow: 0 0 15px var(--gold-main);
     transition: width 1.3s cubic-bezier(.22,1,.36,1);
     width: 0;
 }
@@ -1054,7 +1077,7 @@ body::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0 L14 10 L24 12 L14 14 L12 24 L10 14 L0 12 L10 10 Z' fill='%23c9a84c'/%3E%3C/svg%3E");
     background-size: contain;
     background-repeat: no-repeat;
-    filter: drop-shadow(0 0 4px rgba(180,140,50,.90));
+    filter: drop-shadow(0 0 8px var(--gold-bright));
     transition: left 1.3s cubic-bezier(.22,1,.36,1);
     left: 0;
     z-index: 2;
