@@ -20,7 +20,7 @@ const questions = [
 
 /* ── 第 1 題｜帶回的東西 ── */
 {
-  text: "夢中的你好不容易從黑森林探險回來，手上卻多了一樣不屬於你的東西——那會是什麼呢？",
+  text: "夢中的你好不容易從黑童話大門探險回來，手上卻多了一樣不屬於你的東西——那會是什麼呢？",
   options: [
     { text: "會說古摸寧，劍身隱隱發燙的古劍",             scores: { BRO: 2 },   metrics: { survival: 3, happiness: 5, fate: 9 } },
     { text: "邊角超濕，翻開時很黏的魔法書",               scores: { SHA: 2 },   metrics: { survival: 5, happiness: 7, fate: 6 } },

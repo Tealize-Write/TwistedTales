@@ -89,7 +89,7 @@ async function sendStats(code) {
     if (!data || !data.ok) throw new Error(data?.error ?? "unknown");
     renderStats(data, code);
   } catch (_) {
-    line.textContent = "✦ 數據讀取失敗，但黑森林已記住你的選擇。";
+    line.textContent = "✦ 數據讀取失敗，但黑童話大門已記住你的選擇。";
     chart.innerHTML  = "";
   }
 }
@@ -130,11 +130,11 @@ function renderStats(data, code) {
   const rPct = total > 0 ? Math.round(rNum * 1000 / total) / 10 : 0;
 
   line.innerHTML =
-    '✦ 目前共有 <strong>' + total + '</strong> 個靈魂墮入黑森林。<br/>'
+    '✦ 目前共有 <strong>' + total + '</strong> 個靈魂踏入黑童話大門。<br/>'
     + '✦ 你的類型（' + _esc(myKeyword) + '）約佔 <strong>' + myPct + '%</strong>，全站人數排名第 <strong>' + myRankText + '</strong> / ' + totalTypes + '。<br/>'
     + '✦ 最稀有的極端樣本為「' + _esc(rarestItem.k) + '」 (僅 ' + rarestPct + '%)。<br/>'
     + '<span style="opacity:.6;font-size:.85em;display:inline-block;margin-top:6px;">'
-    + '(黑森林陣營：攻 ' + aPct + '% ｜ 受 ' + rPct + '%)</span>';
+    + '(黑童話大門陣營：攻 ' + aPct + '% ｜ 受 ' + rPct + '%)</span>';
 
   const items = sortedItems.slice(0, 5);
   const rows  = items.map(({ k, v }) => {

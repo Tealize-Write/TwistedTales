@@ -268,7 +268,7 @@ function showResult(){
   const r = resultsData[code];
   
   if(!r){
-    document.getElementById('pop-line').textContent='✦ 黑森林暫時找不到你的檔案（結果資料缺漏）。';
+    document.getElementById('pop-line').textContent='✦ 黑童話大門暫時找不到你的檔案（結果資料缺漏）。';
     console.error('Missing resultsData for code:',code);
     return;
   }
@@ -564,8 +564,8 @@ async function shareResultAsImage() {
     if(isMobile) {
       try {
         await navigator.share({
-          title: '故事另有結局｜黑暗特質心理測驗',
-          text : '歡迎前往黑森林，測試你的黑暗特質是什麼？',
+          title: '故事另有結局｜你適合穿越進哪個童話？',
+          text : '歡迎前往黑童話大門，測試你適合住進哪個反轉童話？',
           url  : SITE_URL,
           files: [file],
         });
