@@ -20,7 +20,7 @@ const resultsData = {
     resultText: "你適合穿越進去《兩兄弟》（石中劍 IF線）\n重情重義的你，總會在關鍵時刻為重要的人挺身而出；只是別忘了，你也值得被拯救一次。",
     sourceKeys: ["A_CHAOS_1", "R_CHAOS_2"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/heart.png",
+    image:           "https://tealize-write.github.io/DarkBLstory/img/BRO.png",
     residentType:    "被命運選中的替身者",
     residentDesc:    "你不是王，也不只是旁觀者。你更像那種一旦被命運點名，就很難再全身而退的人。故事會把你放在最關鍵的位置，然後等著看你怎麼選。",
     worldQuote:      "「這裡不缺王，缺的是願意替王流血的人。」",
