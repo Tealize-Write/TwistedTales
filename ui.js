@@ -38,6 +38,7 @@ function startQuiz(){
   answerHistory = [];
   categoryScore = {};
   CATEGORY_KEYS.forEach(k => categoryScore[k] = 0);
+  metricScore = { survival: 0, happiness: 0, fate: 0 };
   _lastResultCode = null;
 
   // ✦ 記錄測驗開始的時間點
@@ -87,7 +88,7 @@ function _finishTypewriter(){
     const btn=document.createElement('button');
     btn.className='opt';btn.type='button';
     btn.innerHTML=`<span class="bullet"></span><span class="txt">${opt.text}</span>`;
-    btn.onclick = () => pick(i, opt.scores || {}, btn);
+    btn.onclick = () => pick(i, opt.scores || {}, opt.metrics || {}, btn);
     opts.appendChild(btn);
     setTimeout(()=>btn.classList.add('visible'), 60+i*130);
   });
@@ -119,13 +120,14 @@ function showQuestion(){
   }, 38); 
 }
 
-function pick(optionIndex, addObj, btn){
+function pick(optionIndex, addObj, metricsObj, btn){
   if(_twTimer){ clearInterval(_twTimer); _twTimer=null; }
   document.querySelectorAll('.opt').forEach(b => b.disabled = true);
   btn.classList.add('selected');
 
   answerHistory[qi] = optionIndex;
   addAxisScores(addObj);
+  addMetricScores(metricsObj);
 
   setTimeout(() => {
     qi++;
@@ -273,7 +275,7 @@ function showResult(){
   
   const label = r.label || code;
   document.getElementById('result-img').src = r.image;
-  document.getElementById('r-name').textContent = r.soulName;
+  document.getElementById('r-name').textContent = r.residentType;
 
   const eyebrow = document.querySelector('.r-eyebrow');
   if (eyebrow) {
@@ -285,19 +287,23 @@ function showResult(){
   }
 
   document.getElementById('r-compound').textContent = label;
-  document.getElementById('r-desc').textContent = r.soulDesc;
+  document.getElementById('r-desc').textContent = r.residentDesc;
   
   const mbtiEl = document.getElementById('r-mbti');
   if(mbtiEl) mbtiEl.innerHTML = r.mbti ? `<span class="r-mbti-label">MBTI</span><strong>${r.mbti}</strong>` : '';
   
-  document.getElementById('r-quote').textContent = r.quote;
-  document.getElementById('r-guide').textContent = r.guide;
+  document.getElementById('r-quote').textContent = r.worldQuote;
+  document.getElementById('r-guide').textContent = r.settlementAdvice;
 
-  /* ══ 整合塔羅牌陣數據區塊 ══ */
+  /* ══ 整合定居評估數據區塊（三指標由玩家作答動態計算，非寫死） ══ */
+  const mp = calcMetricPercent();
+  const ml = (typeof metricLabels !== 'undefined') ? metricLabels : {
+    survival: "童話世界生存率", happiness: "幸福指數", fate: "命運干預值"
+  };
   const baseStatsHTML =
-    '<div class="seal"><div class="lab">危險指數</div>'+buildRuler(r.dangerFill)+'<div class="val">'+r.danger+'</div></div>'
-    +'<div class="seal"><div class="lab">'+r.attr+'</div>'+buildRuler(r.attrFill)+'<div class="val">'+r.attrVal+'</div></div>'
-    +'<div class="seal"><div class="lab">逃脱機率</div>'+buildRuler(r.escape)+'<div class="val">'+r.escape+'</div></div>';
+    '<div class="seal"><div class="lab">'+ml.survival+'</div>'+buildRuler(mp.survival+'%')+'<div class="val">'+mp.survival+'%</div></div>'
+    +'<div class="seal"><div class="lab">'+ml.happiness+'</div>'+buildRuler(mp.happiness+'%')+'<div class="val">'+mp.happiness+'%</div></div>'
+    +'<div class="seal"><div class="lab">'+ml.fate+'</div>'+buildRuler(mp.fate+'%')+'<div class="val">'+mp.fate+'%</div></div>';
 
   const topAxesHTML = getMyTopAxesHTML();
 
@@ -313,7 +319,7 @@ function showResult(){
         ${getEmblemSVG(code)}
     </div>
     
-    <div class="tarot-title">✦ 基礎印記 ✦</div>
+    <div class="tarot-title">✦ 定居評估報告 ✦</div>
     ${baseStatsHTML}
     
     <div class="tarot-divider">
@@ -798,12 +804,12 @@ async function shareShortImage() {
   
   y += Math.round(CW * 0.055);
 
-  // ── 靈魂名稱 (soulName)
+  // ── 居民定位 (residentType)
   ctx.font      = `700 ${Math.round(CW * 0.050)}px "Noto Serif TC", serif`;
   ctx.fillStyle = '#ffffff';
-  ctx.letterSpacing = "14px"; 
+  ctx.letterSpacing = "14px";
   setShadow(12);
-  ctx.fillText(r.soulName, CW / 2, y);
+  ctx.fillText(r.residentType, CW / 2, y);
   clearShadow();
   
   y += Math.round(CW * 0.075);
@@ -932,7 +938,7 @@ async function shareShortImage() {
 
   const quoteMaxW = Math.round(CW * 0.85);
   const quoteLineH = Math.round(CW * 0.048);
-  const quoteLines = getWrappedLines(r.quote || '', quoteMaxW);
+  const quoteLines = getWrappedLines(r.worldQuote || '', quoteMaxW);
   const quoteTotalH = quoteLines.length * quoteLineH;
 
   const spaceTop = divider2Y + 20; 

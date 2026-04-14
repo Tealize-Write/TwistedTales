@@ -1,7 +1,14 @@
 /* ════════════════════════════════
-   RESULTS DATA  （第二版 — 故事分類結構）
+   RESULTS DATA  （第三版 — 反轉童話異世界移居指南）
    代號：BRO / SHA / PIP / KING / BEAST / THORN / RACE / CROW / CANDY / CIND / ESC
 ════════════════════════════════ */
+
+// 三個定居評估指標的標籤，集中管理（實際數值由 engine.js 的 calcMetricPercent() 動態計算）
+const metricLabels = {
+  survival: "童話世界生存率",
+  happiness: "幸福指數",
+  fate:     "命運干預值",
+};
 
 const resultsData = {
 
@@ -13,18 +20,17 @@ const resultsData = {
     resultText: "你適合穿越進去《石中劍》（兩兄弟 IF線）\n重情重義的你，總會在關鍵時刻為重要的人挺身而出；只是別忘了，你也值得被拯救一次。",
     sourceKeys: ["A_CHAOS_1", "R_CHAOS_2"],
 
-    image:      "https://tealize-write.github.io/DarkBLstory/img/heart.png",
-    soulName:   "無情獸群攻",
-    soulDesc:   "你不懂什麼叫做「適可而止」，你只知道你想要的，就必須全部拿到，哪怕是糟蹋全世界。",
-    danger: "極高", dangerFill: "100%",
-    attr: "破壞指數", attrVal: "Max", attrFill: "100%",
-    escape: "5%",
-    quote:  "「如果你愛我，你得證明才行。」",
-    guide:  "你知道自己也能裝得很溫柔。可以關心，可以哄騙，可以用眼淚和體溫一步一步把人留住。可你比誰都清楚——你的愛，從來都不是無條件給予。",
+    image:           "https://tealize-write.github.io/DarkBLstory/img/heart.png",
+    residentType:    "被命運選中的替身者",
+    residentDesc:    "你不是王，也不只是旁觀者。你更像那種一旦被命運點名，就很難再全身而退的人。故事會把你放在最關鍵的位置，然後等著看你怎麼選。",
+    worldQuote:      "「這裡不缺王，缺的是願意替王流血的人。」",
+    settlementAdvice:"若你在這個世界聽見有人說你『很適合扛下來』，請立刻提高警覺。這裡的命運喜歡把最重的事交給最不會說不的人。",
+    alliedWorlds:    ["THORN", "BEAST"],
+    conflictingWorlds:["ESC", "KING"],
+
     bookName: "《兩兄弟》", bookAuthor: "吳墨", bookFairy: "石中劍",
     bookTags: ["劍", "抹布", "精神崩潰"],
     link: "https://early-marketplaces-521584.framer.app/preview/story9",
-    mbti: "INFJ", cp1: "殉道自我奉獻受", cp2: ["斯德哥爾摩受", "恣情魅惑受"],
   },
 
   /* ── SHA｜影子 ── */
@@ -35,18 +41,17 @@ const resultsData = {
     resultText: "你適合穿越進去《美人魚》（影子 IF線）\n理性克制的你，總把真正的渴望藏得很深；可一旦動心，有些代價可不是把心事吞回去就能解決的喔。",
     sourceKeys: ["A_SCHEME_2", "R_CONTROL_3"],
 
-    image:      "https://framerusercontent.com/images/uQPprKfZezv518Mf1QK2enDGzTI.png",
-    soulName:   "不羈影子攻",
-    soulDesc:   "每一場對話都是獵場，你永遠比對方快三步。",
-    danger: "高", dangerFill: "80%",
-    attr: "腹黑指數", attrVal: "Max", attrFill: "100%",
-    escape: "15%",
-    quote:  "「您不認得您的老影子了嗎？『主人』。」",
-    guide:  "用話語設陷，用行動主導，強勢解開所有束縛。",
+    image:           "https://framerusercontent.com/images/uQPprKfZezv518Mf1QK2enDGzTI.png",
+    residentType:    "與影共生的禁書住民",
+    residentDesc:    "你在這個世界裡最容易被誤認為普通人——直到你的影子開始比你更早出現在門口。這裡的人會慢慢意識到，你比你看起來更懂這個世界的規則。",
+    worldQuote:      "「若你開始聽見影子的腳步聲，表示它已經決定跟你回家。」",
+    settlementAdvice:"入住前，建議先決定好哪些東西是你願意交換的。這個世界的代價從不明碼標價，而你最不缺的，就是把事情看清楚的能力。",
+    alliedWorlds:    ["CROW", "CIND"],
+    conflictingWorlds:["ESC", "BRO"],
+
     bookName: "《影子吻了我》", bookAuthor: "相對之下", bookFairy: "美人魚",
     bookTags: ["甜寵", "詛咒", "窒息"],
     link: "https://early-marketplaces-521584.framer.app/preview/story5",
-    mbti: "ENTJ", cp1: "禁慾學者受", cp2: ["殉道自我奉獻受", "斯德哥爾摩受"],
   },
 
   /* ── PIP｜吹笛手 ── */
@@ -57,18 +62,17 @@ const resultsData = {
     resultText: "你適合穿越進去《胡桃鉗》（哈梅爾的吹笛手 IF線）\n你對危險與誘惑總有一種微妙的好奇心，越奇怪的東西越想靠近；但要小心，玩具和怪物有時只差一首曲子的距離。",
     sourceKeys: ["A_DEVOTION_3", "R_CHAOS_1"],
 
-    image:      "https://framerusercontent.com/images/nRtAWmBjy7p9qD7Whz9VxlL0myQ.png",
-    soulName:   "病態攻",
-    soulDesc:   "愛會讓一個人卑微成為一條狗，而你是專業優雅的訓犬師。",
-    danger: "極高", dangerFill: "100%",
-    attr: "控制指數", attrVal: "Max", attrFill: "100%",
-    escape: "0%",
-    quote:  "「不能懷疑我對你的愛，不許質疑你的神。」",
-    guide:  "愛是信仰，愛是臣服，愛是奉獻——這將決定他有沒有資格成為你的信徒。",
+    image:           "https://framerusercontent.com/images/nRtAWmBjy7p9qD7Whz9VxlL0myQ.png",
+    residentType:    "旋律召來的異鄉信徒",
+    residentDesc:    "你走進這個世界的瞬間，原有的節奏就變了。不是你刻意打亂，只是你存在的頻率，跟這個世界的底層旋律有某種危險的共鳴。",
+    worldQuote:      "「本世界音頻異常，建議入境前自行評估對笛聲的抵抗力。」",
+    settlementAdvice:"入住後，建議避免在公共場所哼歌。這個世界的旋律有時候不由你控制，一旦召喚開始，就很難在中途停下。",
+    alliedWorlds:    ["BEAST", "THORN"],
+    conflictingWorlds:["ESC", "RACE"],
+
     bookName: "《哈梅爾的吹笛手》", bookAuthor: "九楠", bookFairy: "胡桃鉗",
     bookTags: ["戰損", "養成", "瘋"],
     link: "https://early-marketplaces-521584.framer.app/preview/story4",
-    mbti: "ISTJ", cp1: "斯德哥爾摩受", cp2: ["自願沉淪受", "殉道自我奉獻受"],
   },
 
   /* ── KING｜國王的新衣 ── */
@@ -79,18 +83,17 @@ const resultsData = {
     resultText: "你適合穿越進去《小王子》（國王的新衣 IF線）\n安靜細膩的你，很擅長把情緒藏進沉默裡；只是有時候，太懂事的人，也最容易被留在自己的小星球上。",
     sourceKeys: ["A_SCHEME_3", "R_SCHEME_2"],
 
-    image:      "https://tealize-write.github.io/DarkBLstory/img/king_A.png",
-    soulName:   "偏執瘋子攻",
-    soulDesc:   "你深知他不應該跟你在一起，所以你脫光他、折辱他；可你又不願意他離開，所以抱他、吻他、愛他。",
-    danger: "極高", dangerFill: "85%",
-    attr: "黑化指數", attrVal: "Max", attrFill: "100%",
-    escape: "5%",
-    quote:  "「能不能想著我，只想著我，永遠想著我，不要再有別人，把你的喜歡全給我⋯⋯」",
-    guide:  "脫下國王的衣服，聞他後頸的味道，在他身體裡融入你的費洛蒙，國王哭了，你是那樣愉悅又幸福。",
+    image:           "https://tealize-write.github.io/DarkBLstory/img/king_A.png",
+    residentType:    "被王權包裝的孤星居民",
+    residentDesc:    "你在這裡以皇冠示人，卻沒人知道皇冠底下是什麼。這個世界欣賞有型的人，而你最擅長把所有重量，折疊進那頂看不出重量的冠裡。",
+    worldQuote:      "「皇冠的重量因人而異。有些人戴上之後，就再也摘不下來了。」",
+    settlementAdvice:"定居前，建議先評估你的星球能承受多少孤獨。這裡的情感向來以靜默計價，你的耐受度，決定你能在這裡活得多自在。",
+    alliedWorlds:    ["SHA", "CIND"],
+    conflictingWorlds:["PIP", "ESC"],
+
     bookName: "《溫先生他一絲不掛》", bookAuthor: "火登", bookFairy: "小王子",
     bookTags: ["口交", "年下", "下剋上"],
     link: "https://early-marketplaces-521584.framer.app/preview/story6",
-    mbti: "ISTJ", cp1: "隱忍美人受", cp2: ["殉道自我奉獻受", "自願沉淪受"],
   },
 
   /* ── BEAST｜美女與野獸 ── */
@@ -101,18 +104,17 @@ const resultsData = {
     resultText: "你適合穿越進去《獅子與老鼠》（美女與野獸 IF線）\n你外柔內韌，看起來溫和，實際上很有馴服猛獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
     sourceKeys: ["A_CONTROL_3", "A_CHAOS_2"],
 
-    image:      "https://tealize-write.github.io/DarkBLstory/img/bite_god.png",
-    soulName:   "冰山白神攻",
-    soulDesc:   "你是規則，你就是對方的世界觀。沒有人會想反抗一座冰山，除了鐵達尼號。",
-    danger: "極高", dangerFill: "90%",
-    attr: "控制指數", attrVal: "Max", attrFill: "100%",
-    escape: "1%",
-    quote:  "「摘下梔子的生殖器，就要抵上爪子。否則不得離開。」",
-    guide:  "你珍愛信徒，用禁忌圍困異教徒；若異教徒反抗，你也欣賞著他的行為表演，再按在地上。",
+    image:           "https://tealize-write.github.io/DarkBLstory/img/bite_god.png",
+    residentType:    "野性邊界的誤闖定居者",
+    residentDesc:    "你是那種走進花園、黑獅會抬頭的人。不是因為你危險，而是你身上有某種東西讓巨大的存在想靠近，卻不確定該怎麼靠近。",
+    worldQuote:      "「花園的門從不上鎖，但進來的人，往往不知道自己何時選擇了留下。」",
+    settlementAdvice:"在這裡生活，建議學會分辨哪些咆哮是威脅，哪些只是還不知道怎麼說『請留下來』。你和野獸之間的距離，往往比你以為的更近。",
+    alliedWorlds:    ["BRO", "THORN"],
+    conflictingWorlds:["ESC", "RACE"],
+
     bookName: "《咬了神一口》", bookAuthor: "兌現藍", bookFairy: "獅子與老鼠",
     bookTags: ["綑綁", "獸人", "互攻"],
     link: "https://early-marketplaces-521584.framer.app/preview/story10",
-    mbti: "ISFJ", cp1: "暴力黑獅攻", cp2: ["斯德哥爾摩受", "自願沉淪受"],
   },
 
   /* ── THORN｜沉睡荊棘 ── */
@@ -123,18 +125,17 @@ const resultsData = {
     resultText: "你適合穿越進去《龍與地下城》（沉睡荊棘 IF線）\n你身上有一種越危險越迷人的特質，總會讓人忍不住想把你藏進最深的高塔；只是寶藏被珍藏久了，也可能忘記怎麼離開。",
     sourceKeys: ["A_DEVOTION_1", "R_DEVOTION_2"],
 
-    image:      "https://tealize-write.github.io/DarkBLstory/img/apple.png",
-    soulName:   "二哈黑龍攻",
-    soulDesc:   "看著是條猛龍，實則是狗！真的狗！",
-    danger: "高", dangerFill: "90%",
-    attr: "護食指數", attrVal: "極高", attrFill: "100%",
-    escape: "20%",
-    quote:  "「這世上沒人比我好看，如果有，那就搶過來！0w0」",
-    guide:  "強大的自信如陽光熱烈，沒有什麼事是死纏爛打不能解決的。",
+    image:           "https://tealize-write.github.io/DarkBLstory/img/apple.png",
+    residentType:    "高塔深處的珍稀典藏者",
+    residentDesc:    "你在這個世界很容易被視為值得珍藏的存在——不是因為你脆弱，而是你身上有某種光，讓人忍不住想把你放進最安全的地方。",
+    worldQuote:      "「高塔居住品質五星，但請注意：本世界荊棘具有情感附著性。」",
+    settlementAdvice:"高塔內部居住品質良好，但長期居留者普遍會對離開產生抗拒。建議定期確認出口位置，不是因為你要走，而是讓自己知道門在哪裡。",
+    alliedWorlds:    ["BEAST", "BRO"],
+    conflictingWorlds:["ESC", "RACE"],
+
     bookName: "《沉睡荊棘》", bookAuthor: "喵芭渴死姬", bookFairy: "龍與地下城",
     bookTags: ["蘋果", "禁慾", "龍"],
     link: "https://early-marketplaces-521584.framer.app/preview/story1",
-    mbti: "ENFP", cp1: "人妻王子受", cp2: ["恣情魅惑受", "殉道自我奉獻受"],
   },
 
   /* ── RACE｜龜兔賽跑 ── */
@@ -145,18 +146,17 @@ const resultsData = {
     resultText: "你適合穿越進去《愛麗絲夢遊仙境》（龜兔賽跑 IF線）\n腦袋轉得飛快的你，總比別人更早看見另一條路；但捷徑走多了，也要小心自己是不是已經掉進太深的兔子洞。",
     sourceKeys: ["A_SCHEME_1", "R_SCHEME_1"],
 
-    image:      "https://framerusercontent.com/images/ZgfhchUbaHJuXY9V0Xipa3jxU.png",
-    soulName:   "腹黑謀略攻",
-    soulDesc:   "你不甘於平庸，在人生跑道上傾盡所有，只求將唯一勁敵踩於腳下。",
-    danger: "中", dangerFill: "60%",
-    attr: "心機指數", attrVal: "高", attrFill: "75%",
-    escape: "35%",
-    quote:  "「你是唯一能與我並肩的勁敵。我不會告訴你⋯⋯你也是我最想要的勝利獎品。」",
-    guide:  "用溫柔與心軟編織一座牢籠，讓他人溺死在安逸中，甚至誤以為墮落是救贖。",
+    image:           "https://framerusercontent.com/images/ZgfhchUbaHJuXY9V0Xipa3jxU.png",
+    residentType:    "賽道外側的戰略快跑者",
+    residentDesc:    "你永遠比別人多算一步，但這個世界的賽道有個秘密：終點線會移動。你需要的不是跑得更快，而是決定什麼時候可以假裝停下來。",
+    worldQuote:      "「本世界終點線位置不固定，建議隨時調整目標，並預備備用路線。」",
+    settlementAdvice:"入住愛麗絲世界前，記好兔子洞的出口。這裡的規則每天都在變，而真正的高手，是那個知道什麼時候可以假裝輸掉的人。",
+    alliedWorlds:    ["SHA", "CIND"],
+    conflictingWorlds:["BRO", "PIP"],
+
     bookName: "《消失的終點線》", bookAuthor: "葦", bookFairy: "愛麗絲夢遊仙境",
     bookTags: ["強制愛", "NTR", "高潮地獄"],
     link: "https://early-marketplaces-521584.framer.app/preview/story8",
-    mbti: "INTJ", cp1: "恣情魅惑受", cp2: ["清冷自持受", "隱忍美人受"],
   },
 
   /* ── CROW｜烏鴉 ── */
@@ -167,18 +167,17 @@ const resultsData = {
     resultText: "你適合穿越進去《醜小鴨》（烏鴉與水瓶 IF線）\n你也許常覺得自己和別人格格不入，卻總有一天會長成最特別的模樣；在那之前，請先學會喜歡現在的自己。",
     sourceKeys: ["A_CONTROL_1", "R_CONTROL_1"],
 
-    image:      "https://tealize-write.github.io/DarkBLstory/img/crow_A.png",
-    soulName:   "陰鬱偏執攻",
-    soulDesc:   "坦白與曖昧的遊戲間，你更傾向默默成為他的水和氧氣。",
-    danger: "中", dangerFill: "60%",
-    attr: "支配指數", attrVal: "高", attrFill: "80%",
-    escape: "30%",
-    quote:  "「連死也無法將我們分離。」",
-    guide:  "烏鴉銜石頭丟入水瓶中——你愛的是他，還是追逐他的刺激感？",
+    image:           "https://tealize-write.github.io/DarkBLstory/img/crow_A.png",
+    residentType:    "高處棲息的局外見證者",
+    residentDesc:    "你在這個世界的存在方式，像一隻停在高處的烏鴉——看得清楚，卻不急著飛下去。有些人以為你冷漠，只有你知道，你只是在等一個值得的理由。",
+    worldQuote:      "「石頭很重，水瓶很深。但如果你願意等，水位終究會升上來。」",
+    settlementAdvice:"在醜小鴨的世界定居時，記得你帶進來的寶石屬於你。這裡的人習慣用外表判斷價值，但故事最後誰最耀眼，往往出人意料。",
+    alliedWorlds:    ["CIND", "SHA"],
+    conflictingWorlds:["PIP", "CANDY"],
+
     bookName: "《寶石、烏鴉和水瓶》", bookAuthor: "君羊", bookFairy: "醜小鴨",
     bookTags: ["囚禁", "烏鴉", "殘疾"],
     link: "https://early-marketplaces-521584.framer.app/preview/story2",
-    mbti: "INFJ", cp1: "陽光直男受", cp2: ["自願沉淪受", "恣情魅惑受"],
   },
 
   /* ── CANDY｜糖裹屋 ── */
@@ -189,18 +188,17 @@ const resultsData = {
     resultText: "你適合穿越進去《小紅帽》（糖果屋 IF線）\n從不害怕捷徑的你，勇敢果決，也很願意追著香甜的誘惑往前走；但也要小心，別一不小心就被關進一方小天地喔。",
     sourceKeys: ["A_DEVOTION_2", "R_DEVOTION_1"],
 
-    image:      "https://tealize-write.github.io/DarkBLstory/img/candy_A.png",
-    soulName:   "佔有囚禁攻",
-    soulDesc:   "你說愛他，於是他替你成為永世的劫，糖果很甜，你再也沒有離開的理由。",
-    danger: "極高", dangerFill: "90%",
-    attr: "佔有指數", attrVal: "Max", attrFill: "100%",
-    escape: "10%",
-    quote:  "「哥哥，外面的雪好看嗎？但不要想著離開，因為你答應過，我們永遠要在一起。」",
-    guide:  "在糖果屋裡，他用佔有表達愛，用監禁確保世界縮小成彼此，他會收藏你一輩子。",
+    image:           "https://tealize-write.github.io/DarkBLstory/img/candy_A.png",
+    residentType:    "甜蜜牢籠的自願定居者",
+    residentDesc:    "你走進這個世界的方式，是先被香味吸引，然後才發現門關上了。不過說實話——糖果屋的門，從裡面也鎖得住。",
+    worldQuote:      "「本世界糖分偏高，出入口辨識度偏低，請自行保管理智。」",
+    settlementAdvice:"定居前，建議確認自己對甜的耐受度。這裡的幸福是真的，只是濃度偏高——適應期過後，大多數居民都不再想離開，這本身值得你思考一下。",
+    alliedWorlds:    ["CIND", "THORN"],
+    conflictingWorlds:["ESC", "RACE"],
+
     bookName: "《糖裹屋》", bookAuthor: "蘇朵拉", bookFairy: "小紅帽",
     bookTags: ["失禁", "骨科", "重生"],
     link: "https://early-marketplaces-521584.framer.app/preview/story3",
-    mbti: "ENFJ", cp1: "自願沉淪受", cp2: ["人妻王子受", "隱忍美人受"],
   },
 
   /* ── CIND｜灰姑娘 ── */
@@ -211,18 +209,17 @@ const resultsData = {
     resultText: "你適合穿越進去《歌劇魅影》（灰姑娘 IF線）\n你天生就有一種神祕又疏離的魅力，越是藏著，越容易讓人移不開眼；只是面具戴久了，也別忘了真正想被誰看見。",
     sourceKeys: ["A_CONTROL_2", "R_CONTROL_2"],
 
-    image:      "https://framerusercontent.com/images/m56Q5hEDF1BiFypFDftnukMnhWM.png",
-    soulName:   "黑化掠奪攻",
-    soulDesc:   "你是跨越了生死，身披寒霧與烈焰的索命執念。",
-    danger: "高", dangerFill: "80%",
-    attr: "規訓指數", attrVal: "高", attrFill: "80%",
-    escape: "5%",
-    quote:  "「再試一次。這次，你會乖乖走過來。」",
-    guide:  "你的愛是扭曲成焚世的火，只為拖著最愛的人一起墜入萬劫不復的深淵。",
+    image:           "https://framerusercontent.com/images/m56Q5hEDF1BiFypFDftnukMnhWM.png",
+    residentType:    "面具之下的神秘入境者",
+    residentDesc:    "你在這個世界不需要做什麼，只需要出現。然後所有人開始想知道：面具底下是什麼。你的存在本身，就是這個世界最大的謎題。",
+    worldQuote:      "「舞會每晚舉行，面具隨處可得。唯一的問題是：你確定自己知道是誰嗎？」",
+    settlementAdvice:"在歌劇魅影的世界定居時，記住舞會的規則：午夜一到，什麼都可以消失。你需要的不是更好的面具，而是決定什麼時候值得摘下它。",
+    alliedWorlds:    ["SHA", "CROW"],
+    conflictingWorlds:["BRO", "PIP"],
+
     bookName: "《灰燼》", bookAuthor: "悠然", bookFairy: "歌劇魅影",
     bookTags: ["面具", "競爭意識", "醉酒"],
     link: "https://early-marketplaces-521584.framer.app/preview/story7",
-    mbti: "INTJ", cp1: "清冷自持受", cp2: ["恣情魅惑受", "殉道自我奉獻受"],
   },
 
   /* ── ESC｜清醒旁觀者 / 特殊結局 ── */
@@ -233,18 +230,17 @@ const resultsData = {
     resultText: "你選擇了清醒（特殊結局）\n在故事最危險的時刻，你選擇保持清醒。這不是懦弱，而是一種罕見的自知——知道什麼時候該停下，知道什麼值得冒險，知道自己是誰。",
     sourceKeys: [],
 
-    image:      "https://tealize-write.github.io/DarkBLstory/img/heart.png", // TODO: 待補專屬圖片
-    soulName:   "清醒旁觀者",
-    soulDesc:   "在故事最危險的時刻，你選擇保持清醒。這不是懦弱，這是一種罕見的自知。",
-    danger: "低", dangerFill: "20%",
-    attr: "清醒指數", attrVal: "Max", attrFill: "100%",
-    escape: "99%",
-    quote:  "「有些童話，適合付錢觀看就好。」",
-    guide:  "你是最清醒的那個人，看著別人墜入深淵，你選擇站在岸邊——但你的故事，或許才剛開始。",
-    bookName: "《故事另有結局》", bookAuthor: "—", bookFairy: "特殊結局", // TODO: 待補書目
+    image:           "https://tealize-write.github.io/DarkBLstory/img/heart.png",
+    residentType:    "清醒自願的出局旁觀者",
+    residentDesc:    "你在所有世界裡都是最難被故事捲走的人——因為你從來不打算真的留下來。這讓你成為最難被反將一軍的定居者，也是最危險的旁觀者。",
+    worldQuote:      "「本世界不強制留人，但有時候會讓人想回來。」",
+    settlementAdvice:"本世界適合短期觀光，不建議情感投入過深。若你已經開始猶豫是否要回頭——恭喜你，那才是你的故事真正開始的地方。",
+    alliedWorlds:    [],
+    conflictingWorlds:["PIP", "BRO"],
+
+    bookName: "《故事另有結局》", bookAuthor: "大癲群", bookFairy: "特殊結局",
     bookTags: ["旁觀", "清醒", "特殊路線"],
-    link: "https://early-marketplaces-521584.framer.app/preview/story1", // TODO: 待補連結
-    mbti: "INTJ", cp1: "—", cp2: [],
+    link: "https://early-marketplaces-521584.framer.app/", 
   },
 
 };
