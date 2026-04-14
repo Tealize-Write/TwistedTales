@@ -1,8 +1,9 @@
 // 產生或讀取專屬裝置 ID
+// ✦ 已有 uid_ 開頭的舊 ID 繼續沿用；全新訪客改用 tt_ 前綴
 function getClientId() {
   let cid = localStorage.getItem('abyss_client_id');
   if (!cid) {
-    cid = 'uid_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+    cid = 'tale_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
     localStorage.setItem('abyss_client_id', cid);
   }
   return cid;

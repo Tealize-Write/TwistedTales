@@ -183,13 +183,13 @@ function getMyTopAxesHTML() {
   const axisLabel = {
     BRO:   '兩兄弟',
     SHA:   '影子',
-    PIP:   '吹笛手',
+    PIP:   '哈梅爾的吹笛手',
     KING:  '國王的新衣',
     BEAST: '美女與野獸',
-    THORN: '沉睡荊棘',
+    THORN: '白雪公主佐睡美人',
     RACE:  '龜兔賽跑',
-    CROW:  '烏鴉',
-    CANDY: '糖裹屋',
+    CROW:  '烏鴉與水瓶',
+    CANDY: '糖果屋',
     CIND:  '灰姑娘',
     ESC:   '清醒旁觀者',
   };
@@ -295,8 +295,8 @@ function showResult(){
 
   const eyebrow = document.querySelector('.r-eyebrow');
   if (eyebrow) {
-    if (r.storyName === '特殊結局') {
-        eyebrow.textContent = `清醒路線 ── 特殊結局 ──`;
+    if (r.storyName === '逃脫成功結局') {
+        eyebrow.textContent = `清醒路線 ── 逃脫成功結局 ──`;
     } else if (r.label) {
         eyebrow.textContent = `童話《${r.label}》IF 路線 ──`;
     } else {

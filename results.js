@@ -17,7 +17,7 @@ const resultsData = {
     label:      "兩兄弟",
     storyName:  "石中劍",
     concept:    "哥哥拔出了石中劍成王，弟弟卻發現，真正被選中的從來不是王，而是替王去死的人。",
-    resultText: "你適合穿越進去《石中劍》（兩兄弟 IF線）\n重情重義的你，總會在關鍵時刻為重要的人挺身而出；只是別忘了，你也值得被拯救一次。",
+    resultText: "你適合穿越進去《兩兄弟》（石中劍 IF線）\n重情重義的你，總會在關鍵時刻為重要的人挺身而出；只是別忘了，你也值得被拯救一次。",
     sourceKeys: ["A_CHAOS_1", "R_CHAOS_2"],
 
     image:           "https://tealize-write.github.io/DarkBLstory/img/heart.png",
@@ -28,7 +28,7 @@ const resultsData = {
     alliedWorlds:    ["THORN", "BEAST"],
     conflictingWorlds:["ESC", "KING"],
 
-    bookName: "《兩兄弟》", bookAuthor: "吳墨", bookFairy: "石中劍",
+    bookName: "《兩兄弟》", bookAuthor: "吳墨", bookFairy: "兩兄弟",
     bookTags: ["劍", "抹布", "精神崩潰"],
     link: "https://early-marketplaces-521584.framer.app/preview/story9",
   },
@@ -38,7 +38,7 @@ const resultsData = {
     label:      "影子",
     storyName:  "美人魚",
     concept:    "禁慾學者翻開那本會低語的魔法書，才發現只要交換一點代價，影子也能長出雙腿，學著走進主人的世界。",
-    resultText: "你適合穿越進去《美人魚》（影子 IF線）\n理性克制的你，總把真正的渴望藏得很深；可一旦動心，有些代價可不是把心事吞回去就能解決的喔。",
+    resultText: "你適合穿越進去《影子吻了我》（美人魚 IF線）\n理性克制的你，總把真正的渴望藏得很深；可一旦動心，有些代價可不是把心事吞回去就能解決的喔。",
     sourceKeys: ["A_SCHEME_2", "R_CONTROL_3"],
 
     image:           "https://framerusercontent.com/images/uQPprKfZezv518Mf1QK2enDGzTI.png",
@@ -49,7 +49,7 @@ const resultsData = {
     alliedWorlds:    ["CROW", "CIND"],
     conflictingWorlds:["ESC", "BRO"],
 
-    bookName: "《影子吻了我》", bookAuthor: "相對之下", bookFairy: "美人魚",
+    bookName: "《影子吻了我》", bookAuthor: "相對之下", bookFairy: "影子",
     bookTags: ["甜寵", "詛咒", "窒息"],
     link: "https://early-marketplaces-521584.framer.app/preview/story5",
   },
@@ -70,7 +70,7 @@ const resultsData = {
     alliedWorlds:    ["BEAST", "THORN"],
     conflictingWorlds:["ESC", "RACE"],
 
-    bookName: "《哈梅爾的吹笛手》", bookAuthor: "九楠", bookFairy: "胡桃鉗",
+    bookName: "《哈梅爾的吹笛手》", bookAuthor: "九楠", bookFairy: "哈梅爾的吹笛手",
     bookTags: ["戰損", "養成", "瘋"],
     link: "https://early-marketplaces-521584.framer.app/preview/story4",
   },
@@ -80,7 +80,7 @@ const resultsData = {
     label:      "國王的新衣",
     storyName:  "小王子",
     concept:    "他頭上的皇冠看起來像王權，其實只是把他永遠困在孤獨星球上的重力。",
-    resultText: "你適合穿越進去《小王子》（國王的新衣 IF線）\n安靜細膩的你，很擅長把情緒藏進沉默裡；只是有時候，太懂事的人，也最容易被留在自己的小星球上。",
+    resultText: "你適合穿越進去《國王的新衣》（小王子 IF線）\n安靜細膩的你，很擅長把情緒藏進沉默裡；只是有時候，太懂事的人，也最容易被留在自己的小星球上。",
     sourceKeys: ["A_SCHEME_3", "R_SCHEME_2"],
 
     image:           "https://tealize-write.github.io/DarkBLstory/img/king_A.png",
@@ -91,7 +91,7 @@ const resultsData = {
     alliedWorlds:    ["SHA", "CIND"],
     conflictingWorlds:["PIP", "ESC"],
 
-    bookName: "《溫先生他一絲不掛》", bookAuthor: "火登", bookFairy: "小王子",
+    bookName: "《溫先生他一絲不掛》", bookAuthor: "火登", bookFairy: "國王的新衣",
     bookTags: ["口交", "年下", "下剋上"],
     link: "https://early-marketplaces-521584.framer.app/preview/story6",
   },
@@ -101,7 +101,7 @@ const resultsData = {
     label:      "美女與野獸",
     storyName:  "獅子與老鼠",
     concept:    "能徒手撕碎整座王宮的黑獅，偏偏一輩子都兇不過當年救過他的那隻小東西。",
-    resultText: "你適合穿越進去《獅子與老鼠》（美女與野獸 IF線）\n你外柔內韌，看起來溫和，實際上很有馴服猛獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
+    resultText: "你適合穿越進去《美女與野獸》（獅子與老鼠 IF線）\n你外柔內韌，看起來溫和，實際上很有馴服猛獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
     sourceKeys: ["A_CONTROL_3", "A_CHAOS_2"],
 
     image:           "https://tealize-write.github.io/DarkBLstory/img/bite_god.png",
@@ -112,17 +112,17 @@ const resultsData = {
     alliedWorlds:    ["BRO", "THORN"],
     conflictingWorlds:["ESC", "RACE"],
 
-    bookName: "《咬了神一口》", bookAuthor: "兌現藍", bookFairy: "獅子與老鼠",
+    bookName: "《咬了神一口》", bookAuthor: "兌現藍", bookFairy: "美女與野獸",
     bookTags: ["綑綁", "獸人", "互攻"],
     link: "https://early-marketplaces-521584.framer.app/preview/story10",
   },
 
   /* ── THORN｜沉睡荊棘 ── */
   THORN: {
-    label:      "沉睡荊棘",
+    label:      "白雪公主佐睡美人",
     storyName:  "龍與地下城",
     concept:    "他原本只是被獻給惡龍的祭品，最後卻在高塔裡被養成了比寶藏更珍貴的那個人。",
-    resultText: "你適合穿越進去《龍與地下城》（沉睡荊棘 IF線）\n你身上有一種越危險越迷人的特質，總會讓人忍不住想把你藏進最深的高塔；只是寶藏被珍藏久了，也可能忘記怎麼離開。",
+    resultText: "你適合穿越進去《白雪公主佐睡美人》（龍與地下城 IF線）\n你身上有一種越危險越迷人的特質，總會讓人忍不住想把你藏進最深的高塔；只是寶藏被珍藏久了，也可能忘記怎麼離開。",
     sourceKeys: ["A_DEVOTION_1", "R_DEVOTION_2"],
 
     image:           "https://tealize-write.github.io/DarkBLstory/img/apple.png",
@@ -133,7 +133,7 @@ const resultsData = {
     alliedWorlds:    ["BEAST", "BRO"],
     conflictingWorlds:["ESC", "RACE"],
 
-    bookName: "《沉睡荊棘》", bookAuthor: "喵芭渴死姬", bookFairy: "龍與地下城",
+    bookName: "《沉睡荊棘》", bookAuthor: "喵芭渴死姬", bookFairy: "白雪公主|睡美人",
     bookTags: ["蘋果", "禁慾", "龍"],
     link: "https://early-marketplaces-521584.framer.app/preview/story1",
   },
@@ -143,7 +143,7 @@ const resultsData = {
     label:      "龜兔賽跑",
     storyName:  "愛麗絲夢遊仙境",
     concept:    "兔子不是跑輸了，只是每一次故意遲到，都是為了晚一點掉進那個不能回頭的兔子洞。",
-    resultText: "你適合穿越進去《愛麗絲夢遊仙境》（龜兔賽跑 IF線）\n腦袋轉得飛快的你，總比別人更早看見另一條路；但捷徑走多了，也要小心自己是不是已經掉進太深的兔子洞。",
+    resultText: "你適合穿越進去《龜兔賽跑》（愛麗絲夢遊仙境 IF線）\n腦袋轉得飛快的你，總比別人更早看見另一條路；但捷徑走多了，也要小心自己是不是已經掉進太深的兔子洞。",
     sourceKeys: ["A_SCHEME_1", "R_SCHEME_1"],
 
     image:           "https://framerusercontent.com/images/ZgfhchUbaHJuXY9V0Xipa3jxU.png",
@@ -154,7 +154,7 @@ const resultsData = {
     alliedWorlds:    ["SHA", "CIND"],
     conflictingWorlds:["BRO", "PIP"],
 
-    bookName: "《消失的終點線》", bookAuthor: "葦", bookFairy: "愛麗絲夢遊仙境",
+    bookName: "《消失的終點線》", bookAuthor: "葦", bookFairy: "龜兔賽跑",
     bookTags: ["強制愛", "NTR", "高潮地獄"],
     link: "https://early-marketplaces-521584.framer.app/preview/story8",
   },
@@ -164,7 +164,7 @@ const resultsData = {
     label:      "烏鴉與水瓶",
     storyName:  "醜小鴨",
     concept:    "人人都笑他是黑漆漆的烏鴉，只有他知道自己曾經也是一隻被詛咒折斷翅膀的天鵝。",
-    resultText: "你適合穿越進去《醜小鴨》（烏鴉與水瓶 IF線）\n你也許常覺得自己和別人格格不入，卻總有一天會長成最特別的模樣；在那之前，請先學會喜歡現在的自己。",
+    resultText: "你適合穿越進去《烏鴉與水瓶》（醜小鴨 IF線）\n你也許常覺得自己和別人格格不入，卻總有一天會長成最特別的模樣；在那之前，請先學會喜歡現在的自己。",
     sourceKeys: ["A_CONTROL_1", "R_CONTROL_1"],
 
     image:           "https://tealize-write.github.io/DarkBLstory/img/crow_A.png",
@@ -175,7 +175,7 @@ const resultsData = {
     alliedWorlds:    ["CIND", "SHA"],
     conflictingWorlds:["PIP", "CANDY"],
 
-    bookName: "《寶石、烏鴉和水瓶》", bookAuthor: "君羊", bookFairy: "醜小鴨",
+    bookName: "《寶石、烏鴉和水瓶》", bookAuthor: "君羊", bookFairy: "烏鴉與水瓶",
     bookTags: ["囚禁", "烏鴉", "殘疾"],
     link: "https://early-marketplaces-521584.framer.app/preview/story2",
   },
@@ -185,7 +185,7 @@ const resultsData = {
     label:      "糖果屋",
     storyName:  "小紅帽",
     concept:    "他披著救人的紅披風走進森林，卻比狼更早一步，把人哄進自己親手搭好的糖果牢籠。",
-    resultText: "你適合穿越進去《小紅帽》（糖果屋 IF線）\n從不害怕捷徑的你，勇敢果決，也很願意追著香甜的誘惑往前走；但也要小心，別一不小心就被關進一方小天地喔。",
+    resultText: "你適合穿越進去《糖果屋》（小紅帽 IF線）\n從不害怕捷徑的你，勇敢果決，也很願意追著香甜的誘惑往前走；但也要小心，別一不小心就被關進一方小天地喔。",
     sourceKeys: ["A_DEVOTION_2", "R_DEVOTION_1"],
 
     image:           "https://tealize-write.github.io/DarkBLstory/img/candy_A.png",
@@ -196,7 +196,7 @@ const resultsData = {
     alliedWorlds:    ["CIND", "THORN"],
     conflictingWorlds:["ESC", "RACE"],
 
-    bookName: "《糖裹屋》", bookAuthor: "蘇朵拉", bookFairy: "小紅帽",
+    bookName: "《糖裹屋》", bookAuthor: "蘇朵拉", bookFairy: "糖果屋",
     bookTags: ["失禁", "骨科", "重生"],
     link: "https://early-marketplaces-521584.framer.app/preview/story3",
   },
@@ -206,7 +206,7 @@ const resultsData = {
     label:      "灰姑娘",
     storyName:  "歌劇魅影",
     concept:    "舞會上驚艷眾生的不是灰姑娘的臉，而是那張一旦摘下就會讓所有人失控的面具。",
-    resultText: "你適合穿越進去《歌劇魅影》（灰姑娘 IF線）\n你天生就有一種神祕又疏離的魅力，越是藏著，越容易讓人移不開眼；只是面具戴久了，也別忘了真正想被誰看見。",
+    resultText: "你適合穿越進去《灰姑娘》（歌劇魅影 IF線）\n你天生就有一種神祕又疏離的魅力，越是藏著，越容易讓人移不開眼；只是面具戴久了，也別忘了真正想被誰看見。",
     sourceKeys: ["A_CONTROL_2", "R_CONTROL_2"],
 
     image:           "https://framerusercontent.com/images/m56Q5hEDF1BiFypFDftnukMnhWM.png",
@@ -217,29 +217,29 @@ const resultsData = {
     alliedWorlds:    ["SHA", "CROW"],
     conflictingWorlds:["BRO", "PIP"],
 
-    bookName: "《灰燼》", bookAuthor: "悠然", bookFairy: "歌劇魅影",
+    bookName: "《灰燼》", bookAuthor: "悠然", bookFairy: "灰姑娘",
     bookTags: ["面具", "競爭意識", "醉酒"],
     link: "https://early-marketplaces-521584.framer.app/preview/story7",
   },
 
   /* ── ESC｜清醒旁觀者 / 特殊結局 ── */
   ESC: {
-    label:      "清醒旁觀者",
-    storyName:  "特殊結局",
+    label:      "回家社",
+    storyName:  "逃脫成功結局",
     concept:    "有些人走進故事，有些人站在故事之外——你屬於後者，而這本身就是一種罕見的能力。",
     resultText: "你選擇了清醒（特殊結局）\n在故事最危險的時刻，你選擇保持清醒。這不是懦弱，而是一種罕見的自知——知道什麼時候該停下，知道什麼值得冒險，知道自己是誰。",
     sourceKeys: [],
 
     image:           "https://tealize-write.github.io/DarkBLstory/img/heart.png",
-    residentType:    "清醒自願的出局旁觀者",
+    residentType:    "留在現實世界的清醒者",
     residentDesc:    "你在所有世界裡都是最難被故事捲走的人——因為你從來不打算真的留下來。這讓你成為最難被反將一軍的定居者，也是最危險的旁觀者。",
     worldQuote:      "「本世界不強制留人，但有時候會讓人想回來。」",
     settlementAdvice:"本世界適合短期觀光，不建議情感投入過深。若你已經開始猶豫是否要回頭——恭喜你，那才是你的故事真正開始的地方。",
     alliedWorlds:    [],
     conflictingWorlds:["PIP", "BRO"],
 
-    bookName: "《故事另有結局》", bookAuthor: "大癲群", bookFairy: "特殊結局",
-    bookTags: ["旁觀", "清醒", "特殊路線"],
+    bookName: "《故事另有結局》", bookAuthor: "大癲群", bookFairy: "回家社",
+    bookTags: ["旁觀", "清醒", "逃脫成功"],
     link: "https://early-marketplaces-521584.framer.app/", 
   },
 
