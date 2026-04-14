@@ -101,55 +101,176 @@ function _esc(str) {
   );
 }
 
+/* ════════════════════════════════
+   甜甜圈圖表
+════════════════════════════════ */
+
+// 11 個世界的配色（搭配黑暗童話色調）
+const WORLD_COLORS = {
+  BRO:   '#b85c52',
+  SHA:   '#4d70b0',
+  PIP:   '#7a55a8',
+  KING:  '#b89a3a',
+  BEAST: '#3d7a58',
+  THORN: '#5e7a3d',
+  RACE:  '#b57234',
+  CROW:  '#5e5e6e',
+  CANDY: '#b05878',
+  CIND:  '#7e7e8e',
+  ESC:   '#8e7e60',
+};
+const CHART_OTHER_COLOR = '#3a3a44';
+const CHART_THRESHOLD   = 4; // 低於此 % 的世界合併為「其他」
+
+function _f2(n) { return n.toFixed(2); }
+
+function buildDonutSVG(slices, myCode) {
+  const CX = 100, CY = 100, OR = 78, IR = 52;
+  const GAP = 0.028; // 扇形間隙（弧度）
+
+  const total = slices.reduce((s, sl) => s + sl.count, 0);
+  if (!slices.length || total === 0) return '';
+
+  // 單一扇形 → 完整甜甜圈
+  if (slices.length === 1) {
+    const sl = slices[0];
+    const outerR = sl.code === myCode ? OR + 5 : OR;
+    return `<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">`
+      + `<circle cx="${CX}" cy="${CY}" r="${outerR}" fill="${sl.color}" opacity="0.85"/>`
+      + `<circle cx="${CX}" cy="${CY}" r="${IR}" fill="#0a0a0f"/>`
+      + `<text x="${CX}" y="${CY-8}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="serif" letter-spacing="1">定居分布</text>`
+      + `<text x="${CX}" y="${CY+8}" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="15" font-weight="700" font-family="serif">${total}</text>`
+      + `<text x="${CX}" y="${CY+22}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="serif" letter-spacing="1">位旅人</text>`
+      + `</svg>`;
+  }
+
+  // 多扇形：逐一計算弧形路徑
+  let paths = '';
+  let angle = -Math.PI / 2; // 從 12 點鐘方向開始
+
+  for (const sl of slices) {
+    const sweep  = (sl.count / total) * 2 * Math.PI;
+    const isMe   = sl.code === myCode;
+    const outerR = isMe ? OR + 5 : OR;
+    const startA = angle + GAP / 2;
+    const endA   = angle + sweep - GAP / 2;
+
+    if (sweep > GAP * 2) {
+      const x1 = CX + outerR * Math.cos(startA);
+      const y1 = CY + outerR * Math.sin(startA);
+      const x2 = CX + outerR * Math.cos(endA);
+      const y2 = CY + outerR * Math.sin(endA);
+      const x3 = CX + IR * Math.cos(endA);
+      const y3 = CY + IR * Math.sin(endA);
+      const x4 = CX + IR * Math.cos(startA);
+      const y4 = CY + IR * Math.sin(startA);
+      const large = (sweep - GAP) > Math.PI ? 1 : 0;
+
+      paths += `<path d="M${_f2(x1)},${_f2(y1)} A${outerR},${outerR} 0 ${large},1 ${_f2(x2)},${_f2(y2)} L${_f2(x3)},${_f2(y3)} A${IR},${IR} 0 ${large},0 ${_f2(x4)},${_f2(y4)} Z" fill="${sl.color}" opacity="${isMe ? '1' : '0.80'}"/>`;
+    }
+    angle += sweep;
+  }
+
+  return `<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">`
+    + paths
+    + `<circle cx="${CX}" cy="${CY}" r="${IR}" fill="#0a0a0f"/>`
+    + `<text x="${CX}" y="${CY-8}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="serif" letter-spacing="1">定居分布</text>`
+    + `<text x="${CX}" y="${CY+8}" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="15" font-weight="700" font-family="serif">${total}</text>`
+    + `<text x="${CX}" y="${CY+22}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="serif" letter-spacing="1">位旅人</text>`
+    + `</svg>`;
+}
+
+function buildDonutLegend(slices, myCode) {
+  return slices.map(sl => {
+    const isMe     = sl.code === myCode;
+    const txtStyle = isMe
+      ? 'color:rgba(255,255,255,0.95);font-weight:700;'
+      : 'color:rgba(200,178,140,0.70);';
+    const glowStyle = isMe ? `box-shadow:0 0 5px ${sl.color};` : '';
+    return `<div class="donut-legend-item" style="${txtStyle}">`
+      + `<span class="donut-legend-dot" style="background:${sl.color};${glowStyle}"></span>`
+      + `<span class="donut-legend-name">${isMe ? '✦ ' : ''}${_esc(sl.label)}</span>`
+      + `<span class="donut-legend-pct">${sl.pct.toFixed(1)}%</span>`
+      + `</div>`;
+  }).join('');
+}
+
 function renderStats(data, code) {
   const line  = document.getElementById('pop-line');
   const chart = document.getElementById('pop-chart');
 
-  const total     = Number(data.total) || 0;
-  const counts    = data.countsByKeyword || data.counts || {};
-  const myKeyword = (resultsData[code] && resultsData[code].soulName) || code;
-  const myCount   = Number(counts[myKeyword] || 0);
-  const myPct     = total > 0 ? Number(((myCount / total) * 100).toFixed(1)) : 0;
+  const total  = Number(data.total) || 0;
+  const counts = data.countsByKeyword || data.counts || {};
 
-  const sortedItems = Object.entries(counts)
-    .map(([k, v]) => ({ k, v: Number(v) || 0 }))
-    .sort((a, b) => b.v - a.v);
+  // 以 code（BRO/SHA/…）對應資料庫關鍵字；顯示時用 label
+  const myLabel = (resultsData[code] && resultsData[code].label) || code;
+  const myCount = Number(counts[code] || 0);
+  const myPct   = total > 0 ? Number(((myCount / total) * 100).toFixed(1)) : 0;
 
-  // ✦ 修正：findIndex 找不到時回傳 -1，避免顯示「第 0 名」
-  const myRankIndex = sortedItems.findIndex(item => item.k === myKeyword);
-  const myRankText  = myRankIndex >= 0 ? String(myRankIndex + 1) : "尚未進榜";
-  const totalTypes  = 20;
+  // 只取 11 個已知世界中有數據的，依人數排序
+  const allItems = CATEGORY_KEYS
+    .map(k => {
+      const cnt = Number(counts[k] || 0);
+      return {
+        code:  k,
+        label: (resultsData[k] && resultsData[k].label) || k,
+        count: cnt,
+        pct:   total > 0 ? (cnt / total) * 100 : 0,
+        color: WORLD_COLORS[k] || CHART_OTHER_COLOR,
+      };
+    })
+    .filter(i => i.count > 0)
+    .sort((a, b) => b.count - a.count);
 
-  const rarestItem = sortedItems.filter(i => i.v > 0).pop() || { k: "未知", v: 0 };
-  const rarestPct  = total > 0 ? ((rarestItem.v / total) * 100).toFixed(1) : 0;
+  const myRankIndex = allItems.findIndex(i => i.code === code);
+  const myRankText  = myRankIndex >= 0 ? String(myRankIndex + 1) : '尚未進榜';
+  const totalTypes  = CATEGORY_KEYS.length;
 
-  const rc   = data.roleCounts || {};
-  const aNum = Number(rc.A || 0);
-  const rNum = Number(rc.R || 0);
-  const aPct = total > 0 ? Math.round(aNum * 1000 / total) / 10 : 0;
-  const rPct = total > 0 ? Math.round(rNum * 1000 / total) / 10 : 0;
+  const rarestItem = allItems.length
+    ? [...allItems].sort((a, b) => a.count - b.count)[0]
+    : { label: '未知', pct: 0 };
 
   line.innerHTML =
-    '✦ 目前共有 <strong>' + total + '</strong> 個靈魂踏入黑童話大門。<br/>'
-    + '✦ 你的類型（' + _esc(myKeyword) + '）約佔 <strong>' + myPct + '%</strong>，全站人數排名第 <strong>' + myRankText + '</strong> / ' + totalTypes + '。<br/>'
-    + '✦ 最稀有的極端樣本為「' + _esc(rarestItem.k) + '」 (僅 ' + rarestPct + '%)。<br/>'
-    + '<span style="opacity:.6;font-size:.85em;display:inline-block;margin-top:6px;">'
-    + '(黑童話大門陣營：攻 ' + aPct + '% ｜ 受 ' + rPct + '%)</span>';
+    '✦ 目前共有 <strong>' + total + '</strong> 位旅人踏入黑童話大門。<br/>'
+    + '✦ 你的定居地（' + _esc(myLabel) + '）約佔 <strong>' + myPct + '%</strong>，'
+    + '在 ' + totalTypes + ' 個世界中排名第 <strong>' + myRankText + '</strong>。<br/>'
+    + '✦ 最稀有的定居地：「' + _esc(rarestItem.label) + '」（僅 '
+    + rarestItem.pct.toFixed(1) + '%）';
 
-  const items = sortedItems.slice(0, 5);
-  const rows  = items.map(({ k, v }) => {
-    const pct  = total > 0 ? (v / total) * 100 : 0;
-    const isMe = (k === myKeyword);
-    return '<div class="seal" style="' + (isMe ? 'border-color:rgba(255,255,255,.65);' : '') + '">'
-      + '<div class="lab">' + (isMe ? '✦ ' : '') + _esc(k) + '</div>'
-      + buildRuler(pct.toFixed(1) + '%')
-      + '<div class="val">' + pct.toFixed(1) + '%</div></div>';
-  }).join('');
+  // 低於門檻的世界合併為「其他」；但玩家本次的世界永遠單獨顯示
+  const mainSlices = [];
+  let   otherCount = 0;
+
+  allItems.forEach(item => {
+    if (item.pct >= CHART_THRESHOLD || item.code === code) {
+      mainSlices.push({ ...item });
+    } else {
+      otherCount += item.count;
+    }
+  });
+
+  if (otherCount > 0) {
+    mainSlices.push({
+      code:  '其他',
+      label: '其他',
+      count: otherCount,
+      pct:   total > 0 ? (otherCount / total) * 100 : 0,
+      color: CHART_OTHER_COLOR,
+    });
+  }
+
+  // 排序：玩家世界優先，其他殿後，中間按人數遞減
+  mainSlices.sort((a, b) => {
+    if (a.code === code)   return -1;
+    if (b.code === code)   return  1;
+    if (a.code === '其他') return  1;
+    if (b.code === '其他') return -1;
+    return b.count - a.count;
+  });
 
   chart.innerHTML =
-    '<div style="opacity:.9;letter-spacing:2px;font-style:italic;font-size:12px;margin-bottom:4px;margin-top:14px;">'
-    + '✦ 全站最高頻樣本 (Top 5)'
-    + '</div><div class="seals">' + rows + '</div>';
-
-  animateRulers(chart);
+    '<div class="donut-wrap">'
+    + buildDonutSVG(mainSlices, code)
+    + '<div class="donut-legend">' + buildDonutLegend(mainSlices, code) + '</div>'
+    + '</div>';
 }

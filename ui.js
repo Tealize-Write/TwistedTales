@@ -142,21 +142,37 @@ function confirmRestart(){
 }
 
 /* ════════════════════════════════
-   CP 配對區塊
+   世界關係區塊
 ════════════════════════════════ */
-function renderCpBlock(code){
-  const r   = resultsData[code];
-  const el  = document.getElementById('r-cp');
+function renderWorldRelationsBlock(code){
+  const r  = resultsData[code];
+  const el = document.getElementById('r-cp');
   if(!el) return;
-  if(!r || !r.cp1){ el.innerHTML=''; return; }
 
-  const cp2Html = (r.cp2||[]).map(n=>`<span class="cp-alt">${n}</span>`)
-                              .join('<span class="cp-sep">・</span>');
+  const allied   = (r && r.alliedWorlds    || []).filter(k => resultsData[k]);
+  const conflict = (r && r.conflictingWorlds || []).filter(k => resultsData[k]);
+
+  if(!allied.length && !conflict.length){ el.innerHTML=''; return; }
+
+  const toTag = k =>
+    `<span class="relation-world">${resultsData[k].label}</span>`;
+  const join  = arr =>
+    arr.map(toTag).join('<span class="relation-sep">・</span>');
 
   el.innerHTML =
-    `<div class="lab">靈魂配對</div>`
-    + `<div class="cp-row cp-main"><span class="cp-label">王道 CP</span><span class="cp-name">${r.cp1}</span></div>`
-    + `<div class="cp-row cp-subs"><span class="cp-label">次　選</span><span>${cp2Html}</span></div>`;
+    `<div class="lab">世界關係</div>`
+    + (allied.length
+      ? `<div class="relation-row">`
+        + `<span class="relation-label">友邦世界</span>`
+        + `<span class="relation-worlds">${join(allied)}</span></div>`
+        + `<div class="relation-note">較容易互相適應</div>`
+      : '')
+    + (conflict.length
+      ? `<div class="relation-row relation-conflict">`
+        + `<span class="relation-label">互斥世界</span>`
+        + `<span class="relation-worlds">${join(conflict)}</span></div>`
+        + `<div class="relation-note">規則衝突，慎重跨界</div>`
+      : '');
 }
 
 /* ════════════════════════════════
@@ -289,8 +305,7 @@ function showResult(){
   document.getElementById('r-compound').textContent = label;
   document.getElementById('r-desc').textContent = r.residentDesc;
   
-  const mbtiEl = document.getElementById('r-mbti');
-  if(mbtiEl) mbtiEl.innerHTML = r.mbti ? `<span class="r-mbti-label">MBTI</span><strong>${r.mbti}</strong>` : '';
+  // r-mbti 已移除，不再渲染
   
   document.getElementById('r-quote').textContent = r.worldQuote;
   document.getElementById('r-guide').textContent = r.settlementAdvice;
@@ -359,7 +374,7 @@ function showResult(){
     +'</div>'
     +'</a>';
     
-  renderCpBlock(code);
+  renderWorldRelationsBlock(code);
   sendStats(code);
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -447,10 +462,8 @@ async function shareResultAsImage() {
       #result.capturing .seal .lab,
       #result.capturing .stats,
       #result.capturing .stats strong,
-      #result.capturing .cp-label,
-      #result.capturing .cp-name,
-      #result.capturing .cp-alt,
-      #result.capturing .cp-mbti,
+      #result.capturing .relation-label,
+      #result.capturing .relation-world,
       #result.capturing .val,
       #result.capturing #pop-line {
           color: #ffffff !important;

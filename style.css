@@ -860,28 +860,6 @@ body::before {
     text-align: justify;
 }
 
-.r-mbti {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 24px;
-    font-family: var(--display);
-    font-style: italic;
-    font-size: 14px;
-    letter-spacing: 2px;
-}
-
-.r-mbti-label {
-    color: rgba(195,175,145,.80);
-    font-size: 12px;
-    letter-spacing: 2px;
-}
-
-.r-mbti strong {
-    color: var(--ink);
-    font-size: 18px; 
-    letter-spacing: 3px;
-}
 
 /* ════════════════════════════════
    塔羅牌陣風格統整 (Tarot Frame)
@@ -1479,71 +1457,113 @@ body::before {
         font-weight: 700;
     }
 
-.cp-block {
+/* ── 世界關係區塊 ── */
+.world-relations {
     min-height: 0;
 }
 
-    .cp-block:empty {
+    .world-relations:empty {
         display: none;
     }
 
-.cp-mbti {
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--display);
-    font-style: italic;
-    font-size: 13px;
-    letter-spacing: 2px;
-    color: rgba(195,175,145,.82);
-}
-
-    .cp-mbti strong {
-        color: var(--ink);
-        font-size: 15px;
-        letter-spacing: 3px;
-    }
-
-.cp-row {
+.relation-row {
     display: flex;
     align-items: baseline;
     gap: 14px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     font-family: var(--serif);
 }
 
-    .cp-row:last-child {
-        margin-bottom: 0;
-    }
-
-.cp-label {
+.relation-label {
     font-family: var(--display);
     font-style: italic;
     font-size: 11px;
     letter-spacing: 2px;
     color: rgba(170,145,90,.68);
     white-space: nowrap;
-    min-width: 46px;
+    min-width: 52px;
 }
 
-.cp-name {
-    font-size: 16px;
+.relation-conflict .relation-label {
+    color: rgba(170,100,90,.68);
+}
+
+.relation-worlds {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px;
+}
+
+.relation-world {
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 2px;
     color: var(--ink);
 }
 
-.cp-alt {
-    font-size: 13px;
-    letter-spacing: 1px;
-    color: rgba(195,175,145,.80);
-}
-
-.cp-sep {
+.relation-sep {
     font-size: 11px;
     color: rgba(140,110,60,.42);
     margin: 0 2px;
+}
+
+.relation-note {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: rgba(160,140,100,.50);
+    margin-top: 2px;
+    margin-bottom: 16px;
+    padding-left: 66px;
+}
+
+/* ── 甜甜圈圖表 ── */
+.donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+    .donut-wrap svg {
+        flex-shrink: 0;
+    }
+
+.donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 120px;
+}
+
+.donut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-family: var(--serif);
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.donut-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.donut-legend-name {
+    flex: 1;
+}
+
+.donut-legend-pct {
+    font-size: 10px;
+    opacity: 0.65;
+    min-width: 36px;
+    text-align: right;
 }
 
 @keyframes fadeUp {
@@ -1821,10 +1841,8 @@ body::before {
     #result.capturing .seal .lab,
     #result.capturing .stats,
     #result.capturing .stats strong,
-    #result.capturing .cp-label,
-    #result.capturing .cp-name,
-    #result.capturing .cp-alt,
-    #result.capturing .cp-mbti,
+    #result.capturing .relation-label,
+    #result.capturing .relation-world,
     #result.capturing .cta a,
     #result.capturing .val,
     #result.capturing #pop-line,
