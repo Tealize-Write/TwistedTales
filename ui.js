@@ -295,14 +295,17 @@ function showResult(){
 
   const eyebrow = document.querySelector('.r-eyebrow');
   if (eyebrow) {
-    if (r.bookFairy) {
-        eyebrow.textContent = `您是童話《${r.bookFairy}》中的 ──`;
+    if (r.storyName === '特殊結局') {
+        eyebrow.textContent = `清醒路線 ── 特殊結局 ──`;
+    } else if (r.label) {
+        eyebrow.textContent = `童話《${r.label}》IF 路線 ──`;
     } else {
-        eyebrow.textContent = `揭曉黑暗特質 ──`;
+        eyebrow.textContent = `異世界移居指南 ──`;
     }
   }
 
-  document.getElementById('r-compound').textContent = label;
+  // r-compound 顯示 IF 路線的故事名稱（storyName），而非原典分類（label）
+  document.getElementById('r-compound').textContent = r.storyName || label;
   document.getElementById('r-desc').textContent = r.residentDesc;
   
   // r-mbti 已移除，不再渲染
@@ -811,7 +814,9 @@ async function shareShortImage() {
   ctx.fillStyle = 'rgba(255,255,255,0.65)';
   ctx.letterSpacing = "6px"; 
   setShadow(8);
-  const eyebrowText = r.bookFairy ? `您是童話《${r.bookFairy}》中的 ──` : `揭曉黑暗特質 ──`;
+  const eyebrowText = r.storyName === '特殊結局'
+    ? `清醒路線 ── 特殊結局 ──`
+    : (r.label ? `童話《${r.label}》IF 路線 ──` : `異世界移居指南 ──`);
   ctx.fillText(eyebrowText, CW / 2, y);
   clearShadow();
   
@@ -827,11 +832,11 @@ async function shareShortImage() {
   
   y += Math.round(CW * 0.075);
 
-  // ── label (一句話描述)
+  // ── IF 路線名稱 (storyName)
   ctx.font      = `500 ${Math.round(CW * 0.036)}px "Noto Serif TC", serif`;
   ctx.fillStyle = 'rgba(255,255,255,0.88)';
-  ctx.letterSpacing = "5px"; 
-  y = fillWrapped(r.label || code, y, CW * 0.85, Math.round(CW * 0.060));
+  ctx.letterSpacing = "5px";
+  y = fillWrapped(r.storyName || r.label || code, y, CW * 0.85, Math.round(CW * 0.060));
   
   y += Math.round(CW * 0.065);
 
