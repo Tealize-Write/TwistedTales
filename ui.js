@@ -452,7 +452,12 @@ async function shareResultAsImage() {
       }
       #result.capturing {
           background-color: #0a0f1e !important;
-          background-image: none !important;
+          background-image:
+              radial-gradient(circle at 50% 50%, rgba(20,30,60,0.5), transparent),
+              url("data:image/svg+xml,%3Csvg width='60' height='100' viewBox='0 0 60 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L60 50 L30 100 L0 50 Z' fill='%23102545' opacity='0.9'/%3E%3Cpath d='M30 0 L60 50 L30 100 L0 50 Z' fill='none' stroke='rgba(212,175,55,0.18)' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='50' r='1' fill='rgba(212,175,55,0.45)'/%3E%3Ccircle cx='0' cy='0' r='1' fill='rgba(212,175,55,0.35)'/%3E%3Ccircle cx='60' cy='0' r='1' fill='rgba(212,175,55,0.35)'/%3E%3Ccircle cx='30' cy='100' r='1' fill='rgba(212,175,55,0.35)'/%3E%3C/svg%3E") !important;
+          background-repeat: repeat, repeat !important;
+          background-size: 100% 100%, 60px 100px !important;
+          background-position: center, center top !important;
       }
       #result.capturing,
       #result.capturing .r-eyebrow,
@@ -759,6 +764,25 @@ async function shareShortImage() {
   // ════ 1. 全底色（網站深藍） ════
   ctx.fillStyle = '#0a0f1e';
   ctx.fillRect(0, 0, CW, CH);
+
+  // ════ 1b. 菱格紋疊層（與網站 body::before 相同圖樣） ════
+  try {
+    const tileSvg = `<svg width='90' height='150' viewBox='0 0 60 100' xmlns='http://www.w3.org/2000/svg'><path d='M30 0 L60 50 L30 100 L0 50 Z' fill='#102545' opacity='0.9'/><path d='M30 0 L60 50 L30 100 L0 50 Z' fill='none' stroke='rgba(212,175,55,0.18)' stroke-width='0.5'/><circle cx='30' cy='50' r='1' fill='rgba(212,175,55,0.45)'/><circle cx='0' cy='0' r='1' fill='rgba(212,175,55,0.35)'/><circle cx='60' cy='0' r='1' fill='rgba(212,175,55,0.35)'/><circle cx='30' cy='100' r='1' fill='rgba(212,175,55,0.35)'/></svg>`;
+    const tileImg = await loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(tileSvg));
+    if (tileImg) {
+      const tc = document.createElement('canvas');
+      tc.width = 90; tc.height = 150;
+      tc.getContext('2d').drawImage(tileImg, 0, 0, 90, 150);
+      const pat = ctx.createPattern(tc, 'repeat');
+      ctx.fillStyle = pat;
+      ctx.fillRect(0, 0, CW, CH);
+      const radGrad = ctx.createRadialGradient(CW / 2, CH / 2, 0, CW / 2, CH / 2, Math.max(CW, CH) * 0.75);
+      radGrad.addColorStop(0, 'rgba(20,30,60,0.5)');
+      radGrad.addColorStop(1, 'rgba(20,30,60,0)');
+      ctx.fillStyle = radGrad;
+      ctx.fillRect(0, 0, CW, CH);
+    }
+  } catch(e) { console.warn('菱格紋繪製失敗', e); }
 
   // ════ 2. 角色圖 (變大且適度往下移) ════
   const maxImgH = Math.round(CH * 0.44); 
