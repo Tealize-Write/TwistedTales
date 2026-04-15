@@ -433,7 +433,7 @@ async function shareResultAsImage() {
   // ✦ 給瀏覽器 50 毫秒的喘息時間，確保「生成中...」文字順利渲染
   await new Promise(resolve => setTimeout(resolve, 50));
   
-  const hideEls = targetEl.querySelectorAll('.btn-row, .share-divider, .buy-book-wrap, .lab:last-of-type');
+  const hideEls = targetEl.querySelectorAll('.btn-row, .share-divider, .buy-book-wrap, .lab:last-of-type, .stats, .btn-line-sticker-wrap');
   hideEls.forEach(el => el.style.display = 'none');
 
   targetEl.classList.add('capturing');
@@ -490,6 +490,12 @@ async function shareResultAsImage() {
       #result.capturing .result-img {
           filter: none !important;
       }
+      #result.capturing * {
+          text-shadow: none !important;
+      }
+      #result.capturing .r-name {
+          text-shadow: 0 0 10px rgba(200,160,55,0.30) !important;
+      }
   `;
   document.head.appendChild(captureStyle);
   document.body.classList.add('capturing-global');
@@ -518,7 +524,30 @@ async function shareResultAsImage() {
     'color:rgba(255,255,255,.8);' +
     'background-color:#0a0f1e;';
   stamp.textContent = '✦  ' + SITE_URL + '  ✦';
+
+  const _longSpacer = document.createElement('div');
+  _longSpacer.id = '_share_spacer';
+  _longSpacer.style.cssText = 'height:64px;background:transparent;';
+  targetEl.appendChild(_longSpacer);
   targetEl.appendChild(stamp);
+
+  // ── 暫時覆寫長圖標題群，使層級與 short image 一致 ──
+  const r_share        = resultsData[code];
+  const _eyebrowEl     = targetEl.querySelector('.r-eyebrow');
+  const _compoundEl    = targetEl.querySelector('#r-compound');
+  const _origEyebrow   = _eyebrowEl  ? _eyebrowEl.textContent  : null;
+  const _origCompound  = _compoundEl ? _compoundEl.textContent : null;
+  const _isESC_share   = r_share && r_share.storyName === '逃脫成功結局';
+  if (r_share && _eyebrowEl) {
+    _eyebrowEl.textContent = _isESC_share
+      ? '清醒路線'
+      : (r_share.label ? `童話《${r_share.label}》` : '異世界移居指南');
+  }
+  if (r_share && _compoundEl) {
+    _compoundEl.textContent = _isESC_share
+      ? '── 逃脫成功結局 ──'
+      : `IF 路線──${r_share.storyName || r_share.label || code}`;
+  }
 
   const originalScrollY = window.scrollY;
   window.scrollTo(0, 0);
@@ -562,8 +591,14 @@ async function shareResultAsImage() {
     if(el.getAttribute('stroke') === bgColor) el.setAttribute('stroke', 'var(--bg)');
   });
   
+  const _spacerEl = document.getElementById('_share_spacer');
+  if (_spacerEl) _spacerEl.remove();
   const stampEl = document.getElementById('_share_stamp');
   if(stampEl) stampEl.remove();
+
+  // ── 還原長圖標題群文字 ──
+  if (_eyebrowEl  && _origEyebrow  !== null) _eyebrowEl.textContent  = _origEyebrow;
+  if (_compoundEl && _origCompound !== null) _compoundEl.textContent = _origCompound;
   
   targetEl.classList.remove('capturing');
   document.body.classList.remove('capturing-global');
@@ -650,8 +685,8 @@ async function shareShortImage() {
   canvas.height = CH;
   const ctx = canvas.getContext('2d');
 
-  function setShadow(blur = 6) {
-    ctx.shadowColor   = 'rgba(0,0,0,0.95)';
+  function setShadow(blur = 3) {
+    ctx.shadowColor   = 'rgba(5,8,20,0.25)';
     ctx.shadowBlur    = blur;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
@@ -785,7 +820,7 @@ async function shareShortImage() {
   } catch(e) { console.warn('菱格紋繪製失敗', e); }
 
   // ════ 2. 角色圖 (變大且適度往下移) ════
-  const maxImgH = Math.round(CH * 0.44); 
+  const maxImgH = Math.round(CH * 0.40);
   let imgH = 0;
   let dy = 45; // 讓出上方塔羅牌邊框空間
   try {
@@ -802,24 +837,51 @@ async function shareShortImage() {
     console.warn('圖片載入失敗', e);
   }
 
-  // ════ 3. 圖片底部淡出漸層 ════
+  // ════ 3. 文字托底區（深藍底 + 金線，取代整片壓暗） ════
+  const isESC = r.storyName === '逃脫成功結局';
+
+  // 預量 residentDesc 行數以動態計算托底高度
+  const _descFont  = `300 ${Math.round(CW * 0.022)}px "Noto Serif TC", serif`;
+  ctx.font = _descFont;
+  const _descLns   = getWrappedLines(r.residentDesc || '', CW * 0.80);
+  const _descLineH = Math.round(CW * 0.036);
+  const _descH     = _descLns.length * _descLineH;
+  const _stackH    = Math.round(CW * 0.040)   // eyebrow advance
+                   + Math.round(CW * 0.050)   // subline advance
+                   + Math.round(CW * 0.075)   // residentType advance
+                   + _descH
+                   + Math.round(CW * 0.040);  // gap after desc
+  const _pad       = 44;
+  const _panelH    = _pad + _stackH + _pad;
+  const _panelTop  = imgH > 0 ? (dy + imgH - Math.round(CW * 0.05)) : Math.round(CH * 0.42);
+  const _fadeH     = Math.round(CW * 0.16);
+
+  // 圖片底部柔和融合（不再全寬硬壓整塊）
   if (imgH > 0) {
-    const absoluteImgBottom = dy + imgH;
-    const fadeStart = Math.max(0, absoluteImgBottom - Math.round(CW * 0.35)); 
-    const fadeEnd = absoluteImgBottom + 5;
-    const grad = ctx.createLinearGradient(0, fadeStart, 0, fadeEnd);
-    grad.addColorStop(0, 'rgba(10,15,30,0)');
-    grad.addColorStop(1, 'rgba(10,15,30,1)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, fadeStart, CW, fadeEnd - fadeStart);
+    const _fg = ctx.createLinearGradient(0, _panelTop - _fadeH, 0, _panelTop);
+    _fg.addColorStop(0,   'rgba(7,11,24,0)');
+    _fg.addColorStop(0.6, 'rgba(7,11,24,0.30)');
+    _fg.addColorStop(1,   'rgba(7,11,24,0.90)');
+    ctx.fillStyle = _fg;
+    ctx.fillRect(0, _panelTop - _fadeH, CW, _fadeH);
   }
+
+  // 深藍半透明托底板
+  ctx.fillStyle = 'rgba(7,11,24,0.93)';
+  ctx.fillRect(0, _panelTop, CW, _panelH);
+
+  // 金色頂線 / 底線
+  ctx.strokeStyle = 'rgba(212,175,55,0.55)';
+  ctx.lineWidth   = 1;
+  ctx.beginPath(); ctx.moveTo(70, _panelTop); ctx.lineTo(CW - 70, _panelTop); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(70, _panelTop + _panelH); ctx.lineTo(CW - 70, _panelTop + _panelH); ctx.stroke();
 
   // ════ 4. 外框裝飾 (Tarot-style border) ════
   ctx.strokeStyle = 'rgba(255,255,255,0.12)';
   ctx.lineWidth = 1.5;
   ctx.strokeRect(30, 30, CW - 60, CH - 60);
-  
-  const cl = 24; 
+
+  const cl = 24;
   ctx.lineWidth = 2;
   ctx.strokeStyle = 'rgba(255,255,255,0.4)';
   ctx.beginPath(); ctx.moveTo(30, 30 + cl); ctx.lineTo(30, 30); ctx.lineTo(30 + cl, 30); ctx.stroke();
@@ -830,39 +892,49 @@ async function shareShortImage() {
   // ════ 5. 上方文字區 ════
   ctx.textAlign    = 'center';
   ctx.textBaseline = 'top';
-  
-  let y = dy + imgH - Math.round(CW * 0.08);
 
-  // ── 稱號：您是《xxx》中的 ──
-  ctx.font      = `300 ${Math.round(CW * 0.026)}px "Noto Serif TC", serif`;
-  ctx.fillStyle = 'rgba(255,255,255,0.65)';
-  ctx.letterSpacing = "6px"; 
-  setShadow(8);
-  const eyebrowText = r.storyName === '特殊結局'
-    ? `清醒路線 ── 特殊結局 ──`
-    : (r.label ? `童話《${r.label}》IF 路線 ──` : `異世界移居指南 ──`);
+  let y = _panelTop + _pad;
+
+  // ── 第一層 eyebrow：童話《label》（小字，清楚） ──
+  ctx.font      = `300 ${Math.round(CW * 0.024)}px "Noto Serif TC", serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.60)';
+  ctx.letterSpacing = "5px";
+  const eyebrowText = isESC
+    ? '清醒路線'
+    : (r.label ? `童話《${r.label}》` : '異世界移居指南');
   ctx.fillText(eyebrowText, CW / 2, y);
-  clearShadow();
-  
-  y += Math.round(CW * 0.055);
 
-  // ── 居民定位 (residentType)
-  ctx.font      = `700 ${Math.round(CW * 0.050)}px "Noto Serif TC", serif`;
+  y += Math.round(CW * 0.040);
+
+  // ── 第二層 subline：IF 路線：storyName（中小字） ──
+  ctx.font      = `400 ${Math.round(CW * 0.028)}px "Noto Serif TC", serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.78)';
+  ctx.letterSpacing = "3px";
+  const sublineText = isESC
+    ? '── 逃脫成功結局 ──'
+    : `IF 路線：${r.storyName || r.label || code}`;
+  ctx.fillText(sublineText, CW / 2, y);
+
+  y += Math.round(CW * 0.050);
+
+  // ── 第三層 main title：residentType（最顯眼的主標） ──
+  ctx.font      = `700 ${Math.round(CW * 0.052)}px "Noto Serif TC", serif`;
   ctx.fillStyle = '#ffffff';
-  ctx.letterSpacing = "14px";
-  setShadow(12);
+  ctx.letterSpacing = "12px";
+  setShadow(3);
   ctx.fillText(r.residentType, CW / 2, y);
   clearShadow();
-  
+
   y += Math.round(CW * 0.075);
 
-  // ── IF 路線名稱 (storyName)
-  ctx.font      = `500 ${Math.round(CW * 0.036)}px "Noto Serif TC", serif`;
-  ctx.fillStyle = 'rgba(255,255,255,0.88)';
-  ctx.letterSpacing = "5px";
-  y = fillWrapped(r.storyName || r.label || code, y, CW * 0.85, Math.round(CW * 0.060));
-  
-  y += Math.round(CW * 0.065);
+  // ── 第四層 body：residentDesc（描述文字） ──
+  ctx.font      = _descFont;
+  ctx.fillStyle = 'rgba(255,255,255,0.72)';
+  ctx.letterSpacing = "2px";
+  y = fillWrapped(r.residentDesc || '', y, CW * 0.80, _descLineH);
+  ctx.letterSpacing = "0px";
+
+  y += Math.round(CW * 0.040);
 
   // ── 圖騰專屬分隔線 1 ──
   ctx.letterSpacing = "0px"; 
@@ -871,7 +943,7 @@ async function shareShortImage() {
   } else {
       drawDivider(y);
   }
-  y += Math.round(CW * 0.070);
+  y += Math.round(CW * 0.065);
 
   // ════ 6. 印記 & 黑暗特質 (單排 4 欄) ════
   const axisMax = typeof calcAxisMax === 'function' ? calcAxisMax() : {};
@@ -919,9 +991,7 @@ async function shareShortImage() {
     ctx.fillStyle = 'rgba(255,255,255,0.60)';
     ctx.textAlign = 'center';
     ctx.letterSpacing = "2px";
-    setShadow(6);
     ctx.fillText(s.lab, cx, sy);
-    clearShadow();
     ctx.letterSpacing = "0px";
 
     const barY = sy + Math.round(CW * 0.035);
@@ -938,64 +1008,61 @@ async function shareShortImage() {
     ctx.font      = `700 ${Math.round(CW * 0.028)}px "Noto Serif TC", serif`;
     ctx.fillStyle = '#ffffff';
     ctx.letterSpacing = "1px";
-    setShadow(6);
     ctx.fillText(s.val, cx, barY + Math.round(CW * 0.025));
-    clearShadow();
     ctx.letterSpacing = "0px";
   });
 
-  y += Math.round(CW * 0.11); 
+  y += Math.round(CW * 0.100);
 
   // ── 菱形分隔線 2
   ctx.letterSpacing = "0px";
   drawDivider(y);
   const divider2Y = y; 
 
-  // ════ 7. 底部資訊 ════
-  const bottomMargin = 55; // ✦ 把邊距拉大一點（原本是 45）
-  const bottomUrlY = CH - bottomMargin; 
-  const bottomTitleY = bottomUrlY - Math.round(CW * 0.065); 
+  // ════ 7. 底部安全區域（固定從底部算，不受其他內容影響） ════
+  const _urlY         = CH - 52;          // URL 底邊 (textBaseline: bottom)
+  const _titleY       = CH - 52 - 72;     // 書名底邊
+  const _safeBoundary = _titleY - 28;     // quote 絕對不能越過此線
 
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'bottom'; // ✦ 新增這行：讓底部文字向上生長，絕對不會往下壓到框線
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'bottom';
 
   // ── 網址
-  ctx.font         = `300 ${Math.round(CW * 0.022)}px Georgia, serif`;
-  ctx.fillStyle    = 'rgba(255,255,255,0.30)';
+  ctx.font          = `300 ${Math.round(CW * 0.020)}px Georgia, serif`;
+  ctx.fillStyle     = 'rgba(255,255,255,0.28)';
   ctx.letterSpacing = "3px";
-  ctx.fillText('✦  ' + SITE_URL + '  ✦', CW / 2, bottomUrlY);
+  ctx.fillText('✦  ' + SITE_URL + '  ✦', CW / 2, _urlY);
   ctx.letterSpacing = "0px";
 
-  // ── 《故事另有結局》✦ bookName
-  ctx.font      = `500 ${Math.round(CW * 0.032)}px "Noto Serif TC", serif`;
-  ctx.fillStyle = '#ffffff';
-  // ctx.textBaseline = 'bottom'; // (這行原本在這裡，現在可以刪掉，因為上面已經統一設定了)
+  // ── 《故事另有結局》✦ 書名
+  ctx.font          = `500 ${Math.round(CW * 0.030)}px "Noto Serif TC", serif`;
+  ctx.fillStyle     = 'rgba(255,255,255,0.95)';
   ctx.letterSpacing = "4px";
-  setShadow(8);
-  ctx.fillText(`《故事另有結局》✦ ${r.bookName}`, CW / 2, bottomTitleY);
+  setShadow(2);
+  ctx.fillText(`《故事另有結局》✦ ${r.bookName}`, CW / 2, _titleY);
   clearShadow();
   ctx.letterSpacing = "0px";
 
-  // ════ 8. 專屬台詞 (動態絕對置中) ════
-  ctx.font       = `italic 300 ${Math.round(CW * 0.030)}px "Noto Serif TC", serif`;
-  ctx.fillStyle  = 'rgba(255,255,255,0.75)';
-  ctx.letterSpacing = "4px";
-  ctx.textBaseline = 'top';
+  // ════ 8. 專屬台詞（在 divider2 到 safeBoundary 之間動態置中，不得溢出） ════
+  ctx.textBaseline  = 'top';
+  ctx.font          = `italic 300 ${Math.round(CW * 0.026)}px "Noto Serif TC", serif`;
+  ctx.fillStyle     = 'rgba(255,255,255,0.78)';
+  ctx.letterSpacing = "3px";
 
-  const quoteMaxW = Math.round(CW * 0.85);
-  const quoteLineH = Math.round(CW * 0.048);
-  const quoteLines = getWrappedLines(r.worldQuote || '', quoteMaxW);
-  const quoteTotalH = quoteLines.length * quoteLineH;
+  const _quoteMaxW   = Math.round(CW * 0.82);
+  const _quoteLineH  = Math.round(CW * 0.042);
+  const _quoteLines  = getWrappedLines(r.worldQuote || '', _quoteMaxW);
+  const _quoteTotalH = _quoteLines.length * _quoteLineH;
 
-  const spaceTop = divider2Y + 20; 
-  const spaceBottom = bottomTitleY - Math.round(CW * 0.04); 
-  
-  let quoteStartY = spaceTop + (spaceBottom - spaceTop - quoteTotalH) / 2;
-  if (quoteStartY < spaceTop) quoteStartY = spaceTop;
+  const _qSpaceTop    = divider2Y + 18;
+  const _qSpaceBottom = _safeBoundary - 8;
+  let   _qStartY      = _qSpaceTop + Math.max(0, (_qSpaceBottom - _qSpaceTop - _quoteTotalH) / 2);
+  if (_qStartY + _quoteTotalH > _qSpaceBottom) _qStartY = _qSpaceBottom - _quoteTotalH;
+  if (_qStartY < _qSpaceTop) _qStartY = _qSpaceTop;
 
-  setShadow(8);
-  quoteLines.forEach((l, i) => {
-      ctx.fillText(l, CW / 2, quoteStartY + i * quoteLineH);
+  setShadow(2);
+  _quoteLines.forEach((l, i) => {
+    ctx.fillText(l, CW / 2, _qStartY + i * _quoteLineH);
   });
   clearShadow();
   ctx.letterSpacing = "0px";
