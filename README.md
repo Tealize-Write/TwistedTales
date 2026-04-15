@@ -1,4 +1,4 @@
-# 🦇 TwistedTales ｜ 反轉童話心理測驗
+# 🦇 Twisted Tales ｜ 反轉童話心理測驗
 
 > **你適合穿越進哪個童話？**
 
