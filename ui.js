@@ -451,7 +451,7 @@ async function shareResultAsImage() {
           opacity: 0 !important;
       }
       #result.capturing {
-          background-color: #000000 !important;
+          background-color: #0a0f1e !important;
           background-image: none !important;
       }
       #result.capturing,
@@ -497,7 +497,7 @@ async function shareResultAsImage() {
     el.style.filter    = 'none';
   });
 
-  const bgColor = '#000000'; 
+  const bgColor = '#0a0f1e';
   const emblemEl = targetEl.querySelector('.tarot-emblem');
   const emblemEls = emblemEl ? emblemEl.querySelectorAll('[fill="var(--bg)"], [stroke="var(--bg)"]') : [];
   emblemEls.forEach(el => {
@@ -511,7 +511,7 @@ async function shareResultAsImage() {
     'text-align:center;padding:24px 0 32px;' +
     'font-family:Georgia,serif;font-size:13px;letter-spacing:2px;' +
     'color:rgba(255,255,255,.8);' +
-    'background-color:#000000;';
+    'background-color:#0a0f1e;';
   stamp.textContent = '✦  ' + SITE_URL + '  ✦';
   targetEl.appendChild(stamp);
 
@@ -529,7 +529,7 @@ async function shareResultAsImage() {
   try {
     canvas = await html2canvas(targetEl, {
       scale          : renderScale, 
-      backgroundColor: '#000000', 
+      backgroundColor: '#0a0f1e',
       useCORS        : true,
       allowTaint     : false,
       logging        : false,
@@ -744,7 +744,7 @@ async function shareShortImage() {
   try {
     let rawSvg = getEmblemSVG(code);
     rawSvg = rawSvg.replace(/currentColor/g, 'rgba(255,255,255,0.95)');
-    rawSvg = rawSvg.replace(/var\(--bg\)/g, '#000000');
+    rawSvg = rawSvg.replace(/var\(--bg\)/g, '#0a0f1e');
     if (!rawSvg.includes('xmlns=')) {
       rawSvg = rawSvg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" ');
     } else if (!rawSvg.includes('width=')) {
@@ -756,8 +756,8 @@ async function shareShortImage() {
     console.warn('Emblem load failed', e);
   }
 
-  // ════ 1. 全黑底 ════
-  ctx.fillStyle = '#000000';
+  // ════ 1. 全底色（網站深藍） ════
+  ctx.fillStyle = '#0a0f1e';
   ctx.fillRect(0, 0, CW, CH);
 
   // ════ 2. 角色圖 (變大且適度往下移) ════
@@ -784,8 +784,8 @@ async function shareShortImage() {
     const fadeStart = Math.max(0, absoluteImgBottom - Math.round(CW * 0.35)); 
     const fadeEnd = absoluteImgBottom + 5;
     const grad = ctx.createLinearGradient(0, fadeStart, 0, fadeEnd);
-    grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(1, 'rgba(0,0,0,1)');
+    grad.addColorStop(0, 'rgba(10,15,30,0)');
+    grad.addColorStop(1, 'rgba(10,15,30,1)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, fadeStart, CW, fadeEnd - fadeStart);
   }
@@ -869,10 +869,14 @@ async function shareShortImage() {
     pct: axisMax[k] ? Math.round((v / axisMax[k]) * 100) : 0
   }));
 
+  const mp  = typeof calcMetricPercent === 'function' ? calcMetricPercent() : {};
+  const ml2 = typeof metricLabels !== 'undefined' ? metricLabels : { survival: '童話世界生存率', happiness: '幸福指數', fate: '命運干預值' };
+
   const seals = [
-    { lab: r.attr,     val: r.attrVal,  pct: parseFloat(r.attrFill)   || 0 },
-    { lab: '逃脱機率', val: r.escape,   pct: parseFloat(r.escape)     || 0 },
-    ...darkTraits
+    { lab: ml2.survival,  val: (mp.survival  ?? 0) + '%', pct: mp.survival  || 0 },
+    { lab: ml2.happiness, val: (mp.happiness ?? 0) + '%', pct: mp.happiness || 0 },
+    { lab: ml2.fate,      val: (mp.fate      ?? 0) + '%', pct: mp.fate      || 0 },
+    ...darkTraits.slice(0, 1)
   ];
 
   const sealW   = Math.round(CW * 0.20); 
