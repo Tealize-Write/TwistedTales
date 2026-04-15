@@ -20,7 +20,7 @@ const resultsData = {
     resultText: "你適合穿越進去《兩兄弟》（石中劍 IF線）\n重情重義的你，總會在關鍵時刻為重要的人挺身而出；只是別忘了，你也值得被拯救一次。",
     sourceKeys: ["A_CHAOS_1", "R_CHAOS_2"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/BRO.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/BRO.png",
     residentType:    "被命運選中的替身者",
     residentDesc:    "你不是王，也不只是旁觀者。你更像那種一旦被命運點名，就很難再全身而退的人。故事會把你放在最關鍵的位置，然後等著看你怎麼選。",
     worldQuote:      "「這裡不缺王，缺的是願意替王流血的人。」",
@@ -41,7 +41,7 @@ const resultsData = {
     resultText: "你適合穿越進去《影子吻了我》（美人魚 IF線）\n理性克制的你，總把真正的渴望藏得很深；可一旦動心，有些代價可不是把心事吞回去就能解決的喔。",
     sourceKeys: ["A_SCHEME_2", "R_CONTROL_3"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/SHA.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/SHA.png",
     residentType:    "與影共生的禁書住民",
     residentDesc:    "你在這個世界裡最容易被誤認為普通人——直到你的影子開始比你更早出現在門口。這裡的人會慢慢意識到，你比你看起來更懂這個世界的規則。",
     worldQuote:      "「若你開始聽見影子的腳步聲，表示它已經決定跟你回家。」",
@@ -62,7 +62,7 @@ const resultsData = {
     resultText: "你適合穿越進去《胡桃鉗》（哈梅爾的吹笛手 IF線）\n你對危險與誘惑總有一種微妙的好奇心，越奇怪的東西越想靠近；但要小心，玩具和怪物有時只差一首曲子的距離。",
     sourceKeys: ["A_DEVOTION_3", "R_CHAOS_1"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/PIP.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/PIP.png",
     residentType:    "旋律召來的異鄉信徒",
     residentDesc:    "你走進這個世界的瞬間，原有的節奏就變了。不是你刻意打亂，只是你存在的頻率，跟這個世界的底層旋律有某種危險的共鳴。",
     worldQuote:      "「本世界音頻異常，建議入境前自行評估對笛聲的抵抗力。」",
@@ -83,7 +83,7 @@ const resultsData = {
     resultText: "你適合穿越進去《國王的新衣》（小王子 IF線）\n安靜細膩的你，很擅長把情緒藏進沉默裡；只是有時候，太懂事的人，也最容易被留在自己的小星球上。",
     sourceKeys: ["A_SCHEME_3", "R_SCHEME_2"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/KING.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/KING.png",
     residentType:    "被王權包裝的孤星居民",
     residentDesc:    "你在這裡以皇冠示人，卻沒人知道皇冠底下是什麼。這個世界欣賞有型的人，而你最擅長把所有重量，折疊進那頂看不出重量的冠裡。",
     worldQuote:      "「皇冠的重量因人而異。有些人戴上之後，就再也摘不下來了。」",
@@ -104,7 +104,7 @@ const resultsData = {
     resultText: "你適合穿越進去《美女與野獸》（獅子與老鼠 IF線）\n你外柔內韌，看起來溫和，實際上很有馴服猛獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
     sourceKeys: ["A_CONTROL_3", "A_CHAOS_2"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/BEAST.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/BEAST.png",
     residentType:    "野性邊界的誤闖定居者",
     residentDesc:    "你是那種走進花園、黑獅會抬頭的人。不是因為你危險，而是你身上有某種東西讓巨大的存在想靠近，卻不確定該怎麼靠近。",
     worldQuote:      "「花園的門從不上鎖，但進來的人，往往不知道自己何時選擇了留下。」",
@@ -125,7 +125,7 @@ const resultsData = {
     resultText: "你適合穿越進去《白雪公主佐睡美人》（龍與地下城 IF線）\n你身上有一種越危險越迷人的特質，總會讓人忍不住想把你藏進最深的高塔；只是寶藏被珍藏久了，也可能忘記怎麼離開。",
     sourceKeys: ["A_DEVOTION_1", "R_DEVOTION_2"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/THORN.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/THORN.png",
     residentType:    "高塔深處的珍稀典藏者",
     residentDesc:    "你在這個世界很容易被視為值得珍藏的存在——不是因為你脆弱，而是你身上有某種光，讓人忍不住想把你放進最安全的地方。",
     worldQuote:      "「高塔居住品質五星，但請注意：本世界荊棘具有情感附著性。」",
@@ -146,7 +146,7 @@ const resultsData = {
     resultText: "你適合穿越進去《龜兔賽跑》（愛麗絲夢遊仙境 IF線）\n腦袋轉得飛快的你，總比別人更早看見另一條路；但捷徑走多了，也要小心自己是不是已經掉進太深的兔子洞。",
     sourceKeys: ["A_SCHEME_1", "R_SCHEME_1"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/RACE.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/RACE.png",
     residentType:    "賽道外側的戰略快跑者",
     residentDesc:    "你永遠比別人多算一步，但這個世界的賽道有個秘密：終點線會移動。你需要的不是跑得更快，而是決定什麼時候可以假裝停下來。",
     worldQuote:      "「本世界終點線位置不固定，建議隨時調整目標，並預備備用路線。」",
@@ -167,7 +167,7 @@ const resultsData = {
     resultText: "你適合穿越進去《烏鴉與水瓶》（醜小鴨 IF線）\n你也許常覺得自己和別人格格不入，卻總有一天會長成最特別的模樣；在那之前，請先學會喜歡現在的自己。",
     sourceKeys: ["A_CONTROL_1", "R_CONTROL_1"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/CROW.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/CROW.png",
     residentType:    "高處棲息的局外見證者",
     residentDesc:    "你在這個世界的存在方式，像一隻停在高處的烏鴉——看得清楚，卻不急著飛下去。有些人以為你冷漠，只有你知道，你只是在等一個值得的理由。",
     worldQuote:      "「石頭很重，水瓶很深。但如果你願意等，水位終究會升上來。」",
@@ -188,7 +188,7 @@ const resultsData = {
     resultText: "你適合穿越進去《糖果屋》（小紅帽 IF線）\n從不害怕捷徑的你，勇敢果決，也很願意追著香甜的誘惑往前走；但也要小心，別一不小心就被關進一方小天地喔。",
     sourceKeys: ["A_DEVOTION_2", "R_DEVOTION_1"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/CANDY.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/CANDY.png",
     residentType:    "甜蜜牢籠的自願定居者",
     residentDesc:    "你走進這個世界的方式，是先被香味吸引，然後才發現門關上了。不過說實話——糖果屋的門，從裡面也鎖得住。",
     worldQuote:      "「本世界糖分偏高，出入口辨識度偏低，請自行保管理智。」",
@@ -209,7 +209,7 @@ const resultsData = {
     resultText: "你適合穿越進去《灰姑娘》（歌劇魅影 IF線）\n你天生就有一種神祕又疏離的魅力，越是藏著，越容易讓人移不開眼；只是面具戴久了，也別忘了真正想被誰看見。",
     sourceKeys: ["A_CONTROL_2", "R_CONTROL_2"],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/CIND.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/CIND.png",
     residentType:    "面具之下的神秘入境者",
     residentDesc:    "你在這個世界不需要做什麼，只需要出現。然後所有人開始想知道：面具底下是什麼。你的存在本身，就是這個世界最大的謎題。",
     worldQuote:      "「舞會每晚舉行，面具隨處可得。唯一的問題是：你確定自己知道是誰嗎？」",
@@ -230,7 +230,7 @@ const resultsData = {
     resultText: "你選擇了清醒（特殊結局）\n在故事最危險的時刻，你選擇保持清醒。這不是懦弱，而是一種罕見的自知——知道什麼時候該停下，知道什麼值得冒險，知道自己是誰。",
     sourceKeys: [],
 
-    image:           "https://tealize-write.github.io/DarkBLstory/img/ESC.png",
+    image:           "https://tealize-write.github.io/TwistedTales/img/ESC.png",
     residentType:    "留在現實世界的清醒者",
     residentDesc:    "你在所有世界裡都是最難被故事捲走的人——因為你從來不打算真的留下來。這讓你成為最難被反將一軍的定居者，也是最危險的旁觀者。",
     worldQuote:      "「本世界不強制留人，但有時候會讓人想回來。」",
