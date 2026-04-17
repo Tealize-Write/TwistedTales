@@ -746,7 +746,7 @@ async function shareShortImage() {
   try {
     const img = await loadImg(r.image);
     if (img) {
-      const imgOffY = 44;
+      const imgOffY = 68;
       const scale = Math.min(CW / img.naturalWidth, PANEL_Y / img.naturalHeight);
       const sw = Math.round(img.naturalWidth * scale);
       const sh = Math.round(img.naturalHeight * scale);
@@ -817,7 +817,7 @@ async function shareShortImage() {
   /* ══ 5. 文字內容 ══ */
   const PAD_X = Math.round(CW * 0.082);
   const isESC = r.storyName === '逃脫成功結局';
-  let y = PANEL_Y + 34;
+  let y = PANEL_Y + 46;
 
   function setShadowCtx(blur, color) { ctx.shadowColor = color; ctx.shadowBlur = blur; }
   function clearShadowCtx() { ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; }
@@ -868,30 +868,28 @@ async function shareShortImage() {
   }
   y += Math.round(CW * 0.074);
 
-  // 第四層：residentDesc
-  const descLineH = Math.round(CW * 0.036);
-  ctx.font = `300 ${Math.round(CW * 0.022)}px "Noto Serif TC", serif`;
-  ctx.fillStyle = 'rgba(238,220,195,0.96)';
-  ctx.letterSpacing = '2px';
-  y = fillWrapped(r.residentDesc || '', y, CW - PAD_X * 2 - 80, descLineH, 3);
-  ctx.letterSpacing = '0px';
-  y += Math.round(CW * 0.026);
-
-  /* ── 圖騰分隔線 ── */
+  /* ── 圖騰分隔線（置於 residentDesc 前） ── */
   let emblemImg = null;
   try {
     let rawSvg = getEmblemSVG(code);
-    rawSvg = rawSvg.replace(/currentColor/g, 'rgba(212,175,55,0.92)');
+    rawSvg = rawSvg.replace(/currentColor/g, 'rgba(249,215,100,1.0)');
     rawSvg = rawSvg.replace(/var\(--bg\)/g, '#0b1530');
     if (!rawSvg.includes('xmlns='))
       rawSvg = rawSvg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" ');
-    emblemImg = await loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(rawSvg));
+    emblemImg = await new Promise((resolve) => {
+      const _i = new Image();
+      _i.onload = () => resolve(_i);
+      _i.onerror = () => resolve(null);
+      _i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(rawSvg);
+    });
   } catch(e) {}
 
   const divLineW = Math.round(CW * 0.60);
-  const eSize    = emblemImg ? Math.round(CW * 0.076) : 0;
+  const eSize    = emblemImg ? Math.round(CW * 0.096) : 0;
   const halfGap  = eSize > 0 ? (eSize / 2 + 14) : 0;
-  const lineY    = y;
+  // emblem 從 y 開始向下繪製（不以 y 為中心），避免蓋到上方文字
+  const eDrawY   = y;
+  const lineY    = y + (eSize > 0 ? Math.round(eSize / 2) : 0);
   const drawGradH = (x0, x1, a0, a1) => {
     const g = ctx.createLinearGradient(x0, 0, x1, 0);
     g.addColorStop(0, `rgba(212,175,55,${a0})`);
@@ -904,8 +902,17 @@ async function shareShortImage() {
   if (lx0 < lx1) drawGradH(lx0, lx1, 0, 0.50);
   if (rx0 < rx1) drawGradH(rx0, rx1, 0.50, 0);
   if (emblemImg) {
-    setShadowCtx(14, 'rgba(212,175,55,0.35)');
-    ctx.drawImage(emblemImg, (CW - eSize) / 2, lineY - eSize / 2, eSize, eSize);
+    const glowR = Math.round(eSize * 0.72);
+    const glowG = ctx.createRadialGradient(CW / 2, lineY, 0, CW / 2, lineY, glowR);
+    glowG.addColorStop(0,   'rgba(212,175,55,0.22)');
+    glowG.addColorStop(0.6, 'rgba(212,175,55,0.08)');
+    glowG.addColorStop(1,   'rgba(212,175,55,0)');
+    ctx.fillStyle = glowG;
+    ctx.beginPath();
+    ctx.arc(CW / 2, lineY, glowR, 0, Math.PI * 2);
+    ctx.fill();
+    setShadowCtx(28, 'rgba(212,175,55,0.70)');
+    ctx.drawImage(emblemImg, (CW - eSize) / 2, eDrawY, eSize, eSize);
     clearShadowCtx();
   } else {
     const dm = 7;
@@ -915,7 +922,16 @@ async function shareShortImage() {
     ctx.lineTo(CW/2, lineY+dm); ctx.lineTo(CW/2-dm, lineY);
     ctx.closePath(); ctx.fill();
   }
-  y += Math.round(CW * 0.072);
+  y += (eSize > 0 ? eSize : Math.round(CW * 0.040)) + Math.round(CW * 0.020);
+
+  // 第四層：residentDesc
+  const descLineH = Math.round(CW * 0.036);
+  ctx.font = `300 ${Math.round(CW * 0.022)}px "Noto Serif TC", serif`;
+  ctx.fillStyle = 'rgba(238,220,195,0.96)';
+  ctx.letterSpacing = '2px';
+  y = fillWrapped(r.residentDesc || '', y, CW - PAD_X * 2 - 80, descLineH, 2);
+  ctx.letterSpacing = '0px';
+  y += Math.round(CW * 0.022);
 
   /* ── 4欄指標 ── */
   const FOOTER_Y = CH - 108;
