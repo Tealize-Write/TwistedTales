@@ -518,12 +518,11 @@ async function shareResultAsImage() {
 
   const stamp = document.createElement('div');
   stamp.id = '_share_stamp';
-  stamp.style.cssText =
-    'text-align:center;padding:24px 0 32px;' +
-    'font-family:Georgia,serif;font-size:13px;letter-spacing:2px;' +
-    'color:rgba(255,255,255,.8);' +
-    'background-color:#0a0f1e;';
-  stamp.textContent = '✦  ' + SITE_URL + '  ✦';
+  stamp.style.cssText = 'text-align:center;padding:20px 0 36px;background-color:#0a0f1e;';
+  stamp.innerHTML =
+    '<div style="border-top:1px solid rgba(212,175,55,0.35);margin:0 44px 18px;"></div>' +
+    '<div style="font-family:\'Noto Serif TC\',serif;font-size:14px;letter-spacing:3px;color:rgba(249,231,177,0.88);margin-bottom:10px;">《故事另有結局》</div>' +
+    '<div style="font-family:Georgia,serif;font-style:italic;font-size:12px;letter-spacing:2px;color:rgba(212,175,55,0.42);">✦  ' + SITE_URL + '  ✦</div>';
 
   const _longSpacer = document.createElement('div');
   _longSpacer.id = '_share_spacer';
@@ -546,7 +545,7 @@ async function shareResultAsImage() {
   if (r_share && _compoundEl) {
     _compoundEl.textContent = _isESC_share
       ? '── 逃脫成功結局 ──'
-      : `IF 路線──${r_share.storyName || r_share.label || code}`;
+      : `IF 路線：${r_share.storyName || r_share.label || code}`;
   }
 
   const originalScrollY = window.scrollY;
@@ -661,7 +660,7 @@ async function shareResultAsImage() {
 }
 
 /* ════════════════════════════════
-   SHARE SHORT IMAGE (加入圖騰徽章)
+   SHARE SHORT IMAGE  (IG 1080 × 1350)
 ════════════════════════════════ */
 async function shareShortImage() {
   const code     = _lastResultCode || determineResultCode();
@@ -669,434 +668,374 @@ async function shareShortImage() {
   const SITE_URL = 'https://tealize-write.github.io/DarkBLstory/';
   if (!r) return;
 
-  const btn = document.querySelector('.share-btn.short-share');
+  const btn      = document.querySelector('.share-btn.short-share');
   const origText = btn ? btn.textContent : '';
   if (btn) { btn.textContent = '生成中…'; btn.disabled = true; }
-  
-  if (typeof trackUserAction === 'function') {
-      trackUserAction(code, 'share_short');
-  }
+  if (typeof trackUserAction === 'function') trackUserAction(code, 'share_short');
 
-  const CW   = 1080;
-  const CH   = 1350;
+  const CW = 1080;
+  const CH = 1350;
 
   const canvas = document.createElement('canvas');
   canvas.width  = CW;
   canvas.height = CH;
   const ctx = canvas.getContext('2d');
 
-  function setShadow(blur = 3) {
-    ctx.shadowColor   = 'rgba(5,8,20,0.25)';
+  /* ── helpers ── */
+  function setShadow(blur, color) {
+    ctx.shadowColor   = color || 'rgba(0,0,0,0.4)';
     ctx.shadowBlur    = blur;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
+    ctx.shadowOffsetX = ctx.shadowOffsetY = 0;
   }
-  function clearShadow() {
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur  = 0;
-  }
-  
-  function drawDivider(yPos) {
-    const divW = Math.round(CW * 0.6);
-    const gradLine = ctx.createLinearGradient((CW - divW)/2, 0, (CW + divW)/2, 0);
-    gradLine.addColorStop(0, 'rgba(255,255,255,0)');
-    gradLine.addColorStop(0.5, 'rgba(255,255,255,0.4)');
-    gradLine.addColorStop(1, 'rgba(255,255,255,0)');
-    
-    ctx.fillStyle = gradLine;
-    ctx.fillRect((CW - divW)/2, yPos - 0.5, divW, 1.5);
-    
-    const dm = 8;
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(255,255,255,0.8)';
-    ctx.shadowBlur = 8;
-    ctx.beginPath();
-    ctx.moveTo(CW/2,      yPos - dm);
-    ctx.lineTo(CW/2 + dm, yPos);
-    ctx.lineTo(CW/2,      yPos + dm);
-    ctx.lineTo(CW/2 - dm, yPos);
-    ctx.closePath();
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-
-  // 繪製帶有專屬圖騰的分隔線
-  function drawEmblemDivider(yPos, emblemImg) {
-    const divW = Math.round(CW * 0.65);
-    const gradLine = ctx.createLinearGradient((CW - divW)/2, 0, (CW + divW)/2, 0);
-    gradLine.addColorStop(0, 'rgba(255,255,255,0)');
-    gradLine.addColorStop(0.2, 'rgba(255,255,255,0.4)');
-    gradLine.addColorStop(0.8, 'rgba(255,255,255,0.4)');
-    gradLine.addColorStop(1, 'rgba(255,255,255,0)');
-
-    const emblemSize = Math.round(CW * 0.085); // 圖騰大小約 91px
-    const halfGap = (emblemSize / 2) + 12;
-
-    ctx.fillStyle = gradLine;
-    ctx.fillRect((CW - divW)/2, yPos - 0.5, (divW/2) - halfGap, 1.5);
-    ctx.fillRect(CW/2 + halfGap, yPos - 0.5, (divW/2) - halfGap, 1.5);
-
-    if (emblemImg) {
-        ctx.shadowColor = 'rgba(255,255,255,0.5)';
-        ctx.shadowBlur = 10;
-        ctx.drawImage(emblemImg, (CW - emblemSize)/2, yPos - emblemSize/2, emblemSize, emblemSize);
-        ctx.shadowBlur = 0;
-    }
-  }
+  function clearShadow() { ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; }
   
   function getWrappedLines(text, maxW) {
-    let lines = [];
-    let line = '';
-    for (const ch of text) {
+    const lines = []; let line = '';
+    for (const ch of (text || '')) {
       const test = line + ch;
-      if (ctx.measureText(test).width > maxW && line) {
-        lines.push(line);
-        line = ch;
-      } else { line = test; }
+      if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = ch; }
+      else line = test;
     }
     if (line) lines.push(line);
     return lines;
   }
-  
-  function fillWrapped(text, startY, maxW, lineH) {
-    const lines = getWrappedLines(text, maxW);
-    lines.forEach((l, i) => {
-        ctx.fillText(l, CW / 2, startY + i * lineH);
-    });
+  function fillWrapped(text, startY, maxW, lineH, maxLines) {
+    let lines = getWrappedLines(text, maxW);
+    if (maxLines) lines = lines.slice(0, maxLines);
+    lines.forEach((l, i) => ctx.fillText(l, CW / 2, startY + i * lineH));
     return startY + lines.length * lineH;
   }
-  
+
   async function loadImg(src) {
     const tryLoad = (useCORS) => new Promise((resolve) => {
       const img = new Image();
       if (useCORS) img.crossOrigin = 'anonymous';
       img.onload  = () => resolve(img);
       img.onerror = () => resolve(null);
-      img.src = src + (useCORS ? (src.includes('?') ? '&_c=1' : '?_c=1') : '');
+      img.src = useCORS ? src + (src.includes('?') ? '&_c=1' : '?_c=1') : src;
     });
-    const imgCORS = await tryLoad(true);
-    if (imgCORS) return imgCORS;
-    return tryLoad(false); 
+    return (await tryLoad(true)) || tryLoad(false);
   }
 
-  // ════ 0. 載入專屬圖騰 SVG ════
+  /* ── 4-pointed star ── */
+  function drawStar4(x, y, r) {
+    const t = r * 0.38;
+    ctx.fillStyle = 'rgba(212,175,55,0.80)';
+    ctx.beginPath();
+    ctx.moveTo(x, y - r); ctx.lineTo(x + t, y - t);
+    ctx.lineTo(x + r, y); ctx.lineTo(x + t, y + t);
+    ctx.lineTo(x, y + r); ctx.lineTo(x - t, y + t);
+    ctx.lineTo(x - r, y); ctx.lineTo(x - t, y - t);
+    ctx.closePath(); ctx.fill();
+  }
+
+  /* ── 載入圖騰 SVG ── */
   let emblemImg = null;
   try {
     let rawSvg = getEmblemSVG(code);
-    rawSvg = rawSvg.replace(/currentColor/g, 'rgba(255,255,255,0.95)');
+    rawSvg = rawSvg.replace(/currentColor/g, 'rgba(212,175,55,0.92)');
     rawSvg = rawSvg.replace(/var\(--bg\)/g, '#0a0f1e');
-    if (!rawSvg.includes('xmlns=')) {
+    if (!rawSvg.includes('xmlns='))
       rawSvg = rawSvg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" ');
-    } else if (!rawSvg.includes('width=')) {
-      rawSvg = rawSvg.replace('<svg ', '<svg width="64" height="64" ');
-    }
-    const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(rawSvg);
-    emblemImg = await loadImg(svgDataUrl);
-  } catch(e) {
-    console.warn('Emblem load failed', e);
-  }
+    emblemImg = await loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(rawSvg));
+  } catch(e) {}
 
-  // ════ 1. 全底色（網站深藍） ════
-  ctx.fillStyle = '#0a0f1e';
+  /* ══ 固定版面常數 ══
+     PANEL_Y = 文字托底板頂端（固定值，圖片高度嚴格不超過此）
+     FOOTER_Y = 頁腳起點（固定值，與底部保留 108px）                */
+  const FM       = 26;
+  const PANEL_Y  = Math.round(CH * 0.400);   // 540px
+  const FOOTER_Y = CH - 108;                 // 1242px
+  const PAD_X    = Math.round(CW * 0.082);   // 89px 水平文字留白
+
+  /* ═══ 1. 背景 ═══ */
+  ctx.fillStyle = '#070b18';
   ctx.fillRect(0, 0, CW, CH);
-
-  // ════ 1b. 菱格紋疊層（與網站 body::before 相同圖樣） ════
   try {
-    const tileSvg = `<svg width='90' height='150' viewBox='0 0 60 100' xmlns='http://www.w3.org/2000/svg'><path d='M30 0 L60 50 L30 100 L0 50 Z' fill='#102545' opacity='0.9'/><path d='M30 0 L60 50 L30 100 L0 50 Z' fill='none' stroke='rgba(212,175,55,0.18)' stroke-width='0.5'/><circle cx='30' cy='50' r='1' fill='rgba(212,175,55,0.45)'/><circle cx='0' cy='0' r='1' fill='rgba(212,175,55,0.35)'/><circle cx='60' cy='0' r='1' fill='rgba(212,175,55,0.35)'/><circle cx='30' cy='100' r='1' fill='rgba(212,175,55,0.35)'/></svg>`;
+    const tileSvg = `<svg width='90' height='150' viewBox='0 0 60 100' xmlns='http://www.w3.org/2000/svg'><path d='M30 0 L60 50 L30 100 L0 50 Z' fill='%23102545' opacity='0.85'/><path d='M30 0 L60 50 L30 100 L0 50 Z' fill='none' stroke='rgba(212,175,55,0.12)' stroke-width='0.5'/><circle cx='30' cy='50' r='1' fill='rgba(212,175,55,0.35)'/><circle cx='0' cy='0' r='1' fill='rgba(212,175,55,0.25)'/><circle cx='60' cy='0' r='1' fill='rgba(212,175,55,0.25)'/><circle cx='30' cy='100' r='1' fill='rgba(212,175,55,0.25)'/></svg>`;
     const tileImg = await loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(tileSvg));
     if (tileImg) {
       const tc = document.createElement('canvas');
       tc.width = 90; tc.height = 150;
-      tc.getContext('2d').drawImage(tileImg, 0, 0, 90, 150);
-      const pat = ctx.createPattern(tc, 'repeat');
-      ctx.fillStyle = pat;
-      ctx.fillRect(0, 0, CW, CH);
-      const radGrad = ctx.createRadialGradient(CW / 2, CH / 2, 0, CW / 2, CH / 2, Math.max(CW, CH) * 0.75);
-      radGrad.addColorStop(0, 'rgba(20,30,60,0.5)');
-      radGrad.addColorStop(1, 'rgba(20,30,60,0)');
-      ctx.fillStyle = radGrad;
+      tc.getContext('2d').drawImage(tileImg, 0, 0);
+      ctx.fillStyle = ctx.createPattern(tc, 'repeat');
       ctx.fillRect(0, 0, CW, CH);
     }
-  } catch(e) { console.warn('菱格紋繪製失敗', e); }
+  } catch(e) {}
 
-  // ════ 2. 角色圖 (變大且適度往下移) ════
-  const maxImgH = Math.round(CH * 0.40);
-  let imgH = 0;
-  let dy = 45; // 讓出上方塔羅牌邊框空間
+  /* ═══ 2. 角色圖（高度嚴格不超過 PANEL_Y） ═══ */
   try {
     const img = await loadImg(r.image);
-    if(img) {
-      const scale = Math.min((CW * 0.85) / img.naturalWidth, maxImgH / img.naturalHeight);
-      const sw = Math.round(img.naturalWidth * scale);
-      const sh = Math.round(img.naturalHeight * scale);
-      const dx = (CW - sw) / 2;
-      ctx.drawImage(img, dx, dy, sw, sh);
-      imgH = sh;
+    if (img) {
+      const imgMaxH = PANEL_Y;
+      const scale   = Math.min((CW * 0.92) / img.naturalWidth, imgMaxH / img.naturalHeight);
+      const sw      = Math.round(img.naturalWidth  * scale);
+      const sh      = Math.round(img.naturalHeight * scale);
+      ctx.drawImage(img, (CW - sw) / 2, 0, sw, sh);
+
+      // 底部柔和淡出融入托底板
+      const fadeFrom = Math.max(sh - 200, 0);
+      const fadeTo   = PANEL_Y + 8;
+      const fg       = ctx.createLinearGradient(0, fadeFrom, 0, fadeTo);
+      fg.addColorStop(0,    'rgba(7,11,24,0)');
+      fg.addColorStop(0.55, 'rgba(7,11,24,0.25)');
+      fg.addColorStop(1,    'rgba(7,11,24,1)');
+      ctx.fillStyle = fg;
+      ctx.fillRect(0, fadeFrom, CW, fadeTo - fadeFrom);
     }
-  } catch(e) {
-    console.warn('圖片載入失敗', e);
-  }
+  } catch(e) {}
 
-  // ════ 3. 文字托底區（深藍底 + 金線，取代整片壓暗） ════
-  const isESC = r.storyName === '逃脫成功結局';
-
-  // 預量 residentDesc 行數以動態計算托底高度
-  const _descFont  = `300 ${Math.round(CW * 0.022)}px "Noto Serif TC", serif`;
-  ctx.font = _descFont;
-  const _descLns   = getWrappedLines(r.residentDesc || '', CW * 0.80);
-  const _descLineH = Math.round(CW * 0.036);
-  const _descH     = _descLns.length * _descLineH;
-  const _stackH    = Math.round(CW * 0.040)   // eyebrow advance
-                   + Math.round(CW * 0.050)   // subline advance
-                   + Math.round(CW * 0.075)   // residentType advance
-                   + _descH
-                   + Math.round(CW * 0.040);  // gap after desc
-  const _pad       = 44;
-  const _panelH    = _pad + _stackH + _pad;
-  const _panelTop  = imgH > 0 ? (dy + imgH - Math.round(CW * 0.05)) : Math.round(CH * 0.42);
-  const _fadeH     = Math.round(CW * 0.16);
-
-  // 圖片底部柔和融合（不再全寬硬壓整塊）
-  if (imgH > 0) {
-    const _fg = ctx.createLinearGradient(0, _panelTop - _fadeH, 0, _panelTop);
-    _fg.addColorStop(0,   'rgba(7,11,24,0)');
-    _fg.addColorStop(0.6, 'rgba(7,11,24,0.30)');
-    _fg.addColorStop(1,   'rgba(7,11,24,0.90)');
-    ctx.fillStyle = _fg;
-    ctx.fillRect(0, _panelTop - _fadeH, CW, _fadeH);
-  }
-
-  // 深藍半透明托底板
+  /* ═══ 3. 文字托底板 ═══ */
   ctx.fillStyle = 'rgba(7,11,24,0.93)';
-  ctx.fillRect(0, _panelTop, CW, _panelH);
+  ctx.fillRect(0, PANEL_Y, CW, FOOTER_Y - PANEL_Y);
 
-  // 金色頂線 / 底線
-  ctx.strokeStyle = 'rgba(212,175,55,0.55)';
-  ctx.lineWidth   = 1;
-  ctx.beginPath(); ctx.moveTo(70, _panelTop); ctx.lineTo(CW - 70, _panelTop); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(70, _panelTop + _panelH); ctx.lineTo(CW - 70, _panelTop + _panelH); ctx.stroke();
+  // 金色雙線邊框
+  ctx.strokeStyle = 'rgba(212,175,55,0.50)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(FM + 12, PANEL_Y + 10); ctx.lineTo(CW - FM - 12, PANEL_Y + 10); ctx.stroke();
+  ctx.strokeStyle = 'rgba(212,175,55,0.18)';
+  ctx.beginPath(); ctx.moveTo(FM + 22, PANEL_Y + 16); ctx.lineTo(CW - FM - 22, PANEL_Y + 16); ctx.stroke();
+  drawStar4(FM + 12, PANEL_Y + 10, 5.5);
+  drawStar4(CW - FM - 12, PANEL_Y + 10, 5.5);
 
-  // ════ 4. 外框裝飾 (Tarot-style border) ════
-  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(30, 30, CW - 60, CH - 60);
+  /* ═══ 4. 頂部橫幅（圖片上方細字） ═══ */
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'top';
+  ctx.font         = `italic 300 ${Math.round(CW * 0.020)}px "Noto Serif TC", serif`;
+  ctx.fillStyle    = 'rgba(212,175,55,0.48)';
+  ctx.letterSpacing = '5px';
+  ctx.fillText('故 事 另 有 結 局  ✦  黑 森 林 測 驗', CW / 2, FM + 12);
+  ctx.letterSpacing = '0px';
 
-  const cl = 24;
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-  ctx.beginPath(); ctx.moveTo(30, 30 + cl); ctx.lineTo(30, 30); ctx.lineTo(30 + cl, 30); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CW - 30 - cl, 30); ctx.lineTo(CW - 30, 30); ctx.lineTo(CW - 30, 30 + cl); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(30, CH - 30 - cl); ctx.lineTo(30, CH - 30); ctx.lineTo(30 + cl, CH - 30); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CW - 30 - cl, CH - 30); ctx.lineTo(CW - 30, CH - 30); ctx.lineTo(CW - 30, CH - 30 - cl); ctx.stroke();
+  /* ═══ 5. 文字內容（全部以 textBaseline:top 繪製） ═══ */
+  const isESC = r.storyName === '逃脫成功結局';
+  let y = PANEL_Y + 34;
 
-  // ════ 5. 上方文字區 ════
+  // 第一層：童話《label》
+  ctx.font         = `italic 300 ${Math.round(CW * 0.024)}px "Noto Serif TC", serif`;
+  ctx.fillStyle    = 'rgba(212,175,55,0.72)';
+  ctx.letterSpacing = '5px';
+  ctx.fillText(isESC ? '清醒路線' : (r.label ? `童話《${r.label}》` : '異世界移居指南'), CW / 2, y);
+  ctx.letterSpacing = '0px';
+  y += Math.round(CW * 0.040);
+
+  // 第二層：IF 路線：storyName
+  ctx.font         = `400 ${Math.round(CW * 0.028)}px "Noto Serif TC", serif`;
+  ctx.fillStyle    = 'rgba(249,231,177,0.75)';
+  ctx.letterSpacing = '3px';
+  ctx.fillText(isESC ? '── 逃脫成功結局 ──' : `IF 路線──${r.storyName || r.label || code}`, CW / 2, y);
+  ctx.letterSpacing = '0px';
+  y += Math.round(CW * 0.048);
+
+  // 第三層：residentType（最大主標，最醒目）
+  ctx.font         = `700 ${Math.round(CW * 0.053)}px "Noto Serif TC", serif`;
+  ctx.fillStyle    = '#f9e7b1';
+  ctx.letterSpacing = '10px';
+  setShadow(8, 'rgba(212,175,55,0.25)');
+  ctx.fillText(r.residentType, CW / 2, y);
+  clearShadow();
+  ctx.letterSpacing = '0px';
+  y += Math.round(CW * 0.074);
+
+  // 第四層：residentDesc（最多3行）
+  const descLineH = Math.round(CW * 0.036);
+  ctx.font         = `300 ${Math.round(CW * 0.022)}px "Noto Serif TC", serif`;
+  ctx.fillStyle    = 'rgba(210,190,160,0.80)';
+  ctx.letterSpacing = '2px';
+  y = fillWrapped(r.residentDesc || '', y, CW - PAD_X * 2, descLineH, 3);
+  ctx.letterSpacing = '0px';
+  y += Math.round(CW * 0.026);
+
+  /* ── 圖騰分隔線 ── */
+  const divLineW = Math.round(CW * 0.60);
+  const eSize    = emblemImg ? Math.round(CW * 0.076) : 0;
+  const halfGap  = eSize > 0 ? (eSize / 2 + 14) : 0;
+  const lineY    = y;
+  const drawGradH = (x0, x1, a0, a1) => {
+    const g = ctx.createLinearGradient(x0, 0, x1, 0);
+    g.addColorStop(0, `rgba(212,175,55,${a0})`);
+    g.addColorStop(1, `rgba(212,175,55,${a1})`);
+    ctx.fillStyle = g;
+    ctx.fillRect(x0, lineY - 0.5, x1 - x0, 1);
+  };
+  const lx0 = (CW - divLineW) / 2, lx1 = CW / 2 - halfGap;
+  const rx0 = CW / 2 + halfGap,    rx1 = lx0 + divLineW;
+  if (lx0 < lx1) drawGradH(lx0, lx1, 0, 0.50);
+  if (rx0 < rx1) drawGradH(rx0, rx1, 0.50, 0);
+  if (emblemImg) {
+    setShadow(14, 'rgba(212,175,55,0.35)');
+    ctx.drawImage(emblemImg, (CW - eSize) / 2, lineY - eSize / 2, eSize, eSize);
+    clearShadow();
+  } else {
+    const dm = 7;
+    ctx.fillStyle = 'rgba(212,175,55,0.75)';
+    ctx.beginPath();
+    ctx.moveTo(CW/2, lineY-dm); ctx.lineTo(CW/2+dm, lineY);
+    ctx.lineTo(CW/2, lineY+dm); ctx.lineTo(CW/2-dm, lineY);
+    ctx.closePath(); ctx.fill();
+  }
+  y += Math.round(CW * 0.058);
+
+  /* ── 4欄指標 ── */
+  const axisMax      = typeof calcAxisMax === 'function' ? calcAxisMax() : {};
+  const axisLabelMap = {
+    BRO:'兩兄弟', SHA:'影子', PIP:'吹笛手', KING:'新衣',
+    BEAST:'美女與野獸', THORN:'沉睡荊棘', RACE:'龜兔賽跑',
+    CROW:'烏鴉', CANDY:'糖裹屋', CIND:'灰姑娘', ESC:'旁觀者'
+  };
+  const curScores = typeof categoryScore !== 'undefined' ? categoryScore : {};
+  const top1dark  = (typeof CATEGORY_KEYS !== 'undefined' ? CATEGORY_KEYS : Object.keys(curScores))
+    .map(k => [k, curScores[k] || 0]).sort((a, b) => b[1] - a[1]).slice(0, 1)
+    .map(([k, v]) => ({ lab: axisLabelMap[k] || k, val: String(v),
+      pct: axisMax[k] ? Math.round((v / axisMax[k]) * 100) : 0 }));
+  const mp2 = typeof calcMetricPercent === 'function' ? calcMetricPercent() : {};
+  const ml2 = typeof metricLabels !== 'undefined' ? metricLabels
+    : { survival: '生存率', happiness: '幸福指數', fate: '命運干預值' };
+  const seals = [
+    { lab: ml2.survival,  val: (mp2.survival  ?? 0) + '%', pct: mp2.survival  || 0 },
+    { lab: ml2.happiness, val: (mp2.happiness ?? 0) + '%', pct: mp2.happiness || 0 },
+    { lab: ml2.fate,      val: (mp2.fate      ?? 0) + '%', pct: mp2.fate      || 0 },
+    ...top1dark,
+  ];
+
+  const sPadX = Math.round(CW * 0.048);
+  const sW    = Math.round((CW - sPadX * 2) / seals.length);
+  const barH  = 3;
+  const barW  = sW - Math.round(CW * 0.022);
+
+  ctx.textAlign = 'center';
+  seals.forEach((s, i) => {
+    const sx = sPadX + i * sW;
+    const cx = sx + sW / 2;
+
+    ctx.font         = `400 ${Math.round(CW * 0.020)}px "Noto Serif TC", serif`;
+    ctx.fillStyle    = 'rgba(200,175,130,0.70)';
+    ctx.letterSpacing = '1px';
+    ctx.fillText(s.lab, cx, y);
+    ctx.letterSpacing = '0px';
+
+    const barY = y + Math.round(CW * 0.031);
+    ctx.fillStyle = 'rgba(212,175,55,0.12)';
+    ctx.fillRect(sx + Math.round(CW * 0.011), barY, barW, barH);
+
+    const fillW = Math.round(barW * Math.min(s.pct, 100) / 100);
+    const bGrad = ctx.createLinearGradient(sx, 0, sx + sW, 0);
+    bGrad.addColorStop(0, 'rgba(160,120,40,0.85)');
+    bGrad.addColorStop(1, 'rgba(249,231,177,0.95)');
+    ctx.fillStyle = bGrad;
+    setShadow(4, 'rgba(212,175,55,0.25)');
+    ctx.fillRect(sx + Math.round(CW * 0.011), barY, fillW, barH);
+    clearShadow();
+
+    ctx.font         = `700 ${Math.round(CW * 0.026)}px "Noto Serif TC", serif`;
+    ctx.fillStyle    = '#f5efe0';
+    ctx.letterSpacing = '1px';
+    ctx.fillText(s.val, cx, barY + Math.round(CW * 0.022));
+    ctx.letterSpacing = '0px';
+  });
+  y += Math.round(CW * 0.092);
+
+  /* ── 引言分隔線 ── */
+  {
+    const qdW = Math.round(CW * 0.48);
+    const qx0 = (CW - qdW) / 2;
+    const qg1 = ctx.createLinearGradient(qx0, 0, CW/2 - 8, 0);
+    qg1.addColorStop(0, 'rgba(212,175,55,0)');
+    qg1.addColorStop(1, 'rgba(212,175,55,0.42)');
+    ctx.fillStyle = qg1;
+    ctx.fillRect(qx0, y - 0.5, CW/2 - 8 - qx0, 1);
+    const qg2 = ctx.createLinearGradient(CW/2 + 8, 0, qx0 + qdW, 0);
+    qg2.addColorStop(0, 'rgba(212,175,55,0.42)');
+    qg2.addColorStop(1, 'rgba(212,175,55,0)');
+    ctx.fillStyle = qg2;
+    ctx.fillRect(CW/2 + 8, y - 0.5, qx0 + qdW - (CW/2 + 8), 1);
+    const dm = 5;
+    ctx.fillStyle = 'rgba(212,175,55,0.72)';
+    ctx.beginPath();
+    ctx.moveTo(CW/2, y-dm); ctx.lineTo(CW/2+dm, y);
+    ctx.lineTo(CW/2, y+dm); ctx.lineTo(CW/2-dm, y);
+    ctx.closePath(); ctx.fill();
+  }
+  y += Math.round(CW * 0.030);
+
+  /* ── 世界警語（動態計算剩餘行數上限，絕不溢出頁腳） ── */
+  const qLineH    = Math.round(CW * 0.038);
+  const qAvail    = FOOTER_Y - 12 - y;
+  const qMaxLines = Math.max(1, Math.floor(qAvail / qLineH));
+  ctx.font         = `italic 300 ${Math.round(CW * 0.026)}px "Noto Serif TC", serif`;
+  ctx.fillStyle    = 'rgba(249,231,177,0.62)';
+  ctx.letterSpacing = '3px';
+  fillWrapped(r.worldQuote || '', y, CW - PAD_X * 2, qLineH, Math.min(3, qMaxLines));
+  ctx.letterSpacing = '0px';
+
+  /* ═══ 6. 頁腳 ═══ */
+  ctx.fillStyle = 'rgba(5,8,18,0.90)';
+  ctx.fillRect(0, FOOTER_Y, CW, CH - FOOTER_Y);
+
+  ctx.strokeStyle = 'rgba(212,175,55,0.38)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(FM + 12, FOOTER_Y + 1); ctx.lineTo(CW - FM - 12, FOOTER_Y + 1); ctx.stroke();
+  ctx.strokeStyle = 'rgba(212,175,55,0.14)';
+  ctx.beginPath(); ctx.moveTo(FM + 22, FOOTER_Y + 6); ctx.lineTo(CW - FM - 22, FOOTER_Y + 6); ctx.stroke();
+  drawStar4(FM + 12, FOOTER_Y + 1, 4.5);
+  drawStar4(CW - FM - 12, FOOTER_Y + 1, 4.5);
+
   ctx.textAlign    = 'center';
   ctx.textBaseline = 'top';
 
-  let y = _panelTop + _pad;
-
-  // ── 第一層 eyebrow：童話《label》（小字，清楚） ──
-  ctx.font      = `300 ${Math.round(CW * 0.024)}px "Noto Serif TC", serif`;
-  ctx.fillStyle = 'rgba(255,255,255,0.60)';
-  ctx.letterSpacing = "5px";
-  const eyebrowText = isESC
-    ? '清醒路線'
-    : (r.label ? `童話《${r.label}》` : '異世界移居指南');
-  ctx.fillText(eyebrowText, CW / 2, y);
-
-  y += Math.round(CW * 0.040);
-
-  // ── 第二層 subline：IF 路線：storyName（中小字） ──
-  ctx.font      = `400 ${Math.round(CW * 0.028)}px "Noto Serif TC", serif`;
-  ctx.fillStyle = 'rgba(255,255,255,0.78)';
-  ctx.letterSpacing = "3px";
-  const sublineText = isESC
-    ? '── 逃脫成功結局 ──'
-    : `IF 路線：${r.storyName || r.label || code}`;
-  ctx.fillText(sublineText, CW / 2, y);
-
-  y += Math.round(CW * 0.050);
-
-  // ── 第三層 main title：residentType（最顯眼的主標） ──
-  ctx.font      = `700 ${Math.round(CW * 0.052)}px "Noto Serif TC", serif`;
-  ctx.fillStyle = '#ffffff';
-  ctx.letterSpacing = "12px";
-  setShadow(3);
-  ctx.fillText(r.residentType, CW / 2, y);
+  ctx.font         = `500 ${Math.round(CW * 0.029)}px "Noto Serif TC", serif`;
+  ctx.fillStyle    = 'rgba(249,231,177,0.88)';
+  ctx.letterSpacing = '4px';
+  setShadow(2, 'rgba(212,175,55,0.15)');
+  ctx.fillText(`《故事另有結局》✦ ${r.bookName}`, CW / 2, FOOTER_Y + 20);
   clearShadow();
+  ctx.letterSpacing = '0px';
 
-  y += Math.round(CW * 0.075);
+  ctx.font         = `300 ${Math.round(CW * 0.018)}px Georgia, serif`;
+  ctx.fillStyle    = 'rgba(212,175,55,0.38)';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('✦  ' + SITE_URL + '  ✦', CW / 2, FOOTER_Y + 66);
+  ctx.letterSpacing = '0px';
 
-  // ── 第四層 body：residentDesc（描述文字） ──
-  ctx.font      = _descFont;
-  ctx.fillStyle = 'rgba(255,255,255,0.72)';
-  ctx.letterSpacing = "2px";
-  y = fillWrapped(r.residentDesc || '', y, CW * 0.80, _descLineH);
-  ctx.letterSpacing = "0px";
+  /* ═══ 7. 外框角落 ═══ */
+  ctx.strokeStyle = 'rgba(212,175,55,0.15)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(FM, FM, CW - FM * 2, CH - FM * 2);
 
-  y += Math.round(CW * 0.040);
-
-  // ── 圖騰專屬分隔線 1 ──
-  ctx.letterSpacing = "0px"; 
-  if (emblemImg) {
-      drawEmblemDivider(y, emblemImg);
-  } else {
-      drawDivider(y);
-  }
-  y += Math.round(CW * 0.065);
-
-  // ════ 6. 印記 & 黑暗特質 (單排 4 欄) ════
-  const axisMax = typeof calcAxisMax === 'function' ? calcAxisMax() : {};
-  const axisLabel = {
-    BRO:'兩兄弟', SHA:'影子', PIP:'吹笛手', KING:'國王的新衣',
-    BEAST:'美女與野獸', THORN:'沉睡荊棘', RACE:'龜兔賽跑',
-    CROW:'烏鴉', CANDY:'糖裹屋', CIND:'灰姑娘', ESC:'清醒旁觀者'
+  const cl = 32;
+  ctx.strokeStyle = 'rgba(212,175,55,0.58)';
+  ctx.lineWidth = 2;
+  const dc = (ax, ay, bx, by, cx2, cy2) => {
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.lineTo(cx2, cy2); ctx.stroke();
   };
-  const currentScores = typeof categoryScore !== 'undefined' ? categoryScore : {};
+  dc(FM,       FM + cl, FM,      FM,      FM + cl, FM);
+  dc(CW-FM-cl, FM,      CW-FM,   FM,      CW-FM,   FM + cl);
+  dc(FM,       CH-FM-cl,FM,      CH-FM,   FM + cl, CH-FM);
+  dc(CW-FM-cl, CH-FM,   CW-FM,   CH-FM,   CW-FM,   CH-FM-cl);
 
-  const top2 = (typeof CATEGORY_KEYS !== 'undefined' ? CATEGORY_KEYS : Object.keys(currentScores))
-    .map(k => [k, currentScores[k] || 0])
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 2);
-
-  const darkTraits = top2.map(([k, v]) => ({
-    lab: axisLabel[k] || k,
-    val: String(v),
-    pct: axisMax[k] ? Math.round((v / axisMax[k]) * 100) : 0
-  }));
-
-  const mp  = typeof calcMetricPercent === 'function' ? calcMetricPercent() : {};
-  const ml2 = typeof metricLabels !== 'undefined' ? metricLabels : { survival: '童話世界生存率', happiness: '幸福指數', fate: '命運干預值' };
-
-  const seals = [
-    { lab: ml2.survival,  val: (mp.survival  ?? 0) + '%', pct: mp.survival  || 0 },
-    { lab: ml2.happiness, val: (mp.happiness ?? 0) + '%', pct: mp.happiness || 0 },
-    { lab: ml2.fate,      val: (mp.fate      ?? 0) + '%', pct: mp.fate      || 0 },
-    ...darkTraits.slice(0, 1)
-  ];
-
-  const sealW   = Math.round(CW * 0.20); 
-  const sealGap = Math.round(CW * 0.035);
-  const totalW  = (sealW * 4) + (sealGap * 3);
-  const sealX0  = (CW - totalW) / 2;
-  const barH    = 3; 
-  const barW    = sealW - 20;
-
-  seals.forEach((s, i) => {
-    const sx = sealX0 + (i * (sealW + sealGap));
-    const sy = y;
-    const cx = sx + (sealW / 2);
-
-    ctx.font      = `400 ${Math.round(CW * 0.022)}px "Noto Serif TC", serif`;
-    ctx.fillStyle = 'rgba(255,255,255,0.60)';
-    ctx.textAlign = 'center';
-    ctx.letterSpacing = "2px";
-    ctx.fillText(s.lab, cx, sy);
-    ctx.letterSpacing = "0px";
-
-    const barY = sy + Math.round(CW * 0.035);
-    ctx.fillStyle = 'rgba(255,255,255,0.15)';
-    ctx.fillRect(sx + 10, barY, barW, barH);
-
-    const fillW = Math.round(barW * Math.min(s.pct, 100) / 100);
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.shadowColor = 'rgba(255,255,255,0.5)';
-    ctx.shadowBlur = 4;
-    ctx.fillRect(sx + 10, barY, fillW, barH);
-    ctx.shadowBlur = 0;
-
-    ctx.font      = `700 ${Math.round(CW * 0.028)}px "Noto Serif TC", serif`;
-    ctx.fillStyle = '#ffffff';
-    ctx.letterSpacing = "1px";
-    ctx.fillText(s.val, cx, barY + Math.round(CW * 0.025));
-    ctx.letterSpacing = "0px";
-  });
-
-  y += Math.round(CW * 0.100);
-
-  // ── 菱形分隔線 2
-  ctx.letterSpacing = "0px";
-  drawDivider(y);
-  const divider2Y = y; 
-
-  // ════ 7. 底部安全區域（固定從底部算，不受其他內容影響） ════
-  const _urlY         = CH - 52;          // URL 底邊 (textBaseline: bottom)
-  const _titleY       = CH - 52 - 72;     // 書名底邊
-  const _safeBoundary = _titleY - 28;     // quote 絕對不能越過此線
-
-  ctx.textAlign    = 'center';
-  ctx.textBaseline = 'bottom';
-
-  // ── 網址
-  ctx.font          = `300 ${Math.round(CW * 0.020)}px Georgia, serif`;
-  ctx.fillStyle     = 'rgba(255,255,255,0.28)';
-  ctx.letterSpacing = "3px";
-  ctx.fillText('✦  ' + SITE_URL + '  ✦', CW / 2, _urlY);
-  ctx.letterSpacing = "0px";
-
-  // ── 《故事另有結局》✦ 書名
-  ctx.font          = `500 ${Math.round(CW * 0.030)}px "Noto Serif TC", serif`;
-  ctx.fillStyle     = 'rgba(255,255,255,0.95)';
-  ctx.letterSpacing = "4px";
-  setShadow(2);
-  ctx.fillText(`《故事另有結局》✦ ${r.bookName}`, CW / 2, _titleY);
-  clearShadow();
-  ctx.letterSpacing = "0px";
-
-  // ════ 8. 專屬台詞（在 divider2 到 safeBoundary 之間動態置中，不得溢出） ════
-  ctx.textBaseline  = 'top';
-  ctx.font          = `italic 300 ${Math.round(CW * 0.026)}px "Noto Serif TC", serif`;
-  ctx.fillStyle     = 'rgba(255,255,255,0.78)';
-  ctx.letterSpacing = "3px";
-
-  const _quoteMaxW   = Math.round(CW * 0.82);
-  const _quoteLineH  = Math.round(CW * 0.042);
-  const _quoteLines  = getWrappedLines(r.worldQuote || '', _quoteMaxW);
-  const _quoteTotalH = _quoteLines.length * _quoteLineH;
-
-  const _qSpaceTop    = divider2Y + 18;
-  const _qSpaceBottom = _safeBoundary - 8;
-  let   _qStartY      = _qSpaceTop + Math.max(0, (_qSpaceBottom - _qSpaceTop - _quoteTotalH) / 2);
-  if (_qStartY + _quoteTotalH > _qSpaceBottom) _qStartY = _qSpaceBottom - _quoteTotalH;
-  if (_qStartY < _qSpaceTop) _qStartY = _qSpaceTop;
-
-  setShadow(2);
-  _quoteLines.forEach((l, i) => {
-    ctx.fillText(l, CW / 2, _qStartY + i * _quoteLineH);
-  });
-  clearShadow();
-  ctx.letterSpacing = "0px";
-
-  // ════ 9. 輸出 ════
+  /* ═══ 8. 輸出 ═══ */
   const restore = () => { if (btn) { btn.textContent = origText; btn.disabled = false; } };
-
   const doSaveShort = (blob) => {
-    const file = new File([blob], 'dark_result_short.png', { type: 'image/png' });
-    const isMobile = window.matchMedia('(pointer:coarse)').matches
-                  && navigator.canShare && navigator.canShare({ files: [file] });
-    if (isMobile) {
-      navigator.share({ files: [file], title: '我的黑暗特質', url: SITE_URL })
-        .catch(() => {})
-        .finally(() => restore());
+    const file  = new File([blob], 'dark_result_short.png', { type: 'image/png' });
+    const isMob = window.matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({ files: [file] });
+    if (isMob) {
+      navigator.share({ files: [file], title: '我的黑暗特質', url: SITE_URL }).catch(() => {}).finally(() => restore());
       return;
     }
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a   = document.createElement('a');
     a.href = url; a.download = 'dark_result_short.png';
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    if (btn) { btn.textContent = '✦ 短圖已下載！'; setTimeout(() => restore(), 2500); }
+    if (btn) { btn.textContent = '✦ IG圖已下載！'; setTimeout(() => restore(), 2500); }
   };
 
   try {
     await new Promise((resolve, reject) => {
-      try {
-        canvas.toBlob((blob) => {
-          if (blob) { doSaveShort(blob); resolve(); }
-          else reject(new Error('toBlob returned null'));
-        }, 'image/png');
-      } catch(e) { reject(e); }
+      canvas.toBlob((blob) => {
+        if (blob) { doSaveShort(blob); resolve(); }
+        else reject(new Error('toBlob returned null'));
+      }, 'image/png');
     });
   } catch(e) {
     try {
@@ -1104,8 +1043,8 @@ async function shareShortImage() {
       const arr  = dataUrl.split(',');
       const bstr = atob(arr[1]);
       let n = bstr.length;
-      const u8 = new Uint8Array(n);
-      while(n--){ u8[n] = bstr.charCodeAt(n); }
+      const u8  = new Uint8Array(n);
+      while(n--) u8[n] = bstr.charCodeAt(n);
       doSaveShort(new Blob([u8], { type: 'image/png' }));
     } catch(e2) {
       alert('無法下載，請使用截圖功能儲存！');
