@@ -749,7 +749,7 @@ body::before {
     padding: 10px;
     background: #0a0f1e;
     flex-shrink: 0;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1050 / 1586;
     position: relative;
     border: 2px solid var(--gold-main);
     box-shadow: 0 0 30px rgba(212,175,55,0.20);
