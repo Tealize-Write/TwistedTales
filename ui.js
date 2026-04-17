@@ -674,8 +674,8 @@ async function shareShortImage() {
   if (btn) { btn.textContent = '生成中…'; btn.disabled = true; }
   if (typeof trackUserAction === 'function') trackUserAction(code, 'share_short');
 
-  const CW = 1080;
-  const CH = 1350;
+  const CW = 1050;
+  const CH = 1586;
   const canvas = document.createElement('canvas');
   canvas.width  = CW;
   canvas.height = CH;
