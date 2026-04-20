@@ -412,15 +412,26 @@ body::before {
 
 /* ══ SHARE BUTTONS ══ */
 .share-divider {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(to bottom, transparent, rgba(90,140,220,.22), transparent);
-    margin: 32px auto 0;
+    height: 12px;
+    margin: 44px 0 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cline x1='10' y1='5' x2='190' y2='5' stroke='rgba(185,148,95,0.22)' stroke-dasharray='2 4'/%3E%3Cpolygon points='100,0 105,5 100,10 95,5' fill='rgba(248,200,145,0.45)'/%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.btn-line-sticker-wrap {
+    margin-top: 28px;
+    margin-bottom: 0;
 }
 
 .share-row {
-    gap: 14px !important;
-    margin-top: 0 !important;
+    gap: 12px !important;
+    margin-top: 16px !important;
+}
+
+.back-row {
+    margin-top: 12px;
 }
 
 .share-btn {
@@ -430,19 +441,19 @@ body::before {
     gap: 8px;
     flex: 1;
     min-width: 0;
-    padding: 13px 22px !important;
-    font-size: 12px !important;
+    padding: 12px 18px !important;
+    font-size: 11px !important;
     letter-spacing: 2.5px !important;
-    border-color: rgba(251,200,136,.35) !important;
-    color: rgba(252,210,152,.82) !important;
+    border-color: rgba(205,168,110,.28) !important;
+    color: rgba(225,190,140,.72) !important;
     position: relative;
     transition: all .25s ease;
 }
 
 .share-btn:hover {
-    border-color: rgba(110,165,240,.68) !important;
-    color: rgba(210,230,255,.98) !important;
-    background: rgba(60,100,180,.10) !important;
+    border-color: rgba(251,200,136,.60) !important;
+    color: rgba(253,232,192,.95) !important;
+    background: rgba(251,200,136,.06) !important;
 }
 
 .share-btn-icon {
@@ -456,13 +467,13 @@ body::before {
     padding: 13px 40px !important;
     font-size: 13px !important;
     letter-spacing: 4px !important;
-    border-color: rgba(90,140,220,.40) !important;
-    color: rgba(190,215,255,.88) !important;
+    border-color: rgba(205,168,110,.22) !important;
+    color: rgba(210,185,145,.65) !important;
 }
 
 .back-to-forest:hover {
-    background: rgba(251,200,136,.12) !important;
-    border-color: rgba(252,212,152,.80) !important;
+    background: rgba(251,200,136,.08) !important;
+    border-color: rgba(251,200,136,.55) !important;
     color: var(--gold-bright) !important;
 }
 
@@ -1257,24 +1268,22 @@ body::before {
     color: rgba(225,185,140,.68);
 }
 /* ════════════════════════════════
-   BUY BOOK BUTTON (實體書購書卡片與 18+ 標記)
+   BUY BOOK (實體書購書卡片與 18+ 標記)
 ════════════════════════════════ */
 
 /* ── 18禁警語 ── */
 .adult-warning {
-    margin: 0 0 20px 0;
-    padding: 10px 16px;
-    border: 1px solid rgba(205,168,110,.32);
-    border-radius: 4px;
-    background: rgba(60,45,15,.07);
-    color: rgba(185,165,120,.68);
-    font-size: 12px;
+    margin: 0 0 28px;
+    padding: 10px 14px 10px 18px;
+    border-left: 2px solid rgba(205,168,110,.40);
+    color: rgba(185,165,120,.60);
+    font-size: 11px;
     letter-spacing: 1.5px;
-    line-height: 1.7;
-    text-align: center;
+    line-height: 1.8;
+    text-align: left;
 }
 
-/* ── 18+ 標記：暗紅霓虹強烈脈動效果 ── */
+/* ── 18+ 標記：暗紅霓虹脈動效果 ── */
 @keyframes agePulse {
     0%, 100% {
         text-shadow:
@@ -1290,7 +1299,7 @@ body::before {
             0 0 15px rgba(220, 20, 60, 0.8),
             0 0 25px rgba(220, 20, 60, 0.5);
         opacity: 1;
-        transform: scale(1.12); /* 放大比例增加，呼吸感更明顯 */
+        transform: scale(1.12);
         border-color: rgba(255, 50, 50, 0.8);
     }
 }
@@ -1308,146 +1317,108 @@ body::before {
     border: 1px solid rgba(220, 20, 60, 0.5);
     border-radius: 3px;
     line-height: 1;
-    animation: agePulse 1.6s ease-in-out infinite; /* 稍微加快一點呼吸節奏 */
-    /* 漸層帶有一點點暗紅血色感 */
+    animation: agePulse 1.6s ease-in-out infinite;
     background: linear-gradient(135deg, #ffffff 0%, #ff8888 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* 針對卡片與連結內的 18+ 標記微調 */
+/* 卡片內的 18+ 標記微調 */
 .cta-label .age-badge,
-.bbc-action .age-badge {
+.bbc-shop .age-badge {
     font-size: 10px;
     margin-top: -2px;
-    margin-left: 8px;
+    margin-left: 6px;
 }
 
-/* ── 實體書購書卡片 (與解鎖故事樣本統一風格) ── */
+/* ── 區塊分隔線（解鎖故事樣本 → 電子書平台） ── */
+.book-section-sep {
+    border: none;
+    height: 12px;
+    margin: 44px 0 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cline x1='10' y1='5' x2='190' y2='5' stroke='rgba(185,148,95,0.28)' stroke-dasharray='2 4'/%3E%3Cpolygon points='100,0 105,5 100,10 95,5' fill='rgba(248,200,145,0.55)'/%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+/* ── 電子書平台 lab 間距 ── */
+.buy-book-lab {
+    margin-top: 28px;
+    margin-bottom: 20px;
+}
+
+/* ── 平台卡片 grid ── */
 .buy-book-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px; /* 稍微縮小間距，與上方區塊更協調 */
-    position: relative;
-    z-index: 5;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
     width: 100%;
+    text-align: left;
 }
 
 .buy-book-card {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    /* 移除最大寬度限制，讓它跟上方的 cta 區塊等寬對齊 */
-    padding: 16px 20px;
-
-    /* ✦ 完全比照 .cta a 的設定 ✦ */
-    background: rgba(60,45,15,.06);
-    border: 1px solid rgba(205,168,110,.28);
+    flex-direction: column;
+    padding: 20px 16px 16px;
+    background: rgba(60,45,15,.05);
+    border: 1px solid rgba(205,168,110,.22);
     color: var(--ink);
     text-decoration: none;
-    position: relative;
     overflow: hidden;
-    transition: all .3s ease;
+    transition: border-color .3s, background .3s, transform .25s, box-shadow .3s;
 }
 
-/* ✦ Hover 互動效果：完全比照 .cta a:hover ✦ */
 .buy-book-card:hover {
     border-color: rgba(220,185,130,.62);
-    background: rgba(100,80,30,.12);
+    background: rgba(100,80,30,.14);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(120,90,30,.18);
 }
 
 .bbc-shop {
-    display: flex;
-    align-items: center;
     font-family: var(--display);
     font-size: 15px;
     letter-spacing: 2px;
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(245,190,130,.38); /* 沿用故事標題的微光字體 */
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(245,190,130,.35);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .bbc-action {
     font-family: var(--serif);
-    font-size: 13px;
+    font-size: 11px;
     letter-spacing: 2px;
-    color: rgba(225,185,130,.52); /* 沿用 cta-arrow 的顏色 */
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
+    color: rgba(225,185,130,.52);
+    transition: color .3s, transform .3s;
+    margin-top: 14px;
 }
 
-/* Hover 時右側文字變化 (模擬 cta-arrow 向右推) */
 .buy-book-card:hover .bbc-action {
-    color: var(--ink);
+    color: rgba(253,232,192,.90);
     transform: translateX(4px);
 }
 
-/* 清除舊有裝飾 */
-.buy-book-card::before { display: none; }
-.bbc-bg { display: none !important; }
+@media (max-width: 580px) {
+    .buy-book-wrap {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
 
-.buy-book-card:hover {
-    border-color: rgba(220,185,130,.72);
-    background: rgba(100,80,30,.16);
-    box-shadow: 0 8px 25px rgba(120,90,30,.20);
-    transform: translateY(-2px);
-}
+    .buy-book-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+    }
 
-.buy-book-card:hover::after {
-    border-color: rgba(215,175,120,.42);
-}
-
-.buy-book-card:hover .bbc-bg {
-    left: 200%;
-}
-
-.bbc-top, .bbc-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-}
-
-.bbc-top {
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed rgba(205,168,110,.30);
-}
-
-.bbc-shop {
-    font-family: var(--display);
-    font-size: 16px;
-    letter-spacing: 2px;
-    font-weight: 500;
-}
-
-.bbc-price {
-    font-family: var(--display);
-    font-size: 18px;
-    letter-spacing: 1px;
-    font-weight: 700;
-    color: var(--ink);
-    text-shadow: 0 0 10px rgba(245,190,130,.38);
-}
-
-.bbc-action {
-    font-family: var(--serif);
-    font-size: 12px;
-    letter-spacing: 3px;
-    color: rgba(210,190,155,.92);
-    display: flex;
-    align-items: center;
-}
-
-.bbc-note {
-    font-family: var(--serif);
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: rgba(215,178,120,.58);
-    font-style: italic;
+    .bbc-action {
+        margin-top: 0;
+        flex-shrink: 0;
+    }
 }
 
 .stats {
@@ -1994,4 +1965,76 @@ body::before {
         aspect-ratio: 1;
         flex-shrink: 0;
     }
+}
+
+/* ════════════════════════════════
+   RESULT REVEAL ANIMATIONS
+════════════════════════════════ */
+
+@keyframes revealEyebrow {
+    from { opacity: 0; letter-spacing: 1px; }
+    to   { opacity: 1; letter-spacing: 6px; }
+}
+
+@keyframes revealCompound {
+    from { opacity: 0; letter-spacing: 0px; }
+    to   { opacity: 1; letter-spacing: 3px; }
+}
+
+@keyframes revealName {
+    0%   { opacity: 0; letter-spacing: 2px; filter: blur(2px); }
+    55%  { opacity: 1; filter: blur(0); }
+    100% { opacity: 1; letter-spacing: 8px; filter: blur(0); }
+}
+
+.r-eyebrow.r-reveal {
+    animation: revealEyebrow 0.45s cubic-bezier(0.16,1,0.3,1) both;
+    animation-delay: 0.1s;
+}
+
+.r-compound.r-reveal {
+    animation: revealCompound 0.45s cubic-bezier(0.16,1,0.3,1) both;
+    animation-delay: 0.22s;
+}
+
+.r-name.r-reveal {
+    animation: revealName 0.85s cubic-bezier(0.16,1,0.3,1) both;
+    animation-delay: 0.38s;
+}
+
+/* 截圖時停用動畫，確保畫面穩定 */
+#result.capturing .r-eyebrow,
+#result.capturing .r-compound,
+#result.capturing .r-name {
+    animation: none !important;
+    opacity: 1 !important;
+    letter-spacing: inherit !important;
+    filter: none !important;
+}
+
+/* ════════════════════════════════
+   QUIZ OPTION HOVER GOLD BAR
+════════════════════════════════ */
+
+.opt::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12%;
+    height: 76%;
+    width: 2px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(251,200,136,0.72),
+        transparent
+    );
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.2s cubic-bezier(0.4,0,0.2,1);
+    border-radius: 1px;
+}
+
+.opt:hover::before {
+    transform: scaleY(1);
 }

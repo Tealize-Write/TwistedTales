@@ -289,6 +289,17 @@ function showResult(){
   document.getElementById('r-name').textContent = `「${r.residentType}」`;
   document.getElementById('r-desc').textContent = r.residentDesc;
 
+  // 觸發逐段揭曉動畫（eyebrow → compound → name 錯開）
+  setTimeout(() => {
+    ['r-eyebrow', 'r-compound', 'r-name'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('r-reveal');
+      void el.offsetWidth; // 強制 reflow，確保動畫重播
+      el.classList.add('r-reveal');
+    });
+  }, 30);
+
   // r-mbti 已移除，不再渲染
 
   document.getElementById('r-quote').textContent = r.worldQuote;

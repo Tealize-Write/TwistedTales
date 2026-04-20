@@ -126,59 +126,64 @@ const CHART_THRESHOLD   = 4; // 低於此 % 的世界合併為「其他」
 function _f2(n) { return n.toFixed(2); }
 
 function buildDonutSVG(slices, myCode) {
-  const CX = 100, CY = 100, OR = 78, IR = 52;
-  const GAP = 0.028; // 扇形間隙（弧度）
+  const CX = 100, CY = 100, IR = 52, OR = 78;
+  const MID_R = (IR + OR) / 2;       // 65 — stroke 圓心半徑
+  const SW    = OR - IR;             // 26 — stroke 寬度
+  const GAP   = 0.025;               // 扇形間隙（弧度）
 
   const total = slices.reduce((s, sl) => s + sl.count, 0);
   if (!slices.length || total === 0) return '';
 
+  const centerText =
+      `<circle cx="${CX}" cy="${CY}" r="${IR}" fill="#0a0a0f"/>`
+    + `<text x="${CX}" y="${CY-8}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="serif" letter-spacing="1">定居分布</text>`
+    + `<text x="${CX}" y="${CY+8}" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="15" font-weight="700" font-family="serif">${total}</text>`
+    + `<text x="${CX}" y="${CY+22}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="serif" letter-spacing="1">位旅人</text>`;
+
   // 單一扇形 → 完整甜甜圈
   if (slices.length === 1) {
-    const sl = slices[0];
-    const outerR = sl.code === myCode ? OR + 5 : OR;
+    const sl   = slices[0];
+    const isMe = sl.code === myCode;
+    const r    = isMe ? MID_R + 3 : MID_R;
+    const sw   = isMe ? SW + 4    : SW;
+    const circ = _f2(2 * Math.PI * r);
     return `<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">`
-      + `<circle cx="${CX}" cy="${CY}" r="${outerR}" fill="${sl.color}" opacity="0.85"/>`
-      + `<circle cx="${CX}" cy="${CY}" r="${IR}" fill="#0a0a0f"/>`
-      + `<text x="${CX}" y="${CY-8}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="serif" letter-spacing="1">定居分布</text>`
-      + `<text x="${CX}" y="${CY+8}" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="15" font-weight="700" font-family="serif">${total}</text>`
-      + `<text x="${CX}" y="${CY+22}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="serif" letter-spacing="1">位旅人</text>`
+      + `<circle class="donut-ring" cx="${CX}" cy="${CY}" r="${r}"`
+      + ` fill="none" stroke="${sl.color}" stroke-width="${sw}" opacity="${isMe ? 1 : 0.85}"`
+      + ` stroke-dasharray="${circ} ${circ}" stroke-dashoffset="${circ}"`
+      + ` data-dashoffset-target="0"`
+      + ` style="transform-origin:${CX}px ${CY}px;transform:rotate(-90deg)"/>`
+      + centerText
       + `</svg>`;
   }
 
-  // 多扇形：逐一計算弧形路徑
-  let paths = '';
-  let angle = -Math.PI / 2; // 從 12 點鐘方向開始
+  // 多扇形：每一片用 stroke-dasharray 畫弧（可動畫）
+  let circles = '';
+  let angle   = -Math.PI / 2; // 從 12 點鐘方向開始
 
   for (const sl of slices) {
-    const sweep  = (sl.count / total) * 2 * Math.PI;
+    const sweep  = (sl.count / total) * 2 * Math.PI - GAP;
+    if (sweep <= 0) { angle += GAP; continue; }
+
     const isMe   = sl.code === myCode;
-    const outerR = isMe ? OR + 5 : OR;
-    const startA = angle + GAP / 2;
-    const endA   = angle + sweep - GAP / 2;
+    const r      = isMe ? MID_R + 3 : MID_R;
+    const sw     = isMe ? SW + 4    : SW;
+    const circ   = 2 * Math.PI * r;
+    const arcLen = (sweep / (2 * Math.PI)) * circ;
+    const rotDeg = _f2(angle * (180 / Math.PI));
 
-    if (sweep > GAP * 2) {
-      const x1 = CX + outerR * Math.cos(startA);
-      const y1 = CY + outerR * Math.sin(startA);
-      const x2 = CX + outerR * Math.cos(endA);
-      const y2 = CY + outerR * Math.sin(endA);
-      const x3 = CX + IR * Math.cos(endA);
-      const y3 = CY + IR * Math.sin(endA);
-      const x4 = CX + IR * Math.cos(startA);
-      const y4 = CY + IR * Math.sin(startA);
-      const large = (sweep - GAP) > Math.PI ? 1 : 0;
+    circles +=
+        `<circle class="donut-ring" cx="${CX}" cy="${CY}" r="${_f2(r)}"`
+      + ` fill="none" stroke="${sl.color}" stroke-width="${sw}" opacity="${isMe ? '1' : '0.80'}"`
+      + ` stroke-dasharray="${_f2(arcLen)} ${_f2(circ)}" stroke-dashoffset="${_f2(arcLen)}"`
+      + ` data-dashoffset-target="0"`
+      + ` style="transform-origin:${CX}px ${CY}px;transform:rotate(${rotDeg}deg)"/>`;
 
-      paths += `<path d="M${_f2(x1)},${_f2(y1)} A${outerR},${outerR} 0 ${large},1 ${_f2(x2)},${_f2(y2)} L${_f2(x3)},${_f2(y3)} A${IR},${IR} 0 ${large},0 ${_f2(x4)},${_f2(y4)} Z" fill="${sl.color}" opacity="${isMe ? '1' : '0.80'}"/>`;
-    }
-    angle += sweep;
+    angle += sweep + GAP;
   }
 
   return `<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">`
-    + paths
-    + `<circle cx="${CX}" cy="${CY}" r="${IR}" fill="#0a0a0f"/>`
-    + `<text x="${CX}" y="${CY-8}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="serif" letter-spacing="1">定居分布</text>`
-    + `<text x="${CX}" y="${CY+8}" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="15" font-weight="700" font-family="serif">${total}</text>`
-    + `<text x="${CX}" y="${CY+22}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="serif" letter-spacing="1">位旅人</text>`
-    + `</svg>`;
+    + circles + centerText + `</svg>`;
 }
 
 function buildDonutLegend(slices, myCode) {
@@ -274,4 +279,14 @@ function renderStats(data, code) {
     + buildDonutSVG(mainSlices, code)
     + '<div class="donut-legend">' + buildDonutLegend(mainSlices, code) + '</div>'
     + '</div>';
+
+  // 甜甜圈弧形展開動畫（stroke-dashoffset: arcLen → 0）
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    chart.querySelectorAll('.donut-ring').forEach((ring, i) => {
+      const target = ring.dataset.dashoffsetTarget;
+      if (target == null) return;
+      ring.style.transition = `stroke-dashoffset 0.88s cubic-bezier(0.25,0.46,0.45,0.94) ${i * 0.02}s`;
+      ring.style.strokeDashoffset = target;
+    });
+  }));
 }
