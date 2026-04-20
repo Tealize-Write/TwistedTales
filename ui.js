@@ -1111,7 +1111,7 @@ async function shareShortImage() {
     const file  = new File([blob], 'dark_result_short.png', { type: 'image/png' });
     const isMob = window.matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({ files: [file] });
     if (isMob) {
-      navigator.share({ files: [file], title: '我的黑暗特質', url: SITE_URL }).catch(() => {}).finally(() => restore());
+      navigator.share({ files: [file], title: '我的異世界居住指南', url: SITE_URL }).catch(() => {}).finally(() => restore());
       return;
     }
     const url = URL.createObjectURL(blob);
