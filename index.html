@@ -590,19 +590,6 @@
         <div class="qno" id="qno">— I —</div>
         <div class="qtext" id="qtext"></div>
         <div class="options" id="options"></div>
-        <div
-          id="skip-wrap"
-          style="text-align: right; margin-top: 16px; display: none"
-        >
-          <button
-            class="skip-btn"
-            type="button"
-            id="skip-btn"
-            onclick="skipTypewriter()"
-          >
-            skip ››
-          </button>
-        </div>
       </section>
 
       <section id="result" class="section hidden">
@@ -728,7 +715,7 @@
             <button
               class="btn back-to-forest"
               type="button"
-              onclick="location.reload()"
+              onclick="trackBuyLink('click_restart'); location.reload();"
             >
               回到黑童話大門
             </button>
@@ -746,6 +733,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   style="background: #070a12;"
+                  onclick="trackBuyLink('click_link_forest')"
                 >
                   <img
                     class="footer-card-icon"
@@ -764,6 +752,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   style="background: rgba(175,140,65,.18);"
+                  onclick="trackBuyLink('click_link_penana')"
                 >
                   <img
                     class="footer-card-icon"
@@ -778,13 +767,14 @@
               </div>
             </div>
 
-            <div class="footer-group">
+            <div class="footer-group footer-group-sm">
               <div class="footer-cards">
                 <a
                   href="https://portaly.cc/dorasu2020"
                   class="footer-card"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onclick="trackBuyLink('click_link_dora')"
                 >
                   <img
                     class="footer-card-icon"
@@ -802,6 +792,7 @@
                   class="footer-card"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onclick="trackBuyLink('click_link_tealize')"
                 >
                   <img
                     class="footer-card-icon"
@@ -819,6 +810,7 @@
                   class="footer-card"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onclick="trackBuyLink('click_link_meow')"
                 >
                   <img
                     class="footer-card-icon"
@@ -832,6 +824,8 @@
                 </a>
               </div>
             </div>
+
+            <p class="footer-copyright">© 2026 黑童話大門 · All rights reserved</p>
           </footer>
         </div>
       </section>
