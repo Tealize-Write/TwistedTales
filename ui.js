@@ -38,7 +38,6 @@ function startQuiz(){
   answerHistory = [];
   categoryScore = {};
   CATEGORY_KEYS.forEach(k => categoryScore[k] = 0);
-  metricScore = { survival: 0, happiness: 0, fate: 0 };
   _lastResultCode = null;
 
   // ✦ 記錄測驗開始的時間點
@@ -88,7 +87,7 @@ function _finishTypewriter(){
     const btn=document.createElement('button');
     btn.className='opt';btn.type='button';
     btn.innerHTML=`<span class="bullet"></span><span class="txt">${opt.text}</span>`;
-    btn.onclick = () => pick(i, opt.scores || {}, opt.metrics || {}, btn);
+    btn.onclick = () => pick(i, opt.scores || {}, btn);
     opts.appendChild(btn);
     setTimeout(()=>btn.classList.add('visible'), 60+i*130);
   });
@@ -120,14 +119,13 @@ function showQuestion(){
   }, 38);
 }
 
-function pick(optionIndex, addObj, metricsObj, btn){
+function pick(optionIndex, addObj, btn){
   if(_twTimer){ clearInterval(_twTimer); _twTimer=null; }
   document.querySelectorAll('.opt').forEach(b => b.disabled = true);
   btn.classList.add('selected');
 
   answerHistory[qi] = optionIndex;
   addAxisScores(addObj);
-  addMetricScores(metricsObj);
 
   setTimeout(() => {
     qi++;
@@ -176,38 +174,18 @@ function renderWorldRelationsBlock(code){
 }
 
 /* ════════════════════════════════
-   TOP AXES（故事分類版）
+   MBTI 異世界人格
 ════════════════════════════════ */
-function getMyTopAxesHTML() {
-  const axisMax = calcAxisMax();
-  const axisLabel = {
-    BRO:   '兩兄弟',
-    SHA:   '影子',
-    PIP:   '哈梅爾的吹笛手',
-    KING:  '國王的新衣',
-    BEAST: '美女與野獸',
-    THORN: '白雪公主佐睡美人',
-    RACE:  '龜兔賽跑',
-    CROW:  '烏鴉與水瓶',
-    CANDY: '糖果屋',
-    CIND:  '灰姑娘',
-    ESC:   '清醒旁觀者',
-  };
-
-  const top3 = CATEGORY_KEYS
-    .map(k => ({ k, v: categoryScore[k] || 0 }))
-    .sort((a, b) => b.v - a.v)
-    .slice(0, 3);
-
-  return top3.map(({ k, v }) => {
-    const maxVal = axisMax[k] || 1;
-    const pct    = Math.round((v / maxVal) * 100);
-    return '<div class="seal">'
-      + '<div class="lab">' + (axisLabel[k] || k) + '</div>'
-      + buildRuler(pct + '%')
-      + '<div class="val">' + v + '</div>'
-      + '</div>';
-  }).join('');
+function getMBTIHTML(code) {
+  const r = resultsData[code];
+  if (!r || !r.mbti) return '';
+  return r.mbti.map(({ type, pct }) =>
+    '<div class="seal">'
+    + '<div class="lab mbti-type">' + type + '</div>'
+    + buildRuler(pct + '%')
+    + '<div class="val">' + pct + '%</div>'
+    + '</div>'
+  ).join('');
 }
 
 /* ════════════════════════════════
@@ -291,21 +269,24 @@ function showResult(){
 
   const label = r.label || code;
   document.getElementById('result-img').src = r.image;
-  document.getElementById('r-name').textContent = r.residentType;
 
-  const eyebrow = document.querySelector('.r-eyebrow');
+  const eyebrow = document.getElementById('r-eyebrow');
   if (eyebrow) {
     if (r.storyName === '逃脫成功結局') {
-        eyebrow.textContent = `清醒路線 ── 逃脫成功結局 ──`;
-    } else if (r.label) {
-        eyebrow.textContent = `童話《${r.label}》IF 路線 ──`;
+        eyebrow.textContent = `清醒路線 ── 逃脫成功結局`;
     } else {
-        eyebrow.textContent = `異世界移居指南 ──`;
+        eyebrow.textContent = `你適合穿越進去《${r.label || code}》`;
     }
   }
 
-  // r-compound 顯示 IF 路線的故事名稱（storyName），而非原典分類（label）
-  document.getElementById('r-compound').textContent = r.storyName || label;
+  // r-compound：IF 路線行
+  const compound = document.getElementById('r-compound');
+  if (compound) {
+    compound.textContent = r.storyName === '逃脫成功結局' ? '' : `IF 路線──${r.storyName || label}`;
+  }
+
+  // r-name：稱號（視覺主角大字）
+  document.getElementById('r-name').textContent = `「${r.residentType}」`;
   document.getElementById('r-desc').textContent = r.residentDesc;
 
   // r-mbti 已移除，不再渲染
@@ -313,8 +294,8 @@ function showResult(){
   document.getElementById('r-quote').textContent = r.worldQuote;
   document.getElementById('r-guide').textContent = r.settlementAdvice;
 
-  /* ══ 整合定居評估數據區塊（三指標由玩家作答動態計算，非寫死） ══ */
-  const mp = calcMetricPercent();
+  /* ══ 定居評估三指標（由 results.js 人工設定） ══ */
+  const mp = r.metrics || { survival: 0, happiness: 0, fate: 0 };
   const ml = (typeof metricLabels !== 'undefined') ? metricLabels : {
     survival: "童話世界生存率", happiness: "幸福指數", fate: "命運干預值"
   };
@@ -323,7 +304,7 @@ function showResult(){
     +'<div class="seal"><div class="lab">'+ml.happiness+'</div>'+buildRuler(mp.happiness+'%')+'<div class="val">'+mp.happiness+'%</div></div>'
     +'<div class="seal"><div class="lab">'+ml.fate+'</div>'+buildRuler(mp.fate+'%')+'<div class="val">'+mp.fate+'%</div></div>';
 
-  const topAxesHTML = getMyTopAxesHTML();
+  const mbtiHTML = getMBTIHTML(code);
 
   const tarotHTML = `
     <div class="tarot-star ts-tl"></div>
@@ -347,8 +328,8 @@ function showResult(){
         </svg>
     </div>
 
-    <div class="tarot-title">✦ 黑暗特質 ✦</div>
-    ${topAxesHTML}
+    <div class="tarot-title">✦ 異世界人格 ✦</div>
+    ${mbtiHTML}
 
     <div class="tarot-pendant bottom-pendant"></div>
   `;
@@ -393,7 +374,7 @@ function trackBookClick(code){
 
 // ✦ 新增：用來追蹤外部購書連結的通用函式
 function trackBuyLink(actionType) {
-  const code = typeof _lastResultCode !== 'undefined' ? _lastResultCode : "";
+  const code = _lastResultCode ?? "";
   if (typeof trackUserAction === 'function') {
     trackUserAction(code, actionType);
   }

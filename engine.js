@@ -15,8 +15,6 @@ let answerHistory = []; // 每題記錄玩家選了哪一個 option index
 let _lastResultCode = null;
 CATEGORY_KEYS.forEach(k => categoryScore[k] = 0);
 
-// 三指標累計分數（由玩家作答選項的 metrics 欄位累加）
-let metricScore = { survival: 0, happiness: 0, fate: 0 };
 
 const elIntro    = document.getElementById('intro');
 const elQuiz     = document.getElementById('quiz');
@@ -38,43 +36,7 @@ function addAxisScores(scoresObj) {
   }
 }
 
-// 累加選項的三指標分數（與 addAxisScores 並行，互不干擾）
-// metricsObj 格式：{ survival: 4, happiness: 6, fate: 9 }
-function addMetricScores(metricsObj) {
-  if (!metricsObj) return;
-  for (const k in metricScore) {
-    if (Object.prototype.hasOwnProperty.call(metricsObj, k)) {
-      metricScore[k] += Number(metricsObj[k]) || 0;
-    }
-  }
-}
 
-// 動態計算三指標的理論最大分（每題取該 metric 四個選項中的最大值，加總所有題）
-function calcMetricMax() {
-  const max = { survival: 0, happiness: 0, fate: 0 };
-  questions.forEach(q => {
-    for (const k in max) {
-      let best = 0;
-      q.options.forEach(o => {
-        best = Math.max(best, Number((o.metrics && o.metrics[k]) || 0));
-      });
-      max[k] += best;
-    }
-  });
-  return max;
-}
-
-// 將玩家累計分轉換為 0–100 的百分比整數
-// 使用動態最大值作分母，確保不寫死、不超過 100%
-function calcMetricPercent() {
-  const max = calcMetricMax();
-  const result = {};
-  for (const k in metricScore) {
-    const denom = max[k] || 1; // 防止除以零
-    result[k] = Math.min(100, Math.max(0, Math.round((metricScore[k] / denom) * 100)));
-  }
-  return result;
-}
 
 /* ════════════════════════════════
    TIE-BREAKER（抽成獨立函式）
