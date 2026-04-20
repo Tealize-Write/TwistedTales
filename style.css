@@ -59,31 +59,7 @@ body::before {
     opacity: 1;
 }
 
-/* ══ 幽林迷霧：緩慢漂浮的金色光塵 ══ */
-body::after {
-    content: "";
-    position: fixed;
-    inset: -50%;
-    z-index: 1;
-    pointer-events: none;
-    background-image:
-        radial-gradient(2px 2px at 20px  30px,  rgba(251,200,136,0.80), transparent),
-        radial-gradient(2px 2px at 55px  80px,  rgba(255,240,200,0.65), transparent),
-        radial-gradient(2px 2px at 90px  150px, rgba(251,200,136,0.72), transparent),
-        radial-gradient(1px 1px at 140px 60px,  rgba(255,240,200,0.55), transparent),
-        radial-gradient(2px 2px at 170px 110px, rgba(212,175,85,0.65),  transparent),
-        radial-gradient(1px 1px at 30px  170px, rgba(255,240,200,0.50), transparent),
-        radial-gradient(2px 2px at 110px 20px,  rgba(251,200,136,0.60), transparent);
-    background-repeat: repeat;
-    background-size: 200px 200px;
-    opacity: 0.28;
-    animation: mistDrift 45s linear infinite;
-}
 
-@keyframes mistDrift {
-    0%   { transform: translateY(0)      rotate(0deg); }
-    100% { transform: translateY(-200px) rotate(4deg); }
-}
 
 /* ══ FIXED ART DECO OVERLAYS ══ */
 .art-layer {
@@ -957,18 +933,18 @@ body::after {
     display: flex;
     justify-content: center;
     align-items: center;
-    filter: drop-shadow(0 0 8px rgba(245,190,130,.48));
-    animation: emblemBreath 4.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(245,190,130,.45));
+    animation: emblemBreath 3.8s ease-in-out infinite;
 }
 
 @keyframes emblemBreath {
     0%, 100% {
         transform: scale(1);
-        filter: drop-shadow(0 0 6px rgba(245,190,130,.40));
+        filter: drop-shadow(0 0 8px rgba(245,190,130,.45));
     }
     50% {
-        transform: scale(1.06);
-        filter: drop-shadow(0 0 18px rgba(245,190,130,.80));
+        transform: scale(1.10);
+        filter: drop-shadow(0 0 26px rgba(245,190,130,.90));
     }
 }
 .tarot-emblem svg {
