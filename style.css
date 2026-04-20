@@ -2012,6 +2012,14 @@ body::before {
     opacity: 0.58;
     letter-spacing: 0.04em;
 }
+.footer-author-inline {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.9;
+  letter-spacing: 0.08em;
+  color: rgba(249, 231, 177, 0.82);
+  opacity: 0.9;
+}
 
 @media (max-width: 580px) {
     .footer-cards {
