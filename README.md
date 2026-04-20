@@ -1,6 +1,6 @@
 # 🦇 Twisted Tales ｜ 反轉童話心理測驗
 
-> 你適合穿越進哪個童話？——11 個反轉的童話世界，等你定居。
+> 你適合穿越進哪個童話？——10 個反轉的童話世界，等你定居。
 
 🔗 **[前往測驗](https://tealize-write.github.io/TwistedTales/)**
 
