@@ -28,7 +28,7 @@
 
 | 項目 | 負責人 |
 | --- | --- |
-| 心測企劃 | 蘇朵拉、兌現藍 |
+| 心測題目 | 蘇朵拉 |
 | 程式 & 插圖 | 兌現藍 |
 | 網站配樂 | Music by Dvir Silverstone from Pixabay |
 
