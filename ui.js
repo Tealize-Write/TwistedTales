@@ -340,7 +340,9 @@ function showResult() {
   document.getElementById("r-name").textContent = `「${r.residentType}」`;
   const rDescParts = (r.resultText || "").split("\n");
   document.getElementById("r-desc").textContent =
-    rDescParts.length > 1 ? rDescParts.slice(1).join("").trim() : r.residentDesc;
+    rDescParts.length > 1
+      ? rDescParts.slice(1).join("").trim()
+      : r.residentDesc;
 
   // 觸發逐段揭曉動畫（eyebrow → compound → name 錯開）
   setTimeout(() => {
@@ -574,10 +576,10 @@ async function shareResultAsImage() {
       #result.capturing .tarot-frame,
       #result.capturing .block,
       #result.capturing .cta a {
-          background-color: transparent !important;
+          background-color: rgba(9, 22, 48, 0.86) !important;
           background-image: none !important;
-          box-shadow: none !important;
-          border-color: rgba(255,255,255,0.3) !important;
+          box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24) !important;
+          border-color: rgba(235, 200, 145, 0.42) !important;
       }
       #result.capturing .result-img {
           filter: none !important;
