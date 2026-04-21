@@ -77,6 +77,7 @@ function trackUserAction(code, actionType) {
   fetch(GAS_URL, {
     method: "POST",
     body: JSON.stringify(payload),
+    keepalive: true,
   })
     .then((r) => r.json())
     .then((data) => {
