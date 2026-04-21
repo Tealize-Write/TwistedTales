@@ -487,11 +487,21 @@ function trackBuyLink(actionType) {
   const code =
     _lastResultCode ||
     (typeof determineResultCode === "function" ? determineResultCode() : "");
-  console.log("[trackBuyLink] called:", { actionType, code });
   if (typeof trackUserAction === "function") {
     trackUserAction(code, actionType);
   }
 }
+
+// ✦ 中鍵（新開分頁）點擊追蹤：委派攔截所有帶 trackBuyLink onclick 的元素
+document.addEventListener("auxclick", function (e) {
+  if (e.button !== 1) return;
+  const el = e.target.closest("[onclick]");
+  if (!el) return;
+  const match = el
+    .getAttribute("onclick")
+    .match(/trackBuyLink\(['"]([^'"]+)['"]\)/);
+  if (match) trackBuyLink(match[1]);
+});
 
 window.startQuiz = startQuiz;
 window.confirmRestart = confirmRestart;

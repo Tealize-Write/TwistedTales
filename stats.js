@@ -81,9 +81,7 @@ function trackUserAction(code, actionType) {
   })
     .then((r) => r.json())
     .then((data) => {
-      if (data.ok)
-        console.log("[trackUserAction] OK:", data.message, { code, actionType });
-      else
+      if (!data.ok)
         console.error("[trackUserAction] GAS rejected:", data.error, {
           code,
           actionType,
