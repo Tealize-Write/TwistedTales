@@ -1941,8 +1941,9 @@ body::before {
 }
 
 .footer-members {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 6px;
 }
 
@@ -1953,6 +1954,7 @@ body::before {
     text-align: center;
     gap: 3px;
     padding: 6px 4px 8px;
+    width: calc((100% - 30px) / 6);
     border: 1px solid transparent;
     border-radius: 4px;
     background: transparent;
@@ -1997,6 +1999,25 @@ body::before {
     color: #8a7a68;
     letter-spacing: 0.02em;
     line-height: 1.4;
+}
+
+/* ── 鳴謝標題間距微調 ── */
+.footer-heading--collab {
+    margin-top: 14px;
+    margin-bottom: 8px;
+}
+
+/* ── 特別協力（獨立置中） ── */
+.footer-collab {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(232,200,50,.12);
+}
+
+.footer-collab .footer-member-card {
+    width: calc((100% - 30px) / 6);
 }
 
 .footer-copyright {
@@ -2083,18 +2104,20 @@ body::before {
     }
 
     .footer-card-icon {
-        width: 52px;
+        width: 100px;
         aspect-ratio: 1;
         flex-shrink: 0;
     }
 
     .footer-members {
-        grid-template-columns: repeat(5, 1fr);
         gap: 4px;
     }
     .footer-member-card {
-        grid-column: auto;
+        width: calc((100% - 16px) / 5);
         padding: 5px 2px 7px;
+    }
+    .footer-collab .footer-member-card {
+        width: calc((100% - 16px) / 5);
     }
 }
 
