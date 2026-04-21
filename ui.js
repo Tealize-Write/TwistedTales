@@ -334,7 +334,9 @@ function showResult() {
 
   // r-name：稱號（視覺主角大字）
   document.getElementById("r-name").textContent = `「${r.residentType}」`;
-  document.getElementById("r-desc").textContent = r.residentDesc;
+  const rDescParts = (r.resultText || "").split("\n");
+  document.getElementById("r-desc").textContent =
+    rDescParts.length > 1 ? rDescParts.slice(1).join("").trim() : r.residentDesc;
 
   // 觸發逐段揭曉動畫（eyebrow → compound → name 錯開）
   setTimeout(() => {
@@ -351,6 +353,12 @@ function showResult() {
 
   document.getElementById("r-quote").textContent = r.worldQuote;
   document.getElementById("r-guide").textContent = r.settlementAdvice;
+
+  const rConcept = document.getElementById("r-concept");
+  if (rConcept) rConcept.textContent = r.concept || "";
+
+  const rNote = document.getElementById("r-note");
+  if (rNote) rNote.textContent = r.residentDesc || "";
 
   /* ══ 定居評估三指標（由 results.js 人工設定） ══ */
   const mp = r.metrics || { survival: 0, happiness: 0, fate: 0 };

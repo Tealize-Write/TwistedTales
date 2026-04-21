@@ -401,9 +401,7 @@
       <section id="intro" class="section in">
         <div class="banner-wrap">
           <img src="img/Title.png" alt="故事另有結局" />
-          <div class="banner-caption">
-            The story has a different ending.
-          </div>
+          <div class="banner-caption">The story has a different ending.</div>
         </div>
 
         <div class="title-wrap">
@@ -605,6 +603,8 @@
           </div>
         </div>
 
+        <div class="concept-epigraph" id="r-concept"></div>
+
         <div class="result-body in" style="animation-delay: 0.2s">
           <div class="seals tarot-frame" id="seals"></div>
 
@@ -615,6 +615,17 @@
               id="r-quote"
               style="font-style: italic; margin-bottom: 32px"
             ></div>
+
+            <hr class="book-section-sep" />
+
+            <div class="lab">旅人剪影</div>
+            <div
+              class="txt muted"
+              id="r-note"
+              style="margin-bottom: 32px"
+            ></div>
+
+            <hr class="book-section-sep" />
 
             <div class="lab">移居建議</div>
             <div class="txt muted" id="r-guide"></div>
@@ -715,7 +726,10 @@
             <button
               class="btn back-to-forest"
               type="button"
-              onclick="trackBuyLink('click_restart'); location.reload();"
+              onclick="
+                trackBuyLink('click_restart');
+                location.reload();
+              "
             >
               回到黑童話大門
             </button>
@@ -732,7 +746,7 @@
                   class="footer-card"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style="background: #070a12;"
+                  style="background: #070a12"
                   onclick="trackBuyLink('click_link_forest')"
                 >
                   <img
@@ -751,17 +765,24 @@
                   class="footer-card"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style="background: rgba(175,140,65,.18);"
+                  style="background: rgba(175, 140, 65, 0.18)"
                   onclick="trackBuyLink('click_link_penana')"
                 >
                   <img
                     class="footer-card-icon"
                     src="img/footer_card_Penana.png"
-                    alt="Penana創挑"
+                    alt="Penana創作挑戰"
                   />
                   <div class="footer-card-text">
-                    <span class="footer-card-title">Penana 創挑</span>
-                    <span class="footer-card-desc">創作挑戰平台</span>
+                    <span class="footer-card-title">Penana 創作挑戰</span>
+                    <span class="footer-card-desc"
+                      >故事另有結局～當童話變成癲話？♠</span
+                    >
+                    <span class="footer-card-prizes">
+                      <span class="prize-tag">電子書序號</span>
+                      <span class="prize-tag">獨家CP段子</span>
+                      <span class="prize-tag">明信片</span>
+                    </span>
                   </div>
                 </a>
               </div>
@@ -770,62 +791,163 @@
             <div class="footer-members-wrap">
               <p class="footer-heading">✦ 大癲製作 ✦</p>
               <div class="footer-members">
-                <a href="https://portaly.cc/dorasu2020" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/footer_card_Dora.png" alt="蘇朵拉" />
+                <a
+                  href="https://portaly.cc/dorasu2020"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/footer_card_Dora.png"
+                    alt="蘇朵拉"
+                  />
                   <span class="footer-member-name">蘇朵拉</span>
                   <span class="footer-member-role">題目設計者</span>
                 </a>
-                <a href="https://tealize-write.github.io/" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/footer_card_Tealize.png" alt="兌現藍" />
+                <a
+                  href="https://tealize-write.github.io/"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/footer_card_Tealize.png"
+                    alt="兌現藍"
+                  />
                   <span class="footer-member-name">兌現藍</span>
                   <span class="footer-member-role">程式 &amp; 插圖</span>
                 </a>
-                <a href="https://portaly.cc/meowbarksky" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/footer_card_Meow.png" alt="喵芭渴死姬" />
+                <a
+                  href="https://portaly.cc/meowbarksky"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/footer_card_Meow.png"
+                    alt="喵芭渴死姬"
+                  />
                   <span class="footer-member-name">喵芭渴死姬</span>
                   <span class="footer-member-role">活動策劃</span>
                 </a>
-                <a href="https://portaly.cc/fondannnnnn" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_huodeng.png" alt="火登" />
+                <a
+                  href="https://portaly.cc/fondannnnnn"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_huodeng.png"
+                    alt="火登"
+                  />
                   <span class="footer-member-name">火登</span>
                   <span class="footer-member-role">標題字設計</span>
                 </a>
-                <a href="https://portaly.cc/universe37" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_xiang.png" alt="相對之下" />
+                <a
+                  href="https://portaly.cc/universe37"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_xiang.png"
+                    alt="相對之下"
+                  />
                   <span class="footer-member-name">相對之下</span>
                   <span class="footer-member-role">音樂提供</span>
                 </a>
-                <a href="https://portaly.cc/Junyun1021" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_junyang.png" alt="君羊" />
+                <a
+                  href="https://portaly.cc/Junyun1021"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_junyang.png"
+                    alt="君羊"
+                  />
                   <span class="footer-member-name">君羊</span>
                 </a>
-                <a href="https://gattungneun.github.io/ninezhennan/" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_jiunan.png" alt="九楠" />
+                <a
+                  href="https://gattungneun.github.io/ninezhennan/"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_jiunan.png"
+                    alt="九楠"
+                  />
                   <span class="footer-member-name">九楠</span>
                 </a>
-                <a href="https://portaly.cc/wumo3362" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_mo.png" alt="吳墨" />
+                <a
+                  href="https://portaly.cc/wumo3362"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_mo.png"
+                    alt="吳墨"
+                  />
                   <span class="footer-member-name">吳墨</span>
                 </a>
-                <a href="https://www.plurk.com/m/lin09090" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_you.png" alt="悠然" />
+                <a
+                  href="https://www.plurk.com/m/lin09090"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_you.png"
+                    alt="悠然"
+                  />
                   <span class="footer-member-name">悠然</span>
                 </a>
-                <a href="https://portaly.cc/wai79040?utm_source=qrcode&amp;utm_medium=qrcode" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_wei.png" alt="葦" />
+                <a
+                  href="https://portaly.cc/wai79040?utm_source=qrcode&amp;utm_medium=qrcode"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_wei.png"
+                    alt="葦"
+                  />
                   <span class="footer-member-name">葦</span>
                 </a>
               </div>
               <p class="footer-heading footer-heading--collab">✦ 鳴謝 ✦</p>
               <div class="footer-collab">
-                <a href="https://www.plurk.com/u/hsplm" target="_blank" rel="noopener" class="footer-member-card">
-                  <img class="footer-member-img" src="img/fc_wood.png" alt="海上漂流木" />
+                <a
+                  href="https://www.plurk.com/u/hsplm"
+                  target="_blank"
+                  rel="noopener"
+                  class="footer-member-card"
+                >
+                  <img
+                    class="footer-member-img"
+                    src="img/fc_wood.png"
+                    alt="海上漂流木"
+                  />
                   <span class="footer-member-name">海上漂流木</span>
                   <span class="footer-member-role">書封繪師</span>
                 </a>
               </div>
             </div>
-            <p class="footer-copyright">© 2026 黑童話大門 · All rights reserved</p>
+            <p class="footer-copyright">
+              © 2026 黑童話大門 · All rights reserved
+            </p>
           </footer>
         </div>
       </section>

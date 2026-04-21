@@ -3,7 +3,6 @@
    代號：BRO / SHA / PIP / KING / BEAST / THORN / RACE / CROW / CANDY / CIND / ESC
 ════════════════════════════════ */
 
-
 const resultsData = {
   /* ── BRO｜兩兄弟 ── */
   BRO: {
@@ -73,17 +72,17 @@ const resultsData = {
   PIP: {
     label: "哈梅爾的吹笛手",
     storyName: "胡桃鉗",
-    concept: "瘋狂吹笛人一曲下去，小老鼠沒逃走，反而全變成了替他打仗的玩具兵。",
+    concept: "吹笛手一曲奏下，小老鼠成為了替他打仗的玩具兵。",
     resultText:
-      "你適合穿越進去《哈梅爾的吹笛手》（胡桃鉗 IF線）\n你對危險與誘惑總有一種微妙的好奇心，越奇怪的東西越想靠近；但要小心，玩具和怪物有時只差一首曲子的距離。",
+      "你適合穿越進《哈梅爾的吹笛手》（胡桃鉗 IF線）\n你對危險與誘惑總有一種微妙的好奇心，越奇怪的東西越想靠近；士兵和怪物只有一曲之別，你既是掌握旋律之人，也是甘願沉淪之人。",
 
     image: "https://tealize-write.github.io/TwistedTales/img/PIP.png",
-    residentType: "旋律召來的忠誠信徒",
+    residentType: "自願入局的旁觀者",
     residentDesc:
-      "你走進這個世界的瞬間，吹響的節奏就變了。這個世界為了和你共鳴，調整成更危險的旋律。",
-    worldQuote: "「本世界音頻異常，建議入境前自行提升對笛聲的抗性。」",
+      "老鼠與士兵的征戰於你而言不過一場有趣的音樂劇。你遊走於戲裡戲外，遊戲人間，人間清醒。",
+    worldQuote: "「別抗拒旋律，仔細聆聽，清醒地沉淪下去。」",
     settlementAdvice:
-      "入住後，建議避免在公共場所哼歌。這個世界的旋律很容易成為違禁品，一旦控制開始，就很難在中途停下。",
+      "守住你的內在旋律，在和弦中尋找共鳴，也在發條的齒輪間留住獨奏的空隙。",
     alliedWorlds: ["BEAST", "THORN"],
     conflictingWorlds: ["ESC", "RACE"],
 
@@ -177,7 +176,8 @@ const resultsData = {
     residentType: "高塔深處的尊爵殿下",
     residentDesc:
       "你在這個世界很容易被視為值得珍藏的存在——你身上有某種光，讓惡龍不計代價也要將你藏在最安全的地方。",
-    worldQuote: "「五星級高塔居住環境，但請注意：本世界的惡龍黏人程度也是五顆星。」",
+    worldQuote:
+      "「五星級高塔居住環境，但請注意：本世界的惡龍黏人程度也是五顆星。」",
     settlementAdvice:
       "高塔應有盡有，使長期居留者會對離開產生抗拒。建議定期確認出口位置，提醒自己知道門在哪裡。",
     alliedWorlds: ["BEAST", "BRO"],
@@ -358,12 +358,3 @@ const resultsData = {
     link: "https://early-marketplaces-521584.framer.app/",
   },
 };
-
-
-
-
-
-
-
-
-
