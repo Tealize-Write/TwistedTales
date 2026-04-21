@@ -487,6 +487,7 @@ function trackBuyLink(actionType) {
   const code =
     _lastResultCode ||
     (typeof determineResultCode === "function" ? determineResultCode() : "");
+  console.log("[trackBuyLink] called:", { actionType, code });
   if (typeof trackUserAction === "function") {
     trackUserAction(code, actionType);
   }
