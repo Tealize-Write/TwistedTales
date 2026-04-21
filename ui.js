@@ -314,7 +314,11 @@ function showResult() {
   }
 
   const label = r.label || code;
-  document.getElementById("result-img").src = r.image;
+  const resultImgEl = document.getElementById("result-img");
+  if (resultImgEl) {
+    resultImgEl.crossOrigin = "anonymous";
+    resultImgEl.src = r.image;
+  }
 
   const eyebrow = document.getElementById("r-eyebrow");
   if (eyebrow) {
