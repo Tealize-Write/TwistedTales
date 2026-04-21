@@ -1953,18 +1953,18 @@ body::before {
     text-align: center;
     gap: 3px;
     padding: 6px 4px 8px;
-    border: 1px solid rgba(251,200,136,0.13);
+    border: 1px solid transparent;
     border-radius: 4px;
-    background: rgba(251,200,136,0.02);
+    background: transparent;
     color: #ebc894;
     text-decoration: none;
     transition: border-color 0.25s, color 0.25s, background 0.25s;
 }
 
 .footer-member-card:hover {
-    border-color: rgba(251,200,136,0.36);
+    border-color: rgba(251,200,136,0.28);
     color: rgba(253,232,192,0.90);
-    background: rgba(251,200,136,0.06);
+    background: rgba(251,200,136,0.04);
 }
 
 .footer-member-img {
@@ -2089,13 +2089,12 @@ body::before {
     }
 
     .footer-members {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
+        gap: 4px;
     }
-}
-
-@media (max-width: 380px) {
-    .footer-members {
-        grid-template-columns: repeat(3, 1fr);
+    .footer-member-card {
+        grid-column: auto;
+        padding: 5px 2px 7px;
     }
 }
 
