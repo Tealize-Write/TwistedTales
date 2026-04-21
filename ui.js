@@ -484,7 +484,9 @@ function trackBookClick(code) {
 
 // ✦ 新增：用來追蹤外部購書連結的通用函式
 function trackBuyLink(actionType) {
-  const code = _lastResultCode ?? "";
+  const code =
+    _lastResultCode ||
+    (typeof determineResultCode === "function" ? determineResultCode() : "");
   if (typeof trackUserAction === "function") {
     trackUserAction(code, actionType);
   }

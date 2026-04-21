@@ -62,10 +62,16 @@ function getTrackingPayload(code, actionType = "") {
 // ── 行為追蹤 (背景靜默發送) ──
 function trackUserAction(code, actionType) {
   if (!GAS_URL || GAS_URL.includes("在此貼上")) return;
+  const payload = getTrackingPayload(code, actionType);
   fetch(GAS_URL, {
     method: "POST",
-    body:   JSON.stringify(getTrackingPayload(code, actionType)),
-  }).catch(() => {});
+    body:   JSON.stringify(payload),
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.ok) console.error("[trackUserAction] GAS rejected:", data.error, { code, actionType, payload });
+    })
+    .catch(err => console.error("[trackUserAction] fetch failed:", err, { code, actionType }));
 }
 
 // ── 測驗結果統計 ──
