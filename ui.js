@@ -511,7 +511,7 @@ async function shareResultAsImage() {
   const btn = document.querySelector(".share-btn:not(.short-share)");
   const targetEl = document.getElementById("result");
   const originalText = btn ? btn.textContent : "";
-  const SITE_URL = "https://tealize-write.github.io/DarkBLstory/";
+  const SITE_URL = "https://tealize-write.github.io/TwistedTales/";
 
   if (typeof trackUserAction === "function") {
     trackUserAction(code, "share_image");
