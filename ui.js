@@ -782,7 +782,7 @@ async function shareResultAsImage() {
 async function shareShortImage() {
   const code = _lastResultCode || determineResultCode();
   const r = resultsData[code];
-  const SITE_URL = "https://tealize-write.github.io/DarkBLstory/";
+  const SITE_URL = "https://tealize-write.github.io/TwistedTales/";
   if (!r) return;
 
   const btn = document.querySelector(".share-btn.short-share");
@@ -974,7 +974,7 @@ async function shareShortImage() {
   ctx.font = `italic 300 ${Math.round(CW * 0.02)}px "Noto Serif TC", serif`;
   ctx.fillStyle = "rgba(212,175,55,0.55)";
   ctx.letterSpacing = "5px";
-  ctx.fillText("故 事 另 有 結 局  ✦  黑 森 林 測 驗", CW / 2, FM + 12);
+  ctx.fillText("故 事 另 有 結 局  ✦  黑 童 話 測 驗", CW / 2, FM + 12);
   ctx.letterSpacing = "0px";
 
   /* ══ 5. 文字內容 ══ */
