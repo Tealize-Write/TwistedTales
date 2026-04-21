@@ -880,7 +880,7 @@ async function shareShortImage() {
   ctx.globalAlpha = 1.0;
 
   /* ══ 2. 角色英雄圖 ══ */
-  const PANEL_Y = Math.round(CH * 0.42);
+  const PANEL_Y = Math.round(CH * 0.48);
   try {
     const img = await loadImg(r.image);
     if (img) {

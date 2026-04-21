@@ -49,7 +49,7 @@ const resultsData = {
     image: "https://tealize-write.github.io/TwistedTales/img/SHA.png",
     residentType: "與影共生的禁書學者",
     residentDesc:
-      "你在這個世界裡最容易追求完美——直到你的影子比你更早參悟天機。你終於慢慢意識到，你的影子比你更懂得這個世界的規則。",
+      "你在這個世界裡最容易追求完美——直到你的影子比你更早參悟天機。你終於慢慢意識到，你的影子在打破這個世界的規則。",
     worldQuote: "「翻開魔法禁書，影子的雙腿正逐漸成形，它已經決定跟你回家。」",
     settlementAdvice:
       "入住前，建議先決定好哪些東西是你願意交換的。這個世界的代價從不放在檯面，而你最自豪的，就是把事情看清楚的能力。",
@@ -358,6 +358,8 @@ const resultsData = {
     link: "https://early-marketplaces-521584.framer.app/",
   },
 };
+
+
 
 
 
