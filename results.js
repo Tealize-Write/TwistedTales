@@ -138,7 +138,7 @@ const resultsData = {
     concept:
       "能徒手撕碎整座莊園的黑獅，偏偏一輩子都兇不了流浪的嬌小身影。",
     resultText:
-      "你適合穿越進去《美女與野獸》（獅子與老鼠 IF線）\n你看似弱小，實際上勇敢而堅強，有一手馴服野獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
+      "你適合穿越進去《美女與野獸》（獅子與老鼠 IF線）\n你看似弱小，實際上勇敢而堅強，天生有著馴服野獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
 
     image: "https://tealize-write.github.io/TwistedTales/img/BEAST.png",
     residentType: "駕馭獸性的馴獸師",
