@@ -1182,8 +1182,8 @@ async function shareShortImage() {
       val: String(v),
       pct: axisMax[k] ? Math.round((v / axisMax[k]) * 100) : 0,
     }));
-  const mp2 =
-    typeof calcMetricPercent === "function" ? calcMetricPercent() : {};
+  // 與結果頁一致：直接使用結果資料內的固定指標，避免分享圖 fallback 成 0
+  const mp2 = (r && r.metrics) || {};
   const ml2 =
     typeof metricLabels !== "undefined"
       ? metricLabels
