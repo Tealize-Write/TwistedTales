@@ -56,6 +56,30 @@ function startQuiz() {
   // ✦ 記錄測驗開始的時間點
   window.quizStartTime = Date.now();
 
+  // ✦ GAS 暖機：趁玩家答題期間預先喚醒 GAS 實例，消除結果頁的冷啟動延遲
+  if (
+    typeof GAS_URL !== "undefined" &&
+    GAS_URL &&
+    !GAS_URL.includes("在此貼上")
+  ) {
+    fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        token: typeof GAS_TOKEN !== "undefined" ? GAS_TOKEN : "",
+        resultCode: "ESC",
+        action: "warmup",
+        clientId: "",
+        source: "",
+        referrer: "",
+        device: "",
+        country: "",
+        city: "",
+        timeSpent: 0,
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  }
+
   const elProgress = document.getElementById("progress");
   elProgress.innerHTML = "";
   for (let i = 0; i < questions.length; i++) {

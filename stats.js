@@ -106,8 +106,8 @@ async function sendStats(code) {
     return;
   }
 
-  // 等 IP 地理位置拿到（最多 2 秒），再打包 payload 發送
-  await window._locationReady;
+  // IP 地理位置由背景非同步填入 userLocationData，不再阻塞主流程
+  // （_locationReady 仍在背景跑，已有值就會自動帶入 getTrackingPayload）
 
   try {
     const r = await fetch(GAS_URL, {
