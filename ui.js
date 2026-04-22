@@ -737,13 +737,14 @@ async function shareResultAsImage() {
 
   if (!canvas) return;
 
-  canvas.toBlob(async (blob) => {
-    if (!blob) {
-      alert("圖片轉檔失敗");
-      return;
-    }
-
-    const downloadBlob = async () => {
+  // ── 桌機：直接下載 ──
+  const isMobileDevice = window.matchMedia("(pointer:coarse)").matches;
+  if (!isMobileDevice) {
+    canvas.toBlob(async (blob) => {
+      if (!blob) {
+        alert("圖片轉檔失敗");
+        return;
+      }
       const objUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = objUrl;
@@ -752,7 +753,6 @@ async function shareResultAsImage() {
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
-
       if (navigator.clipboard && navigator.clipboard.write) {
         try {
           await navigator.clipboard.write([
@@ -780,45 +780,108 @@ async function shareResultAsImage() {
           }, 2500);
         }
       }
-    };
+    }, "image/png");
+    return;
+  }
 
+  // ── 手機：iOS Safari 的 user activation 在 html2canvas 後已失效，
+  //    解法：先把 blob 在背景生成並快取，再用覆蓋層的「儲存」按鈕
+  //    觸發全新 user gesture，navigator.share 在那一刻直接呼叫。 ──
+  const dataUrl = canvas.toDataURL("image/png");
+
+  // 背景預先轉成 Blob（等使用者點儲存時已就緒）
+  let _cachedBlob = null;
+  canvas.toBlob((b) => {
+    _cachedBlob = b;
+  }, "image/png");
+
+  const overlay = document.createElement("div");
+  overlay.id = "_share_overlay";
+  overlay.style.cssText = [
+    "position:fixed;inset:0;background:rgba(5,8,20,0.96);z-index:99999;",
+    "display:flex;flex-direction:column;align-items:center;justify-content:center;",
+    "padding:20px;gap:14px;overflow-y:auto;",
+  ].join("");
+
+  const imgEl = document.createElement("img");
+  imgEl.src = dataUrl;
+  imgEl.style.cssText =
+    "max-width:100%;max-height:60vh;object-fit:contain;border-radius:3px;";
+
+  const hint = document.createElement("div");
+  hint.style.cssText =
+    "color:rgba(249,231,177,0.72);font-size:12px;letter-spacing:2px;font-family:'Noto Serif TC',serif;text-align:center;line-height:1.8;";
+  hint.textContent = "長按圖片可儲存到相簿\n或點下方按鈕分享";
+
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "✦ 儲存 / 分享圖片";
+  saveBtn.style.cssText = [
+    "background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.55);",
+    "color:rgba(249,231,177,0.95);padding:13px 32px;font-size:14px;letter-spacing:3px;",
+    "font-family:'Noto Serif TC',serif;cursor:pointer;border-radius:2px;width:100%;max-width:280px;",
+  ].join("");
+
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "關閉";
+  closeBtn.style.cssText =
+    "background:transparent;border:none;color:rgba(255,255,255,0.35);font-size:13px;cursor:pointer;padding:10px 20px;letter-spacing:2px;";
+
+  overlay.appendChild(imgEl);
+  overlay.appendChild(hint);
+  overlay.appendChild(saveBtn);
+  overlay.appendChild(closeBtn);
+  document.body.appendChild(overlay);
+
+  closeBtn.addEventListener("click", () => overlay.remove());
+
+  // saveBtn 點擊 = 全新 user gesture → navigator.share 合法
+  saveBtn.addEventListener("click", async () => {
+    overlay.remove();
+    const blob = _cachedBlob;
+    if (!blob) {
+      alert("圖片尚未就緒，請稍後再試");
+      return;
+    }
     const file = new File([blob], "dark_trait_result.png", {
       type: "image/png",
     });
-    const canNativeShare = typeof navigator.share === "function";
-    const canShareFiles =
-      canNativeShare &&
-      typeof navigator.canShare === "function" &&
-      navigator.canShare({ files: [file] });
 
-    if (canNativeShare) {
+    if (typeof navigator.share === "function") {
+      const canFiles =
+        typeof navigator.canShare === "function" &&
+        navigator.canShare({ files: [file] });
       try {
-        if (canShareFiles) {
-          await navigator.share({
-            title: "故事另有結局｜你適合穿越進哪個童話？",
-            text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
-            url: SITE_URL,
-            files: [file],
-          });
-          return;
-        }
-
-        await navigator.share({
-          title: "故事另有結局｜你適合穿越進哪個童話？",
-          text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
-          url: SITE_URL,
-        });
+        await navigator.share(
+          canFiles
+            ? {
+                title: "故事另有結局｜你適合穿越進哪個童話？",
+                text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
+                url: SITE_URL,
+                files: [file],
+              }
+            : {
+                title: "故事另有結局｜你適合穿越進哪個童話？",
+                text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
+                url: SITE_URL,
+              },
+        );
         return;
       } catch (e) {
-        // 使用者取消分享時不再強制下載
-        if (e && e.name === "AbortError") {
-          return;
-        }
+        if (e && e.name === "AbortError") return;
+        // share 失敗 → 降級下載
       }
     }
 
-    await downloadBlob();
-  }, "image/png");
+    // 最終降級：下載
+    const objUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objUrl;
+    a.download = "dark_trait_result.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
+  });
 }
 
 /* ════════════════════════════════
