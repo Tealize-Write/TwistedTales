@@ -743,48 +743,36 @@ async function shareResultAsImage() {
       return;
     }
 
-    const file = new File([blob], "dark_trait_result.png", {
-      type: "image/png",
-    });
-    const isTouchDevice = window.matchMedia("(pointer:coarse)").matches;
-    const isMobile =
-      isTouchDevice &&
-      navigator.canShare &&
-      navigator.canShare({ files: [file] });
+    const downloadBlob = async () => {
+      const objUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objUrl;
+      a.download = "dark_trait_result.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
 
-    if (isMobile) {
-      try {
-        await navigator.share({
-          title: "故事另有結局｜你適合穿越進哪個童話？",
-          text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
-          url: SITE_URL,
-          files: [file],
-        });
-      } catch (e) {}
-      return;
-    }
-
-    const objUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = objUrl;
-    a.download = "dark_trait_result.png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
-
-    if (navigator.clipboard && navigator.clipboard.write) {
-      try {
-        await navigator.clipboard.write([
-          new ClipboardItem({ "image/png": blob }),
-        ]);
-        if (btn) {
-          btn.textContent = "✦ 已下載＋複製到剪貼簿！";
-          setTimeout(() => {
-            btn.textContent = originalText;
-          }, 2500);
+      if (navigator.clipboard && navigator.clipboard.write) {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ "image/png": blob }),
+          ]);
+          if (btn) {
+            btn.textContent = "✦ 已下載＋複製到剪貼簿！";
+            setTimeout(() => {
+              btn.textContent = originalText;
+            }, 2500);
+          }
+        } catch (e) {
+          if (btn) {
+            btn.textContent = "✦ 圖片已下載！";
+            setTimeout(() => {
+              btn.textContent = originalText;
+            }, 2500);
+          }
         }
-      } catch (e) {
+      } else {
         if (btn) {
           btn.textContent = "✦ 圖片已下載！";
           setTimeout(() => {
@@ -792,14 +780,44 @@ async function shareResultAsImage() {
           }, 2500);
         }
       }
-    } else {
-      if (btn) {
-        btn.textContent = "✦ 圖片已下載！";
-        setTimeout(() => {
-          btn.textContent = originalText;
-        }, 2500);
+    };
+
+    const file = new File([blob], "dark_trait_result.png", {
+      type: "image/png",
+    });
+    const canNativeShare = typeof navigator.share === "function";
+    const canShareFiles =
+      canNativeShare &&
+      typeof navigator.canShare === "function" &&
+      navigator.canShare({ files: [file] });
+
+    if (canNativeShare) {
+      try {
+        if (canShareFiles) {
+          await navigator.share({
+            title: "故事另有結局｜你適合穿越進哪個童話？",
+            text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
+            url: SITE_URL,
+            files: [file],
+          });
+          return;
+        }
+
+        await navigator.share({
+          title: "故事另有結局｜你適合穿越進哪個童話？",
+          text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
+          url: SITE_URL,
+        });
+        return;
+      } catch (e) {
+        // 使用者取消分享時不再強制下載
+        if (e && e.name === "AbortError") {
+          return;
+        }
       }
     }
+
+    await downloadBlob();
   }, "image/png");
 }
 
