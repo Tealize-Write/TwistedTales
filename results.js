@@ -3,6 +3,7 @@
    代號：BRO / SHA / PIP / KING / BEAST / THORN / RACE / CROW / CANDY / CIND / ESC
 ════════════════════════════════ */
 
+
 const resultsData = {
   /* ── BRO｜兩兄弟 ── */
   BRO: {
@@ -135,22 +136,22 @@ const resultsData = {
     label: "美女與野獸",
     storyName: "獅子與老鼠",
     concept:
-      "能徒手撕碎整座皇宮的黑獅，偏偏一輩子都兇不了莊園裡的那道白色身影。",
+      "能徒手撕碎整座莊園的黑獅，偏偏一輩子都兇不了流浪的嬌小身影。",
     resultText:
-      "你適合穿越進去《美女與野獸》（獅子與老鼠 IF線）\n你外柔內韌，看起來溫和，實際上能很有馴服野獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
+      "你適合穿越進去《美女與野獸》（獅子與老鼠 IF線）\n你看似弱小，實際上勇敢而堅強，有一手馴服野獸的本事；不過別忘了，靠近野獸之前，也要先確認自己跑不跑得掉。",
 
     image: "https://tealize-write.github.io/TwistedTales/img/BEAST.png",
-    residentType: "誤闖野性邊界的馴獸師",
+    residentType: "駕馭獸性的馴獸師",
     residentDesc:
-      "你是那種走進花園、黑獅會抬頭的人。並非因為你弱小可欺，而是你身上有某種吸引萬物生靈的氣質。",
+      "你是能夠無懼地獨入山洞，吸引黑獅抬頭的人。並非因為你弱小可欺，而是你身上有某種點亮他人生命的勇敢氣質，吸引著萬物。",
     worldQuote:
-      "「莊園的門從不落鎖，但進來的人，往往不知道自己何時選擇了留下。」",
+      "「獸之大門會為認清自己的生物敞開。」",
     settlementAdvice:
-      "在這裡生活，建議學會分辨哪些咆哮是威脅，哪些是彆扭的留客。你和野獸之間的距離，往往比你以為的更近。",
+      "在這裡生活，建議學會分辨哪些咆哮是威脅，哪些是彆扭的挽留。你和野獸之間的距離，往往比你以為的更近。",
     alliedWorlds: ["BRO", "THORN"],
     conflictingWorlds: ["ESC", "RACE"],
 
-    metrics: { survival: 38, happiness: 72, fate: 65 },
+    metrics: { survival: 38, happiness: 72, fate: 90 },
     mbti: [
       { type: "INTP", pct: 45 },
       { type: "ISFJ", pct: 35 },
@@ -176,8 +177,7 @@ const resultsData = {
     residentType: "高塔深處的尊爵殿下",
     residentDesc:
       "你在這個世界很容易被視為值得珍藏的存在——你身上有某種光，讓惡龍不計代價也要將你藏在最安全的地方。",
-    worldQuote:
-      "「五星級高塔居住環境，但請注意：本世界的惡龍黏人程度也是五顆星。」",
+    worldQuote: "「五星級高塔居住環境，但請注意：本世界的惡龍黏人程度也是五顆星。」",
     settlementAdvice:
       "高塔應有盡有，使長期居留者會對離開產生抗拒。建議定期確認出口位置，提醒自己知道門在哪裡。",
     alliedWorlds: ["BEAST", "BRO"],
@@ -358,3 +358,12 @@ const resultsData = {
     link: "https://early-marketplaces-521584.framer.app/",
   },
 };
+
+
+
+
+
+
+
+
+
