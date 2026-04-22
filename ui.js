@@ -1173,33 +1173,11 @@ async function shareShortImage() {
   /* ── 4欄指標 ── */
   const FOOTER_Y = CH - 108;
   const axisMax = typeof calcAxisMax === "function" ? calcAxisMax() : {};
-  const axisLabelMap = {
-    BRO: "兩兄弟",
-    SHA: "影子",
-    PIP: "吹笛手",
-    KING: "新衣",
-    BEAST: "美女與野獸",
-    THORN: "沉睡荊棘",
-    RACE: "龜兔賽跑",
-    CROW: "烏鴉",
-    CANDY: "糖裹屋",
-    CIND: "灰姑娘",
-    ESC: "旁觀者",
-  };
-  const curScores = typeof categoryScore !== "undefined" ? categoryScore : {};
-  const top1dark = (
-    typeof CATEGORY_KEYS !== "undefined"
-      ? CATEGORY_KEYS
-      : Object.keys(curScores)
-  )
-    .map((k) => [k, curScores[k] || 0])
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 1)
-    .map(([k, v]) => ({
-      lab: axisLabelMap[k] || k,
-      val: String(v),
-      pct: axisMax[k] ? Math.round((v / axisMax[k]) * 100) : 0,
-    }));
+  const _tags = r && r.bookTags && r.bookTags.length ? r.bookTags : [];
+  const _randomTag = _tags.length
+    ? "#" + _tags[Math.floor(Math.random() * _tags.length)]
+    : "—";
+  const top1dark = [{ lab: "本書標籤", val: _randomTag, pct: 100 }];
   // 與結果頁一致：直接使用結果資料內的固定指標，避免分享圖 fallback 成 0
   const mp2 = (r && r.metrics) || {};
   const ml2 =
