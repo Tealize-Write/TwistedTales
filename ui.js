@@ -1238,9 +1238,9 @@ async function shareShortImage() {
   const axisMax = typeof calcAxisMax === "function" ? calcAxisMax() : {};
   const _tags = r && r.bookTags && r.bookTags.length ? r.bookTags : [];
   const _randomTag = _tags.length
-    ? "#" + _tags[Math.floor(Math.random() * _tags.length)]
+    ? _tags[Math.floor(Math.random() * _tags.length)]
     : "—";
-  const top1dark = [{ lab: "本書標籤", val: _randomTag, pct: 100 }];
+  const top1dark = [{ lab: "紀念品", val: _randomTag, pct: 100 }];
   // 與結果頁一致：直接使用結果資料內的固定指標，避免分享圖 fallback 成 0
   const mp2 = (r && r.metrics) || {};
   const ml2 =
@@ -1332,7 +1332,7 @@ async function shareShortImage() {
 
     // 標籤
     ctx.font = `400 ${Math.round(CW * 0.02)}px "Noto Serif TC", serif`;
-    ctx.fillStyle = isLast ? "rgba(212,175,55,0.95)" : "rgba(225,202,160,0.92)";
+    ctx.fillStyle = "rgba(225,202,160,0.92)";
     ctx.letterSpacing = "1px";
     ctx.fillText(s.lab, cx, y);
     ctx.letterSpacing = "0px";
