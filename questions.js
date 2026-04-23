@@ -23,7 +23,7 @@ const questions = [
   text: "夢中的你好不容易從黑森林探險回來，手上卻多了一樣不屬於你的東西——那會是什麼呢？",
   options: [
     { text: "會說古摸寧，劍身隱隱發燙的古劍",             scores: { BRO: 1 } },
-    { text: "邊角超濕，翻開時很黏的魔法書",               scores: { SHA: 2 } },
+    { text: "邊角超濕，翻開時很黏的魔法書",               scores: { SHA: 1 } },
     { text: "被荊棘纏住的龍角散發出來蘋果味",             scores: { THORN: 2 } },
     { text: "什麼也沒帶走，總覺得黑森林裡的東西不該隨便撿回家", scores: { ESC: 1 } },
   ]
@@ -33,8 +33,8 @@ const questions = [
 {
   text: "當你把那樣東西帶回房間後，深夜裡最讓你無法忽視的異響會是什麼？",
   options: [
-    { text: "書頁翻動著，看不見的朋友情難自禁正在讀那本書",           scores: { SHA: 2 } },
-    { text: "遠處若有似無的笛聲，小老鼠一邊喊著小鳥氣",             scores: { PIP: 2 } },
+    { text: "書頁翻動著，看不見的朋友情難自禁正在讀那本書",           scores: { SHA: 1 } },
+    { text: "遠處若有似無的笛聲，小老鼠一邊喊著小鳥氣",             scores: { PIP: 3 } },
     { text: "烏鴉停在窗邊，瘋狂用棒球砸窗",                         scores: { CROW: 2 } },
     { text: "你立刻把東西鎖進櫃子裡、蒙頭睡覺，假裝自己什麼都沒聽見", scores: { ESC: 1 } },
   ]
@@ -46,7 +46,7 @@ const questions = [
   options: [
     { text: "長滿荊棘的高塔深處，惡龍正在跟老師泡澡",               scores: { THORN: 3 } },
     { text: "禁止著裝的天體王宮，王座上只剩皇冠被噴奶油",           scores: { KING: 2 } },
-    { text: "蜂蜜茶香氣過甜的小屋旁，掛著有醒目的紅色斗篷",         scores: { CANDY: 4 } },
+    { text: "蜂蜜茶香氣過甜的小屋旁，掛著有醒目的紅色斗篷",         scores: { CANDY: 3 } },
     { text: "天剛亮的森林出口，霧正在散去，只要現在離開，一切都還來得及", scores: { ESC: 1 } },
   ]
 },
@@ -80,7 +80,7 @@ const questions = [
     { text: "成為一次擁有九個子宮的兔子🐰",                               scores: { RACE: 3 } },
     { text: "成為天體派自由行走大家視而不見的能力",                       scores: { KING: 3 } },
     { text: "翻身又要死，死了又要翻身，無限開啟IF線的能力",               scores: { BRO: 2 } },
-    { text: "打開出口、全身而退的能力——你不一定要贏，只想活著離開故事",   scores: { ESC: 1 } },
+    { text: "打開出口、全身而退的能力——你不一定要贏，只想活著離開故事",   scores: { BEAST: 1 } },
   ]
 },
 
@@ -90,7 +90,7 @@ const questions = [
   options: [
     { text: "拔出那把命運之劍，再插回去，插插拔拔",                         scores: { BRO: 2 } },
     { text: "翻開魔法書最深的一頁，看看能多深",                             scores: { SHA: 1 } },
-    { text: "戴上面具、披起斗篷，開始色禽交流派對",                         scores: { CIND: 3, CANDY: 2 } },
+    { text: "戴上面具、披起斗篷，開始色禽交流派對",                         scores: { CIND: 3, CANDY: 3 } },
     { text: "先找到能回頭的路，畢竟有些能力看起來很香，代價卻未必划算",     scores: { ESC: 1 } },
   ]
 },
@@ -100,7 +100,7 @@ const questions = [
   text: "如果有另一個角色正等著你去拯救，你認為他最有可能被關在哪裡？",
   options: [
     { text: "深海的大鳳梨裡，一邊聽海要哭要哭的聲音",   scores: { SHA: 2 } },
-    { text: "在家長一直遲到不來接小孩的幼兒園當老師",   scores: { PIP: 2 } },
+    { text: "在家長一直遲到不來接小孩的幼兒園當老師",   scores: { THORN: 2 } },
     { text: "兔子洞，前面的洞和後面的洞都可以找找看",   scores: { RACE: 2 } },
     { text: "如同消防栓一樣粗大的玻璃瓶",               scores: { CROW: 2 } },
   ]
@@ -111,9 +111,9 @@ const questions = [
   text: "當你遭遇超難副本、情緒徹底失控時，你最有可能會成為哪一種人？",
   options: [
     { text: "把心臟、誓言與劍一起押上，只要銷量有上去就好的神坦",                       scores: { BRO: 2 } },
-    { text: "明明已經遍體鱗傷，還是會端正戴上皇冠或面具，裝作一切都沒事的I人",         scores: { KING: 4 } },
+    { text: "明明已經遍體鱗傷，還是會端正戴上皇冠或面具，裝作一切都沒事的I人",         scores: { KING: 3 } },
     { text: "低頭吹響魔笛、放出野獸與鼠群，任由整個童話陪你一起失控的創世神",           scores: { PIP: 2 } },
-    { text: "扔下所有身份，轉身跳進最近的出口、兔子洞或鏡子裂縫，只求先活著離開的人", scores: { ESC: 1 } },
+    { text: "扔下所有身份，轉身跳進最近的出口、兔子洞或鏡子裂縫，只求先活著離開的人", scores: { CIND: 1,RACE:1 } },
   ]
 },
 
@@ -122,9 +122,9 @@ const questions = [
   text: "如果穿越真正完成的條件，是你必須親手做出最後一個選擇——你願意把什麼留在原來的世界？",
   options: [
     { text: "那顆會被誰插插拔拔過的心臟",                               scores: { BRO: 2 } },
-    { text: "自己的名字，好怕真的胖一百公斤",                           scores: { SHA: 2 } },
+    { text: "自己的名字，好怕真的胖一百公斤",                           scores: { SHA: 1,CANDY:1 } },
     { text: "原本安穩的人生，換取皇冠、力量、龍，不中二幹嘛穿越",       scores: { THORN: 2, KING: 1 } },
-    { text: "什麼都不留，故事很好看，我會付錢的",                       scores: { CANDY: 2 } },
+    { text: "什麼都不留，故事很好看，我會付錢的",                       scores: { CIND: 2 } },
   ]
 },
 
