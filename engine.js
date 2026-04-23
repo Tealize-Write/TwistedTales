@@ -105,9 +105,26 @@ function determineResultCode() {
   );
 
   // 唯一最高分直接返回；平手則走 tie-breaker
-  return topCandidates.length === 1
+  let winner = topCandidates.length === 1
     ? topCandidates[0]
     : breakCategoryTie(topCandidates);
+
+  // ESC 門檻：ESC 必須領先所有非 ESC 分類至少 2 分才能勝出
+  if (winner === "ESC") {
+    const nonESCMax = Math.max(
+      ...CATEGORY_KEYS.filter((k) => k !== "ESC").map((k) => categoryScore[k])
+    );
+    if (categoryScore["ESC"] <= nonESCMax + 1) {
+      const nonESCCandidates = CATEGORY_KEYS.filter(
+        (k) => k !== "ESC" && categoryScore[k] === nonESCMax
+      );
+      winner = nonESCCandidates.length === 1
+        ? nonESCCandidates[0]
+        : breakCategoryTie(nonESCCandidates);
+    }
+  }
+
+  return winner;
 }
 
 /* ════════════════════════════════
