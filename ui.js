@@ -781,10 +781,17 @@ async function shareResultAsImage() {
 
     if (!blob) {
       // toBlob 失敗 → 降級用 dataURL 下載
-      doDownload(canvas.toDataURL("image/png"));
-      if (btn) {
-        btn.textContent = "✦ 圖片已下載！";
-        setTimeout(() => { btn.textContent = originalText; }, 2500);
+      try {
+        doDownload(canvas.toDataURL("image/png"));
+        if (btn) {
+          btn.textContent = "✦ 圖片已下載！";
+          setTimeout(() => { btn.textContent = originalText; }, 2500);
+        }
+      } catch (_) {
+        if (btn) {
+          btn.textContent = "✦ 下載失敗，請截圖儲存";
+          setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
+        }
       }
       return;
     }
@@ -818,7 +825,8 @@ async function shareResultAsImage() {
   // ── 手機：iOS Safari 的 user activation 在 html2canvas 後已失效，
   //    解法：先把 blob 在背景生成並快取，再用覆蓋層的「儲存」按鈕
   //    觸發全新 user gesture，navigator.share 在那一刻直接呼叫。 ──
-  const dataUrl = canvas.toDataURL("image/png");
+  let dataUrl = "";
+  try { dataUrl = canvas.toDataURL("image/png"); } catch (_) {}
 
   // Promise 化：saveBtn click 時 await 確保 blob 一定就緒，不再有 race condition
   const blobPromise = new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
@@ -870,11 +878,15 @@ async function shareResultAsImage() {
     // 等待 blob 就緒（通常已完成，await 幾乎無等待時間）
     let blob = await blobPromise;
 
-    // toBlob 失敗時從 dataUrl 轉換降級
-    if (!blob) {
+    // toBlob 失敗時從 dataUrl 轉換降級（base64→Blob，避免 iOS fetch 不可靠問題）
+    if (!blob && dataUrl) {
       try {
-        const res = await fetch(dataUrl);
-        blob = await res.blob();
+        const arr = dataUrl.split(",");
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8 = new Uint8Array(n);
+        while (n--) u8[n] = bstr.charCodeAt(n);
+        blob = new Blob([u8], { type: "image/png" });
       } catch (_) {}
     }
 
