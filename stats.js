@@ -159,7 +159,7 @@ function _f2(n) {
   return n.toFixed(2);
 }
 
-function buildDonutSVG(slices, myCode) {
+function buildDonutSVG(slices, myCode, displayTotal) {
   const CX = 100,
     CY = 100,
     IR = 52,
@@ -170,11 +170,13 @@ function buildDonutSVG(slices, myCode) {
 
   const total = slices.reduce((s, sl) => s + sl.count, 0);
   if (!slices.length || total === 0) return "";
+  // 中央顯示數字優先用 data.total（與下方文案同源），避免兩者因歷史資料誤差而不一致
+  const shownTotal = displayTotal != null ? displayTotal : total;
 
   const centerText =
     `<circle cx="${CX}" cy="${CY}" r="${IR}" fill="#0a0a0f"/>` +
     `<text x="${CX}" y="${CY - 8}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="serif" letter-spacing="1">定居分布</text>` +
-    `<text x="${CX}" y="${CY + 8}" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="15" font-weight="700" font-family="serif">${total}</text>` +
+    `<text x="${CX}" y="${CY + 8}" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="15" font-weight="700" font-family="serif">${shownTotal}</text>` +
     `<text x="${CX}" y="${CY + 22}" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="serif" letter-spacing="1">位旅人</text>`;
 
   // 單一扇形 → 完整甜甜圈
@@ -338,7 +340,7 @@ function renderStats(data, code) {
 
   chart.innerHTML =
     '<div class="donut-wrap">' +
-    buildDonutSVG(mainSlices, code) +
+    buildDonutSVG(mainSlices, code, total) +
     '<div class="donut-legend">' +
     buildDonutLegend(mainSlices, code) +
     "</div>" +

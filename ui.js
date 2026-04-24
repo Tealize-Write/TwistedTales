@@ -764,179 +764,139 @@ async function shareResultAsImage() {
   // ── 桌機：直接下載 ──
   const isMobileDevice = window.matchMedia("(pointer:coarse)").matches;
   if (!isMobileDevice) {
+    // Step 1：toBlob（20 秒 timeout 防止無限等待）
     let blob = null;
     try {
-      blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-    } catch (_) {}
+      blob = await new Promise((resolve) => {
+        let done = false;
+        const timer = setTimeout(() => {
+          if (!done) { done = true; console.warn("toBlob timeout"); resolve(null); }
+        }, 20000);
+        canvas.toBlob((b) => {
+          if (!done) { done = true; clearTimeout(timer); resolve(b); }
+        }, "image/png");
+      });
+    } catch (e) {
+      console.error("desktop toBlob error:", e);
+    }
 
-    const doDownload = (url, isObjUrl = false) => {
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "dark_trait_result.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      if (isObjUrl) setTimeout(() => URL.revokeObjectURL(url), 1000);
-    };
-
+    // Step 2：toBlob 失敗 → base64→Blob（和手機相同路徑，比 raw dataURL href 更可靠）
     if (!blob) {
-      // toBlob 失敗 → 降級用 dataURL 下載
+      console.warn("toBlob null, fallback to dataURL→Blob");
       try {
-        doDownload(canvas.toDataURL("image/png"));
-        if (btn) {
-          btn.textContent = "✦ 圖片已下載！";
-          setTimeout(() => { btn.textContent = originalText; }, 2500);
-        }
-      } catch (_) {
-        if (btn) {
-          btn.textContent = "✦ 下載失敗，請截圖儲存";
-          setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
-        }
-      }
-      return;
-    }
-
-    doDownload(URL.createObjectURL(blob), true);
-
-    if (navigator.clipboard && navigator.clipboard.write) {
-      try {
-        await navigator.clipboard.write([
-          new ClipboardItem({ "image/png": blob }),
-        ]);
-        if (btn) {
-          btn.textContent = "✦ 已下載＋複製到剪貼簿！";
-          setTimeout(() => { btn.textContent = originalText; }, 2500);
-        }
-      } catch (e) {
-        if (btn) {
-          btn.textContent = "✦ 圖片已下載！";
-          setTimeout(() => { btn.textContent = originalText; }, 2500);
-        }
-      }
-    } else {
-      if (btn) {
-        btn.textContent = "✦ 圖片已下載！";
-        setTimeout(() => { btn.textContent = originalText; }, 2500);
-      }
-    }
-    return;
-  }
-
-  // ── 手機：iOS Safari 的 user activation 在 html2canvas 後已失效，
-  //    解法：先把 blob 在背景生成並快取，再用覆蓋層的「儲存」按鈕
-  //    觸發全新 user gesture，navigator.share 在那一刻直接呼叫。 ──
-  let dataUrl = "";
-  try { dataUrl = canvas.toDataURL("image/png"); } catch (_) {}
-
-  // Promise 化：saveBtn click 時 await 確保 blob 一定就緒，不再有 race condition
-  const blobPromise = new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-
-  const overlay = document.createElement("div");
-  overlay.id = "_share_overlay";
-  overlay.style.cssText = [
-    "position:fixed;inset:0;background:rgba(5,8,20,0.96);z-index:99999;",
-    "display:flex;flex-direction:column;align-items:center;justify-content:center;",
-    "padding:20px;gap:14px;overflow-y:auto;",
-  ].join("");
-
-  const imgEl = document.createElement("img");
-  imgEl.src = dataUrl;
-  imgEl.style.cssText =
-    "max-width:100%;max-height:60vh;object-fit:contain;border-radius:3px;";
-
-  const hint = document.createElement("div");
-  hint.style.cssText =
-    "color:rgba(249,231,177,0.72);font-size:12px;letter-spacing:2px;font-family:'Noto Serif TC',serif;text-align:center;line-height:1.8;";
-  hint.textContent = "長按圖片可儲存到相簿\n或點下方按鈕分享";
-
-  const saveBtn = document.createElement("button");
-  saveBtn.textContent = "✦ 儲存 / 分享圖片";
-  saveBtn.style.cssText = [
-    "background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.55);",
-    "color:rgba(249,231,177,0.95);padding:13px 32px;font-size:14px;letter-spacing:3px;",
-    "font-family:'Noto Serif TC',serif;cursor:pointer;border-radius:2px;width:100%;max-width:280px;",
-  ].join("");
-
-  const closeBtn = document.createElement("button");
-  closeBtn.textContent = "關閉";
-  closeBtn.style.cssText =
-    "background:transparent;border:none;color:rgba(255,255,255,0.35);font-size:13px;cursor:pointer;padding:10px 20px;letter-spacing:2px;";
-
-  overlay.appendChild(imgEl);
-  overlay.appendChild(hint);
-  overlay.appendChild(saveBtn);
-  overlay.appendChild(closeBtn);
-  document.body.appendChild(overlay);
-
-  closeBtn.addEventListener("click", () => overlay.remove());
-
-  // saveBtn 點擊 = 全新 user gesture → navigator.share 合法
-  saveBtn.addEventListener("click", async () => {
-    saveBtn.disabled = true;
-    saveBtn.textContent = "準備中…";
-
-    // 等待 blob 就緒（通常已完成，await 幾乎無等待時間）
-    let blob = await blobPromise;
-
-    // toBlob 失敗時從 dataUrl 轉換降級（base64→Blob，避免 iOS fetch 不可靠問題）
-    if (!blob && dataUrl) {
-      try {
+        const dataUrl = canvas.toDataURL("image/png");
         const arr = dataUrl.split(",");
         const bstr = atob(arr[1]);
         let n = bstr.length;
         const u8 = new Uint8Array(n);
         while (n--) u8[n] = bstr.charCodeAt(n);
         blob = new Blob([u8], { type: "image/png" });
-      } catch (_) {}
-    }
-
-    overlay.remove();
-
-    if (!blob) {
-      alert("圖片尚未就緒，請稍後再試");
-      return;
-    }
-
-    const file = new File([blob], "dark_trait_result.png", {
-      type: "image/png",
-    });
-
-    if (typeof navigator.share === "function") {
-      const canFiles =
-        typeof navigator.canShare === "function" &&
-        navigator.canShare({ files: [file] });
-      try {
-        await navigator.share(
-          canFiles
-            ? {
-                title: "故事另有結局｜你適合穿越進哪個童話？",
-                text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
-                url: SITE_URL,
-                files: [file],
-              }
-            : {
-                title: "故事另有結局｜你適合穿越進哪個童話？",
-                text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
-                url: SITE_URL,
-              },
-        );
-        return;
       } catch (e) {
-        if (e && e.name === "AbortError") return;
-        // share 失敗 → 降級下載
+        console.error("desktop dataURL fallback error:", e);
       }
     }
 
-    // 最終降級：下載
-    const objUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = objUrl;
-    a.download = "dark_trait_result.png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
-  });
+    // Step 3：下載（永遠走 createObjectURL，不用 raw dataURL 作 href）
+    if (!blob) {
+      if (btn) {
+        btn.textContent = "✦ 下載失敗，請截圖儲存";
+        setTimeout(() => { btn.textContent = originalText; }, 3000);
+      }
+      return;
+    }
+
+    try {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "dark_trait_result.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      if (btn) {
+        btn.textContent = "✦ 圖片已下載！";
+        setTimeout(() => { btn.textContent = originalText; }, 2500);
+      }
+    } catch (e) {
+      console.error("desktop download trigger failed:", e);
+      if (btn) {
+        btn.textContent = "✦ 下載失敗，請截圖儲存";
+        setTimeout(() => { btn.textContent = originalText; }, 3000);
+      }
+    }
+    return;
+  }
+
+  // ── 手機：生成完畢直接嘗試分享，失敗則降級下載，不彈出覆蓋層 ──
+  let dataUrl = "";
+  try { dataUrl = canvas.toDataURL("image/png"); } catch (_) {}
+
+  let shareBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+  if (!shareBlob && dataUrl) {
+    try {
+      const arr = dataUrl.split(",");
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8 = new Uint8Array(n);
+      while (n--) u8[n] = bstr.charCodeAt(n);
+      shareBlob = new Blob([u8], { type: "image/png" });
+    } catch (_) {}
+  }
+
+  if (!shareBlob) {
+    if (btn) {
+      btn.textContent = "✦ 圖片生成失敗";
+      setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
+    }
+    alert("圖片生成失敗，請稍後再試。");
+    return;
+  }
+
+  const file = new File([shareBlob], "dark_trait_result.png", { type: "image/png" });
+  const shareDataWithFile = {
+    title: "故事另有結局｜你適合穿越進哪個童話？",
+    text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
+    files: [file],
+  };
+
+  if (
+    typeof navigator.share === "function" &&
+    typeof navigator.canShare === "function" &&
+    navigator.canShare(shareDataWithFile)
+  ) {
+    try {
+      await navigator.share(shareDataWithFile);
+      if (btn) {
+        btn.textContent = "✦ 已分享！";
+        setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2500);
+      }
+      return;
+    } catch (e) {
+      if (e && e.name === "AbortError") {
+        if (btn) { btn.textContent = originalText; btn.disabled = false; }
+        return;
+      }
+      console.error("navigator.share failed:", e.name, e.message, e);
+    }
+  }
+
+  _doMobileDownload(shareBlob);
+  if (btn) {
+    btn.textContent = "✦ 圖片已下載！";
+    setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2500);
+  }
+}
+
+function _doMobileDownload(blob) {
+  const objUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objUrl;
+  a.download = "dark_trait_result.png";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
 }
 
 /* ════════════════════════════════
