@@ -764,47 +764,54 @@ async function shareResultAsImage() {
   // ── 桌機：直接下載 ──
   const isMobileDevice = window.matchMedia("(pointer:coarse)").matches;
   if (!isMobileDevice) {
-    canvas.toBlob(async (blob) => {
-      if (!blob) {
-        alert("圖片轉檔失敗");
-        return;
-      }
-      const objUrl = URL.createObjectURL(blob);
+    let blob = null;
+    try {
+      blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+    } catch (_) {}
+
+    const doDownload = (url, isObjUrl = false) => {
       const a = document.createElement("a");
-      a.href = objUrl;
+      a.href = url;
       a.download = "dark_trait_result.png";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
-      if (navigator.clipboard && navigator.clipboard.write) {
-        try {
-          await navigator.clipboard.write([
-            new ClipboardItem({ "image/png": blob }),
-          ]);
-          if (btn) {
-            btn.textContent = "✦ 已下載＋複製到剪貼簿！";
-            setTimeout(() => {
-              btn.textContent = originalText;
-            }, 2500);
-          }
-        } catch (e) {
-          if (btn) {
-            btn.textContent = "✦ 圖片已下載！";
-            setTimeout(() => {
-              btn.textContent = originalText;
-            }, 2500);
-          }
+      if (isObjUrl) setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+
+    if (!blob) {
+      // toBlob 失敗 → 降級用 dataURL 下載
+      doDownload(canvas.toDataURL("image/png"));
+      if (btn) {
+        btn.textContent = "✦ 圖片已下載！";
+        setTimeout(() => { btn.textContent = originalText; }, 2500);
+      }
+      return;
+    }
+
+    doDownload(URL.createObjectURL(blob), true);
+
+    if (navigator.clipboard && navigator.clipboard.write) {
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ]);
+        if (btn) {
+          btn.textContent = "✦ 已下載＋複製到剪貼簿！";
+          setTimeout(() => { btn.textContent = originalText; }, 2500);
         }
-      } else {
+      } catch (e) {
         if (btn) {
           btn.textContent = "✦ 圖片已下載！";
-          setTimeout(() => {
-            btn.textContent = originalText;
-          }, 2500);
+          setTimeout(() => { btn.textContent = originalText; }, 2500);
         }
       }
-    }, "image/png");
+    } else {
+      if (btn) {
+        btn.textContent = "✦ 圖片已下載！";
+        setTimeout(() => { btn.textContent = originalText; }, 2500);
+      }
+    }
     return;
   }
 
@@ -813,11 +820,8 @@ async function shareResultAsImage() {
   //    觸發全新 user gesture，navigator.share 在那一刻直接呼叫。 ──
   const dataUrl = canvas.toDataURL("image/png");
 
-  // 背景預先轉成 Blob（等使用者點儲存時已就緒）
-  let _cachedBlob = null;
-  canvas.toBlob((b) => {
-    _cachedBlob = b;
-  }, "image/png");
+  // Promise 化：saveBtn click 時 await 確保 blob 一定就緒，不再有 race condition
+  const blobPromise = new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
 
   const overlay = document.createElement("div");
   overlay.id = "_share_overlay";
@@ -860,12 +864,27 @@ async function shareResultAsImage() {
 
   // saveBtn 點擊 = 全新 user gesture → navigator.share 合法
   saveBtn.addEventListener("click", async () => {
+    saveBtn.disabled = true;
+    saveBtn.textContent = "準備中…";
+
+    // 等待 blob 就緒（通常已完成，await 幾乎無等待時間）
+    let blob = await blobPromise;
+
+    // toBlob 失敗時從 dataUrl 轉換降級
+    if (!blob) {
+      try {
+        const res = await fetch(dataUrl);
+        blob = await res.blob();
+      } catch (_) {}
+    }
+
     overlay.remove();
-    const blob = _cachedBlob;
+
     if (!blob) {
       alert("圖片尚未就緒，請稍後再試");
       return;
     }
+
     const file = new File([blob], "dark_trait_result.png", {
       type: "image/png",
     });
