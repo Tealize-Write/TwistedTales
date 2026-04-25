@@ -613,11 +613,15 @@ async function shareResultAsImage() {
   await new Promise((resolve) => setTimeout(resolve, 50));
 
   const hideEls = targetEl.querySelectorAll(
-    ".btn-row, .share-divider, .buy-book-wrap, .lab:last-of-type, .stats, .btn-line-sticker-wrap",
+    ".btn-row, .share-divider, .stats, .btn-line-sticker-wrap, .site-footer-links",
   );
   hideEls.forEach((el) => (el.style.display = "none"));
 
-  // framerusercontent.com 不送 CORS headers，留著會污染 canvas
+  // 整個 CTA block（解鎖故事樣本 + 電子書平台）
+  const _ctaBlock = document.getElementById("r-cta")?.closest(".block");
+  if (_ctaBlock) _ctaBlock.style.display = "none";
+
+  // framerusercontent.com 不送 CORS headers，留著會污染 canvas（雙重保險）
   const _ctaCoverEl = targetEl.querySelector(".cta-cover");
   const _origCtaSrc = _ctaCoverEl ? _ctaCoverEl.src : null;
   if (_ctaCoverEl) _ctaCoverEl.src = "";
@@ -809,6 +813,7 @@ async function shareResultAsImage() {
   if (overrideStyle) overrideStyle.remove();
 
   if (_ctaCoverEl && _origCtaSrc) _ctaCoverEl.src = _origCtaSrc;
+  if (_ctaBlock) _ctaBlock.style.display = "";
   hideEls.forEach((el) => (el.style.display = ""));
   if (btn) {
     btn.textContent = originalText;
@@ -904,9 +909,19 @@ async function shareResultAsImage() {
   }
 
   // ── 手機長圖：顯示長按儲存覆蓋層，迴避 iOS canvas 記憶體限制 ──
-  const shareBlob = await new Promise((resolve) =>
-    canvas.toBlob(resolve, "image/png"),
-  );
+  const shareBlob = await new Promise((resolve) => {
+    let done = false;
+    const timer = setTimeout(() => {
+      if (!done) { done = true; resolve(null); }
+    }, 15000);
+    try {
+      canvas.toBlob((b) => {
+        if (!done) { done = true; clearTimeout(timer); resolve(b); }
+      }, "image/png");
+    } catch (_) {
+      if (!done) { done = true; clearTimeout(timer); resolve(null); }
+    }
+  });
 
   if (!shareBlob) {
     if (btn) {
@@ -1565,7 +1580,7 @@ async function shareShortImage() {
   ctx.fillStyle = "rgba(249,231,177,0.84)";
   ctx.letterSpacing = "3px";
   fillWrapped(
-    r.residentDesc || "",
+    r.settlementAdvice || "",
     y,
     CW - PAD_X * 2,
     qLineH,
