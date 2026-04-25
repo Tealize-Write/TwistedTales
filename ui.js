@@ -540,6 +540,46 @@ function escapeAttr(str) {
   return s.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
+function isProbablyMobileDevice() {
+  const ua = navigator.userAgent || "";
+  const mobileUA = /Android|webOS|iPhone|iPad|iPod|Windows Phone/i.test(ua);
+  const touchOnlyTabletLike =
+    (navigator.maxTouchPoints || 0) > 1 && window.innerWidth <= 1024;
+  return mobileUA || touchOnlyTabletLike;
+}
+
+async function safeShare(shareData) {
+  if (typeof navigator.share !== "function") return false;
+
+  if (typeof navigator.canShare === "function") {
+    try {
+      if (!navigator.canShare(shareData)) return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  try {
+    await navigator.share(shareData);
+    return true;
+  } catch (e) {
+    if (e && e.name === "AbortError") throw e;
+    return false;
+  }
+}
+
+function triggerBlobDownload(blob, filename) {
+  const objUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objUrl;
+  a.download = filename;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(objUrl), 1200);
+}
+
 /* ════════════════════════════════
    SHARE LONG IMAGE
 ════════════════════════════════ */
@@ -762,7 +802,7 @@ async function shareResultAsImage() {
   if (!canvas) return;
 
   // ── 桌機：直接下載 ──
-  const isMobileDevice = window.matchMedia("(pointer:coarse)").matches;
+  const isMobileDevice = isProbablyMobileDevice();
   if (!isMobileDevice) {
     // Step 1：toBlob（20 秒 timeout 防止無限等待）
     let blob = null;
@@ -770,10 +810,18 @@ async function shareResultAsImage() {
       blob = await new Promise((resolve) => {
         let done = false;
         const timer = setTimeout(() => {
-          if (!done) { done = true; console.warn("toBlob timeout"); resolve(null); }
+          if (!done) {
+            done = true;
+            console.warn("toBlob timeout");
+            resolve(null);
+          }
         }, 20000);
         canvas.toBlob((b) => {
-          if (!done) { done = true; clearTimeout(timer); resolve(b); }
+          if (!done) {
+            done = true;
+            clearTimeout(timer);
+            resolve(b);
+          }
         }, "image/png");
       });
     } catch (e) {
@@ -800,7 +848,9 @@ async function shareResultAsImage() {
     if (!blob) {
       if (btn) {
         btn.textContent = "✦ 下載失敗，請截圖儲存";
-        setTimeout(() => { btn.textContent = originalText; }, 3000);
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 3000);
       }
       return;
     }
@@ -816,13 +866,17 @@ async function shareResultAsImage() {
       setTimeout(() => URL.revokeObjectURL(url), 1500);
       if (btn) {
         btn.textContent = "✦ 圖片已下載！";
-        setTimeout(() => { btn.textContent = originalText; }, 2500);
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2500);
       }
     } catch (e) {
       console.error("desktop download trigger failed:", e);
       if (btn) {
         btn.textContent = "✦ 下載失敗，請截圖儲存";
-        setTimeout(() => { btn.textContent = originalText; }, 3000);
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 3000);
       }
     }
     return;
@@ -830,9 +884,13 @@ async function shareResultAsImage() {
 
   // ── 手機：生成完畢直接嘗試分享，失敗則降級下載，不彈出覆蓋層 ──
   let dataUrl = "";
-  try { dataUrl = canvas.toDataURL("image/png"); } catch (_) {}
+  try {
+    dataUrl = canvas.toDataURL("image/png");
+  } catch (_) {}
 
-  let shareBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+  let shareBlob = await new Promise((resolve) =>
+    canvas.toBlob(resolve, "image/png"),
+  );
   if (!shareBlob && dataUrl) {
     try {
       const arr = dataUrl.split(",");
@@ -847,56 +905,91 @@ async function shareResultAsImage() {
   if (!shareBlob) {
     if (btn) {
       btn.textContent = "✦ 圖片生成失敗";
-      setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 3000);
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 3000);
     }
     alert("圖片生成失敗，請稍後再試。");
     return;
   }
 
-  const file = new File([shareBlob], "dark_trait_result.png", { type: "image/png" });
+  const file = new File([shareBlob], "dark_trait_result.png", {
+    type: "image/png",
+  });
   const shareDataWithFile = {
     title: "故事另有結局｜你適合穿越進哪個童話？",
     text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
     files: [file],
   };
 
-  if (
-    typeof navigator.share === "function" &&
-    typeof navigator.canShare === "function" &&
-    navigator.canShare(shareDataWithFile)
-  ) {
-    try {
-      await navigator.share(shareDataWithFile);
+  try {
+    const sharedFile = await safeShare(shareDataWithFile);
+    if (sharedFile) {
       if (btn) {
         btn.textContent = "✦ 已分享！";
-        setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2500);
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 2500);
       }
       return;
-    } catch (e) {
-      if (e && e.name === "AbortError") {
-        if (btn) { btn.textContent = originalText; btn.disabled = false; }
-        return;
-      }
-      console.error("navigator.share failed:", e.name, e.message, e);
     }
+  } catch (e) {
+    if (e && e.name === "AbortError") {
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+      return;
+    }
+  }
+
+  // 檔案分享不支援時，退回連結分享（至少可開啟原生分享面板）
+  try {
+    const sharedLink = await safeShare({
+      title: "故事另有結局｜你適合穿越進哪個童話？",
+      text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
+      url: SITE_URL,
+    });
+    if (sharedLink) {
+      if (btn) {
+        btn.textContent = "✦ 已分享連結！";
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 2500);
+      }
+      return;
+    }
+  } catch (e) {
+    if (e && e.name === "AbortError") {
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+      return;
+    }
+    console.error(
+      "navigator.share link fallback failed:",
+      e && e.name,
+      e && e.message,
+      e,
+    );
   }
 
   _doMobileDownload(shareBlob);
   if (btn) {
     btn.textContent = "✦ 圖片已下載！";
-    setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2500);
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }, 2500);
   }
 }
 
 function _doMobileDownload(blob) {
-  const objUrl = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = objUrl;
-  a.download = "dark_trait_result.png";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
+  triggerBlobDownload(blob, "dark_trait_result.png");
 }
 
 /* ════════════════════════════════
@@ -1495,29 +1588,46 @@ async function shareShortImage() {
     const file = new File([blob], "dark_result_short.png", {
       type: "image/png",
     });
-    const isMob =
-      window.matchMedia("(pointer:coarse)").matches &&
-      navigator.canShare &&
-      navigator.canShare({ files: [file] });
-    if (isMob) {
-      navigator
-        .share({ files: [file], title: "我的異世界居住指南", url: SITE_URL })
-        .catch(() => {})
-        .finally(() => restore());
-      return;
-    }
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "dark_result_short.png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    if (btn) {
-      btn.textContent = "✦ IG圖已下載！";
-      setTimeout(() => restore(), 2500);
-    }
+    const tryShareThenDownload = async () => {
+      if (isProbablyMobileDevice()) {
+        try {
+          const sharedFile = await safeShare({
+            files: [file],
+            title: "我的異世界居住指南",
+            url: SITE_URL,
+          });
+          if (sharedFile) {
+            restore();
+            return;
+          }
+
+          const sharedLink = await safeShare({
+            title: "我的異世界居住指南",
+            text: "點我測測看你適合住進哪個童話異世界",
+            url: SITE_URL,
+          });
+          if (sharedLink) {
+            restore();
+            return;
+          }
+        } catch (e) {
+          if (e && e.name === "AbortError") {
+            restore();
+            return;
+          }
+        }
+      }
+
+      triggerBlobDownload(blob, "dark_result_short.png");
+      if (btn) {
+        btn.textContent = "✦ IG圖已下載！";
+        setTimeout(() => restore(), 2500);
+      } else {
+        restore();
+      }
+    };
+
+    tryShareThenDownload();
   };
 
   try {
