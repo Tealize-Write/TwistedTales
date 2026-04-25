@@ -340,7 +340,6 @@ function showResult() {
   const label = r.label || code;
   const resultImgEl = document.getElementById("result-img");
   if (resultImgEl) {
-    resultImgEl.crossOrigin = "anonymous";
     resultImgEl.src = r.image;
   }
 
@@ -594,6 +593,17 @@ async function shareResultAsImage() {
     trackUserAction(code, "share_image");
   }
 
+  // file:// 協定下 Chrome 會封鎖 canvas 匯出，提早告知
+  if (window.location.protocol === "file:") {
+    alert(
+      "⚠️ 下載功能需要透過 HTTP 伺服器執行。\n\n" +
+      "請改用 VS Code「Live Server」外掛：\n" +
+      "右鍵 index.html → Open with Live Server\n\n" +
+      "（部署到 GitHub Pages 後亦可正常使用）"
+    );
+    return;
+  }
+
   if (btn) {
     btn.textContent = "生成專屬圖像中...";
     btn.disabled = true;
@@ -606,6 +616,11 @@ async function shareResultAsImage() {
     ".btn-row, .share-divider, .buy-book-wrap, .lab:last-of-type, .stats, .btn-line-sticker-wrap",
   );
   hideEls.forEach((el) => (el.style.display = "none"));
+
+  // framerusercontent.com 不送 CORS headers，留著會污染 canvas
+  const _ctaCoverEl = targetEl.querySelector(".cta-cover");
+  const _origCtaSrc = _ctaCoverEl ? _ctaCoverEl.src : null;
+  if (_ctaCoverEl) _ctaCoverEl.src = "";
 
   targetEl.classList.add("capturing");
 
@@ -740,7 +755,7 @@ async function shareResultAsImage() {
   // ✦ 動態調整渲染倍率 (手機降低倍率以換取速度)
   const isMobileSize = window.innerWidth <= 768;
   const renderScale = isMobileSize
-    ? 1.5
+    ? 1
     : Math.min(window.devicePixelRatio || 2, 2);
 
   let canvas = null;
@@ -793,6 +808,7 @@ async function shareResultAsImage() {
   const overrideStyle = document.getElementById("capture-override-style");
   if (overrideStyle) overrideStyle.remove();
 
+  if (_ctaCoverEl && _origCtaSrc) _ctaCoverEl.src = _origCtaSrc;
   hideEls.forEach((el) => (el.style.display = ""));
   if (btn) {
     btn.textContent = originalText;
@@ -816,6 +832,7 @@ async function shareResultAsImage() {
             resolve(null);
           }
         }, 20000);
+        try {
         canvas.toBlob((b) => {
           if (!done) {
             done = true;
@@ -823,6 +840,10 @@ async function shareResultAsImage() {
             resolve(b);
           }
         }, "image/png");
+      } catch (syncErr) {
+        if (!done) { done = true; clearTimeout(timer); }
+        throw syncErr;
+      }
       });
     } catch (e) {
       console.error("desktop toBlob error:", e);
@@ -882,25 +903,10 @@ async function shareResultAsImage() {
     return;
   }
 
-  // ── 手機：生成完畢直接嘗試分享，失敗則降級下載，不彈出覆蓋層 ──
-  let dataUrl = "";
-  try {
-    dataUrl = canvas.toDataURL("image/png");
-  } catch (_) {}
-
-  let shareBlob = await new Promise((resolve) =>
+  // ── 手機長圖：顯示長按儲存覆蓋層，迴避 iOS canvas 記憶體限制 ──
+  const shareBlob = await new Promise((resolve) =>
     canvas.toBlob(resolve, "image/png"),
   );
-  if (!shareBlob && dataUrl) {
-    try {
-      const arr = dataUrl.split(",");
-      const bstr = atob(arr[1]);
-      let n = bstr.length;
-      const u8 = new Uint8Array(n);
-      while (n--) u8[n] = bstr.charCodeAt(n);
-      shareBlob = new Blob([u8], { type: "image/png" });
-    } catch (_) {}
-  }
 
   if (!shareBlob) {
     if (btn) {
@@ -914,73 +920,9 @@ async function shareResultAsImage() {
     return;
   }
 
-  const file = new File([shareBlob], "dark_trait_result.png", {
-    type: "image/png",
-  });
-  const shareDataWithFile = {
-    title: "故事另有結局｜你適合穿越進哪個童話？",
-    text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
-    files: [file],
-  };
-
-  try {
-    const sharedFile = await safeShare(shareDataWithFile);
-    if (sharedFile) {
-      if (btn) {
-        btn.textContent = "✦ 已分享！";
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.disabled = false;
-        }, 2500);
-      }
-      return;
-    }
-  } catch (e) {
-    if (e && e.name === "AbortError") {
-      if (btn) {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
-      return;
-    }
-  }
-
-  // 檔案分享不支援時，退回連結分享（至少可開啟原生分享面板）
-  try {
-    const sharedLink = await safeShare({
-      title: "故事另有結局｜你適合穿越進哪個童話？",
-      text: "歡迎前往黑童話大門，測試你適合住進哪個反轉童話？",
-      url: SITE_URL,
-    });
-    if (sharedLink) {
-      if (btn) {
-        btn.textContent = "✦ 已分享連結！";
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.disabled = false;
-        }, 2500);
-      }
-      return;
-    }
-  } catch (e) {
-    if (e && e.name === "AbortError") {
-      if (btn) {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
-      return;
-    }
-    console.error(
-      "navigator.share link fallback failed:",
-      e && e.name,
-      e && e.message,
-      e,
-    );
-  }
-
-  _doMobileDownload(shareBlob);
+  showLongPressSaveOverlay(shareBlob);
   if (btn) {
-    btn.textContent = "✦ 圖片已下載！";
+    btn.textContent = "✦ 長按圖片儲存";
     setTimeout(() => {
       btn.textContent = originalText;
       btn.disabled = false;
@@ -990,6 +932,114 @@ async function shareResultAsImage() {
 
 function _doMobileDownload(blob) {
   triggerBlobDownload(blob, "dark_trait_result.png");
+}
+
+function showLongPressSaveOverlay(blob) {
+  const url = URL.createObjectURL(blob);
+  const file = new File([blob], "dark_trait_result.png", { type: "image/png" });
+
+  const canShareFiles =
+    typeof navigator.share === "function" &&
+    typeof navigator.canShare === "function" &&
+    (() => { try { return navigator.canShare({ files: [file] }); } catch (_) { return false; } })();
+
+  const hint = canShareFiles
+    ? "點擊「分享圖片」傳送，或長按圖片另存"
+    : "長按圖片儲存，或截圖保存";
+
+  const overlay = document.createElement("div");
+  overlay.id = "share-save-overlay";
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(5,8,18,.92);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+  `;
+
+  const btnRow = canShareFiles
+    ? `<button id="_ov-share" type="button" style="
+        padding:10px 22px;
+        border-radius:999px;
+        border:1px solid rgba(249,231,177,.8);
+        background:rgba(212,175,55,.18);
+        color:#f9e7b1;
+        font-family:'Noto Serif TC',serif;
+        font-size:14px;
+        letter-spacing:2px;
+        cursor:pointer;
+      ">✦ 分享圖片</button>
+      <button id="_ov-close" type="button" style="
+        padding:10px 18px;
+        border-radius:999px;
+        border:1px solid rgba(249,231,177,.5);
+        background:rgba(10,16,30,.9);
+        color:#f9e7b1;
+        font-family:'Noto Serif TC',serif;
+        font-size:14px;
+        letter-spacing:2px;
+        cursor:pointer;
+      ">關閉</button>`
+    : `<button id="_ov-close" type="button" style="
+        padding:10px 18px;
+        border-radius:999px;
+        border:1px solid rgba(249,231,177,.5);
+        background:rgba(10,16,30,.9);
+        color:#f9e7b1;
+        font-family:'Noto Serif TC',serif;
+        font-size:14px;
+        letter-spacing:2px;
+        cursor:pointer;
+      ">關閉</button>`;
+
+  overlay.innerHTML = `
+    <div style="
+      color:#f9e7b1;
+      font-family:'Noto Serif TC',serif;
+      letter-spacing:2px;
+      margin-bottom:12px;
+      text-align:center;
+      font-size:13px;
+    ">${hint}</div>
+    <img src="${url}" style="
+      max-width:100%;
+      max-height:72vh;
+      object-fit:contain;
+      border-radius:12px;
+      box-shadow:0 12px 40px rgba(0,0,0,.45);
+      -webkit-touch-callout: default;
+      user-select: auto;
+    " />
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center;">
+      ${btnRow}
+    </div>
+  `;
+
+  const closeOverlay = () => {
+    overlay.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  overlay.querySelector("#_ov-close").onclick = closeOverlay;
+
+  if (canShareFiles) {
+    const shareBtn = overlay.querySelector("#_ov-share");
+    shareBtn.onclick = async () => {
+      try {
+        await navigator.share({ files: [file] });
+        closeOverlay();
+      } catch (e) {
+        if (e.name === "AbortError") return;
+        // share 失敗時保留 overlay，使用者仍可長按另存
+      }
+    };
+  }
+
+  document.body.appendChild(overlay);
 }
 
 /* ════════════════════════════════
@@ -1515,7 +1565,7 @@ async function shareShortImage() {
   ctx.fillStyle = "rgba(249,231,177,0.84)";
   ctx.letterSpacing = "3px";
   fillWrapped(
-    r.worldQuote || "",
+    r.residentDesc || "",
     y,
     CW - PAD_X * 2,
     qLineH,
