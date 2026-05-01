@@ -1,6 +1,8 @@
 /* ── ENGINE ── */
 
 // 故事分類代號（與 questions.js 的 scores key、results.js 的頂層 key 一致）
+const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
 const CATEGORY_KEYS = [
   "BRO",
   "SHA",
