@@ -72,7 +72,7 @@ function getTrackingPayload(code, actionType = "") {
 
 // ── 行為追蹤 (背景靜默發送) ──
 function trackUserAction(code, actionType) {
-  if (!GAS_URL || GAS_URL.includes("在此貼上")) return;
+  if (typeof GAS_URL === "undefined" || !GAS_URL || GAS_URL.includes("在此貼上")) return;
   const payload = getTrackingPayload(code, actionType);
   fetch(GAS_URL, {
     method: "POST",
@@ -101,7 +101,7 @@ async function sendStats(code) {
   const line = document.getElementById("pop-line");
   const chart = document.getElementById("pop-chart");
 
-  if (!GAS_URL || GAS_URL.includes("在此貼上")) {
+  if (typeof GAS_URL === "undefined" || !GAS_URL || GAS_URL.includes("在此貼上")) {
     line.textContent = "✦ 尚未串接資料庫，僅顯示本地結果。";
     return;
   }
@@ -110,7 +110,7 @@ async function sendStats(code) {
   // （_locationReady 仍在背景跑，已有值就會自動帶入 getTrackingPayload）
 
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 8000);
+  const timer = setTimeout(() => ctrl.abort(), 12000);
 
   try {
     const r = await fetch(GAS_URL, {
