@@ -23,8 +23,6 @@ jobs:
             echo "/* ── CONFIG ── */"
             echo "const GAS_URL   = \"${GAS_URL}\";"
             echo "const GAS_TOKEN = \"${GAS_TOKEN}\";"
-            echo ""
-            echo "const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];"
           } > config.js
 
       - name: Deploy to gh-pages
