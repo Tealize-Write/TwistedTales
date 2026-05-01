@@ -109,15 +109,21 @@ async function sendStats(code) {
   // IP 地理位置由背景非同步填入 userLocationData，不再阻塞主流程
   // （_locationReady 仍在背景跑，已有值就會自動帶入 getTrackingPayload）
 
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+
   try {
     const r = await fetch(GAS_URL, {
       method: "POST",
       body: JSON.stringify(getTrackingPayload(code, "")),
+      signal: ctrl.signal,
     });
+    clearTimeout(timer);
     const data = await r.json();
     if (!data || !data.ok) throw new Error(data?.error ?? "unknown");
     renderStats(data, code);
   } catch (_) {
+    clearTimeout(timer);
     line.textContent = "✦ 數據讀取失敗，但黑童話大門已記住你的選擇。";
     chart.innerHTML = "";
   }
