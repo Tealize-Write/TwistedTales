@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate config.js from secrets
+        env:
+          GAS_URL: ${{ secrets.GAS_URL }}
+          GAS_TOKEN: ${{ secrets.GAS_TOKEN }}
+        run: |
+          {
+            echo "/* ── CONFIG ── */"
+            echo "const GAS_URL   = \"${GAS_URL}\";"
+            echo "const GAS_TOKEN = \"${GAS_TOKEN}\";"
+            echo ""
+            echo "const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];"
+          } > config.js
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          exclude_assets: '.github'
