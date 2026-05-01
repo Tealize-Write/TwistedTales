@@ -24,6 +24,7 @@ jobs:
             echo "const GAS_URL   = \"${GAS_URL}\";"
             echo "const GAS_TOKEN = \"${GAS_TOKEN}\";"
           } > config.js
+          echo "!config.js" >> .gitignore
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
