@@ -24,11 +24,16 @@ jobs:
           GAS_URL: ${{ secrets.GAS_URL }}
           GAS_TOKEN: ${{ secrets.GAS_TOKEN }}
         run: |
-          {
-            echo "/* ── CONFIG ── */"
-            echo "const GAS_URL   = \"${GAS_URL}\";"
-            echo "const GAS_TOKEN = \"${GAS_TOKEN}\";"
-          } > config.js
+          cat <<'PYEOF' > /tmp/gen.py
+          import os, json
+          url   = json.dumps(os.environ['GAS_URL'])
+          token = json.dumps(os.environ['GAS_TOKEN'])
+          with open('config.js', 'w') as f:
+              f.write('/* CONFIG */\n')
+              f.write('const GAS_URL   = ' + url   + ';\n')
+              f.write('const GAS_TOKEN = ' + token + ';\n')
+          PYEOF
+          python3 /tmp/gen.py
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
